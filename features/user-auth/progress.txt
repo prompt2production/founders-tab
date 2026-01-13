@@ -158,3 +158,8 @@ Story: AUTH-032 Create app layout with AuthProvider
 Files changed: src/app/(app)/layout.tsx
 Notes: Wraps children in AuthProvider and AuthGuard. Includes bottom navigation with Home/Team/Profile links, active state highlighting, hidden on md+.
 ---
+---
+Story: AUTH-033 Create invitation acceptance page
+Files changed: src/app/(auth)/invite/[token]/page.tsx
+Notes: Validates token on load, shows error card if invalid. Shows inviter name/message, pre-filled email. Form for name/password only with strength indicator.
+---

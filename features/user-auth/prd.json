@@ -437,7 +437,7 @@
         "Signup form with name and password only",
         "Redirects to / on successful signup"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-034",
