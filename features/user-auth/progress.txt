@@ -103,3 +103,8 @@ Story: AUTH-021 Create AuthProvider context
 Files changed: src/components/auth/auth-provider.tsx
 Notes: Created AuthContext with user state, isLoading, isAuthenticated. Provides login, logout, refreshUser functions. Fetches user on mount from /api/auth/me.
 ---
+---
+Story: AUTH-022 Create useAuth hook
+Files changed: src/hooks/useAuth.ts
+Notes: Created simple wrapper hook that calls useAuthContext and returns all auth state and functions. Throws error if used outside AuthProvider via useAuthContext.
+---

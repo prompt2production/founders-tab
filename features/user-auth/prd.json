@@ -286,7 +286,7 @@
         "Returns user, isLoading, isAuthenticated, login, logout, refreshUser",
         "Throws error if used outside AuthProvider"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-023",
