@@ -25,7 +25,7 @@
         "Invitation has relations to User for invitedBy and acceptedBy",
         "npx prisma generate runs without errors"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-003",

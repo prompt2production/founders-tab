@@ -46,7 +46,10 @@ model User {
   updatedAt      DateTime  @updatedAt
 
   // Relations
-  sessions Session[]
+  sessions        Session[]
+  invitationsSent Invitation[]    @relation("InvitedBy")
+  invitation      Invitation?     @relation("InvitedUser")
+  passwordResets  PasswordReset[]
 }
 
 enum Role {
@@ -60,6 +63,40 @@ model Session {
   token     String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Invitation {
+  id         String           @id @default(cuid())
+  email      String
+  token      String           @unique
+  message    String?
+  status     InvitationStatus @default(PENDING)
+  expiresAt  DateTime
+  createdAt  DateTime         @default(now())
+  acceptedAt DateTime?
+
+  invitedById  String
+  invitedBy    User    @relation("InvitedBy", fields: [invitedById], references: [id])
+
+  acceptedById String? @unique
+  acceptedBy   User?   @relation("InvitedUser", fields: [acceptedById], references: [id])
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+}
+
+model PasswordReset {
+  id        String    @id @default(cuid())
+  userId    String
+  token     String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
