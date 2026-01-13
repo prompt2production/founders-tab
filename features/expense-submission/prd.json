@@ -137,7 +137,7 @@
         "Saves file to public/uploads/receipts/ with unique filename",
         "Returns 200 with { url: '/uploads/receipts/filename' }"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-011",
