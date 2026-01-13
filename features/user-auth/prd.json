@@ -207,7 +207,7 @@
         "Each user includes id, name, email, avatarInitials, role, createdAt",
         "Excludes passwordHash from response"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-017",
