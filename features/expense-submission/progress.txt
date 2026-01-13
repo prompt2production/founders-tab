@@ -83,3 +83,8 @@ Story: EXP-017 Create ExpenseListItem component
 Files changed: src/components/expenses/expense-list-item.tsx
 Notes: Created list item following DESIGN_SYSTEM.md Transaction/Expense List Item pattern with category icon, description, date, formatted amount, and category label.
 ---
+---
+Story: EXP-018 Create AddExpenseSheet component
+Files changed: src/components/expenses/add-expense-sheet.tsx
+Notes: Created bottom sheet with side='bottom', rounded-t-2xl styling, contains ExpenseForm, closes on success.
+---

@@ -260,7 +260,7 @@
         "Accepts open, onOpenChange props for controlled usage",
         "Accepts onSuccess callback"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-019",
