@@ -133,3 +133,8 @@ Story: AUTH-027 Create login page
 Files changed: src/app/(auth)/login/page.tsx
 Notes: Mobile-first layout, gradient app name at top, LoginForm, links to /signup and /forgot-password, redirects to / if authenticated.
 ---
+---
+Story: AUTH-028 Create signup page
+Files changed: src/app/(auth)/signup/page.tsx
+Notes: Mobile-first layout, gradient app name at top, SignupForm, link to /login, redirects to / if authenticated.
+---

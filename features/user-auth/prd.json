@@ -371,7 +371,7 @@
         "Link to /login",
         "Redirects to / if already authenticated"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-029",
