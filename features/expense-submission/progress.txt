@@ -13,3 +13,8 @@ Story: EXP-003 Create expense validation schemas
 Files changed: src/lib/validations/expense.ts
 Notes: Created createExpenseSchema, updateExpenseSchema, listExpensesQuerySchema with all validations and type exports.
 ---
+---
+Story: EXP-004 Create expense validation unit tests
+Files changed: tests/unit/validations/expense.test.ts
+Notes: Created 31 tests covering all validation scenarios. All 50 tests pass.
+---
