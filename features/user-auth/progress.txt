@@ -68,3 +68,8 @@ Story: AUTH-014 Create profile update API route
 Files changed: src/app/api/users/me/route.ts
 Notes: Implemented GET and PATCH handlers for user profile. PATCH validates and updates name/avatarInitials.
 ---
+---
+Story: AUTH-015 Create change password API route
+Files changed: src/app/api/users/me/change-password/route.ts
+Notes: Implemented POST handler with current password verification, validation, and password hash update.
+---

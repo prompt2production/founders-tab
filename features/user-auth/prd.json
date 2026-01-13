@@ -194,7 +194,7 @@
         "Updates password hash on success",
         "Returns 200 on success"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-016",
