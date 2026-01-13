@@ -8,3 +8,8 @@ Story: EXP-002 Run database migration for Expense model
 Files changed: prisma/migrations/20260113225024_add_expense_model/migration.sql
 Notes: Migration applied successfully to PostgreSQL database.
 ---
+---
+Story: EXP-003 Create expense validation schemas
+Files changed: src/lib/validations/expense.ts
+Notes: Created createExpenseSchema, updateExpenseSchema, listExpensesQuerySchema with all validations and type exports.
+---

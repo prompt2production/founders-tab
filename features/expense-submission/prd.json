@@ -35,7 +35,7 @@
         "listExpensesQuerySchema validates page, limit, category filter, startDate, endDate",
         "Schemas export inferred TypeScript types"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-004",
