@@ -33,3 +33,8 @@ Story: AUTH-007 Create session management utility
 Files changed: src/lib/auth/session.ts
 Notes: Created generateSessionToken, createSession (7-day expiry), validateSession (with user data), deleteSession, deleteAllUserSessions functions.
 ---
+---
+Story: AUTH-008 Create auth cookie utilities
+Files changed: src/lib/auth/cookies.ts
+Notes: Created setSessionCookie, getSessionCookie, clearSessionCookie using Next.js cookies() with 'session_token' name, HttpOnly, Secure (prod), SameSite=Lax.
+---

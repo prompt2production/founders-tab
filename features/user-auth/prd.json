@@ -101,7 +101,7 @@
         "clearSessionCookie function removes the session cookie",
         "Cookie name is 'session_token'"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-009",
