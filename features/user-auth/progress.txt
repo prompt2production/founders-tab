@@ -8,3 +8,8 @@ Story: AUTH-002 Add Invitation and PasswordReset models to Prisma schema
 Files changed: prisma/schema.prisma
 Notes: Added Invitation model with InvitationStatus enum, PasswordReset model, and updated User model with relations.
 ---
+---
+Story: AUTH-003 Run database migration for auth models
+Files changed: prisma/migrations/20260113211827_add_auth_models/migration.sql
+Notes: Migration applied successfully to PostgreSQL database.
+---

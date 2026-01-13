@@ -35,7 +35,7 @@
         "npx prisma migrate dev --name add-auth-models completes successfully",
         "prisma/migrations folder contains the new migration"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-004",
