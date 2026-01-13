@@ -83,3 +83,8 @@ Story: AUTH-017 Create invitation validation schemas
 Files changed: src/lib/validations/invitation.ts
 Notes: Created createInvitationSchema (email, optional message) and acceptInvitationSchema (token, name, password with confirmation).
 ---
+---
+Story: AUTH-018 Create send invitation API route
+Files changed: src/app/api/invitations/route.ts
+Notes: Implemented GET handler (returns invitations by current user) and POST handler (creates invitation with 7-day expiry, FOUNDER-only, validates email not already member).
+---

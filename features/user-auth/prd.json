@@ -234,7 +234,7 @@
         "POST creates invitation with 7-day expiry",
         "POST returns invitation data with 201 status"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-019",
