@@ -38,3 +38,8 @@ Story: AUTH-008 Create auth cookie utilities
 Files changed: src/lib/auth/cookies.ts
 Notes: Created setSessionCookie, getSessionCookie, clearSessionCookie using Next.js cookies() with 'session_token' name, HttpOnly, Secure (prod), SameSite=Lax.
 ---
+---
+Story: AUTH-009 Create getCurrentUser helper
+Files changed: src/lib/auth/getCurrentUser.ts, src/lib/auth/index.ts
+Notes: Created getCurrentUser function that reads session cookie and validates, returns user without passwordHash. Added barrel export in index.ts.
+---
