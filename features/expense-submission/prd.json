@@ -121,7 +121,7 @@
         "Returns 403 if expense belongs to different user",
         "Deletes expense and returns 200 on success"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-010",

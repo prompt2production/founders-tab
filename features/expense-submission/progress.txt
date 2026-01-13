@@ -38,3 +38,8 @@ Story: EXP-008 Create PATCH /api/expenses/[id] endpoint
 Files changed: src/app/api/expenses/[id]/route.ts
 Notes: Added PATCH handler with auth, ownership checks, and validation.
 ---
+---
+Story: EXP-009 Create DELETE /api/expenses/[id] endpoint
+Files changed: src/app/api/expenses/[id]/route.ts
+Notes: Added DELETE handler with auth and ownership checks.
+---
