@@ -180,7 +180,7 @@
         "PATCH updates user and returns updated data",
         "Both return 401 if not authenticated"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-015",
