@@ -113,3 +113,8 @@ Story: AUTH-023 Create AuthGuard component
 Files changed: src/components/auth/auth-guard.tsx
 Notes: Shows Loader2 spinner while checking auth, redirects to /login if not authenticated, renders children if authenticated. Uses useAuth hook.
 ---
+---
+Story: AUTH-024 Create UserAvatar component
+Files changed: src/components/auth/user-avatar.tsx
+Notes: Accepts name or initials prop, generates consistent gradient from hash of name, supports sm/md/lg/xl sizes. Uses warm gradient colours matching brand.
+---

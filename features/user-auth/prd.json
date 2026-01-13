@@ -312,7 +312,7 @@
         "Supports size variants: sm (h-8), md (h-10), lg (h-12), xl (h-16)",
         "Uses design system gradient colours"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-025",
