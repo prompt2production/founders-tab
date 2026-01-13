@@ -327,7 +327,7 @@
         "Calls login function from useAuth on submit",
         "Shows error toast on failure"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-026",

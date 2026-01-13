@@ -118,3 +118,8 @@ Story: AUTH-024 Create UserAvatar component
 Files changed: src/components/auth/user-avatar.tsx
 Notes: Accepts name or initials prop, generates consistent gradient from hash of name, supports sm/md/lg/xl sizes. Uses warm gradient colours matching brand.
 ---
+---
+Story: AUTH-025 Create LoginForm component
+Files changed: src/components/auth/login-form.tsx, src/components/ui/form.tsx (added via shadcn)
+Notes: Uses react-hook-form with zodResolver, email/password fields per DESIGN_SYSTEM.md, shows validation errors, loading state, error toasts via sonner.
+---
