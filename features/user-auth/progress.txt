@@ -13,3 +13,8 @@ Story: AUTH-003 Run database migration for auth models
 Files changed: prisma/migrations/20260113211827_add_auth_models/migration.sql
 Notes: Migration applied successfully to PostgreSQL database.
 ---
+---
+Story: AUTH-004 Create auth validation schemas
+Files changed: src/lib/validations/auth.ts
+Notes: Created all auth schemas: signup, login, forgotPassword, resetPassword, changePassword, updateProfile with proper Zod validation.
+---

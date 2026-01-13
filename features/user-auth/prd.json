@@ -49,7 +49,7 @@
         "resetPasswordSchema validates token, password, confirmPassword",
         "npm run test passes for auth validation tests"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-005",
