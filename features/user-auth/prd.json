@@ -342,7 +342,7 @@
         "Shows loading state during submission",
         "Shows success toast and redirects on success"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-027",

@@ -123,3 +123,8 @@ Story: AUTH-025 Create LoginForm component
 Files changed: src/components/auth/login-form.tsx, src/components/ui/form.tsx (added via shadcn)
 Notes: Uses react-hook-form with zodResolver, email/password fields per DESIGN_SYSTEM.md, shows validation errors, loading state, error toasts via sonner.
 ---
+---
+Story: AUTH-026 Create SignupForm component
+Files changed: src/components/auth/signup-form.tsx
+Notes: Uses react-hook-form with zodResolver, name/email/password/confirmPassword fields, password strength indicator with check/x icons, loading state, success toast and redirect.
+---
