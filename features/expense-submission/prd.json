@@ -229,7 +229,7 @@
         "Accepts onSubmit and optional defaultValues props",
         "Submit button uses responsive width pattern (w-full lg:w-auto)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-017",

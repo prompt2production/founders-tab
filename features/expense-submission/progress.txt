@@ -73,3 +73,8 @@ Story: EXP-015 Create ReceiptUpload component
 Files changed: src/components/expenses/receipt-upload.tsx
 Notes: Created with click/drag-drop upload, loading state, preview, remove button, and error handling.
 ---
+---
+Story: EXP-016 Create ExpenseForm component
+Files changed: src/components/expenses/expense-form.tsx
+Notes: Created main expense form with react-hook-form, zodResolver, all required fields including collapsible notes section. Uses responsive button pattern.
+---
