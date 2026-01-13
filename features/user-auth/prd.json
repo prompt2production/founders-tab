@@ -398,7 +398,7 @@
         "Change password button opens sheet",
         "Logout button with confirmation"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-031",

@@ -143,3 +143,8 @@ Story: AUTH-029 Create auth layout
 Files changed: src/app/(auth)/layout.tsx
 Notes: Wraps children in AuthProvider, centers content vertically/horizontally, max-w-md constraint, subtle gradient background.
 ---
+---
+Story: AUTH-030 Create profile page
+Files changed: src/app/(app)/profile/page.tsx
+Notes: Shows UserAvatar (xl), editable name field, read-only email with role badge, change password sheet, logout with AlertDialog confirmation.
+---
