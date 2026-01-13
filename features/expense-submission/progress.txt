@@ -88,3 +88,8 @@ Story: EXP-018 Create AddExpenseSheet component
 Files changed: src/components/expenses/add-expense-sheet.tsx
 Notes: Created bottom sheet with side='bottom', rounded-t-2xl styling, contains ExpenseForm, closes on success.
 ---
+---
+Story: EXP-019 Create useExpenses hook
+Files changed: src/hooks/useExpenses.ts
+Notes: Created hook with expenses array, total count, isLoading, error states, refetch function, pagination and filter support.
+---

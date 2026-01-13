@@ -274,7 +274,7 @@
         "Supports pagination parameters",
         "Supports filter parameters (category, date range)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-020",
