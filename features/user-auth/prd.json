@@ -299,7 +299,7 @@
         "Renders children if authenticated",
         "Uses useAuth hook"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-024",
