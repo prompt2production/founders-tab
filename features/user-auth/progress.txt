@@ -163,3 +163,8 @@ Story: AUTH-033 Create invitation acceptance page
 Files changed: src/app/(auth)/invite/[token]/page.tsx
 Notes: Validates token on load, shows error card if invalid. Shows inviter name/message, pre-filled email. Form for name/password only with strength indicator.
 ---
+---
+Story: AUTH-034 Update home page to use auth
+Files changed: src/app/(app)/page.tsx, src/app/page.tsx (deleted)
+Notes: Created new home page in (app) route group showing welcome card with user name, quick stats placeholders, getting started card. Old root page deleted.
+---

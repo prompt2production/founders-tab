@@ -449,7 +449,7 @@
         "Basic dashboard layout ready for expenses feature",
         "Uses AuthGuard protection via layout"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-035",
