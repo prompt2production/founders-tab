@@ -78,3 +78,8 @@ Story: EXP-016 Create ExpenseForm component
 Files changed: src/components/expenses/expense-form.tsx
 Notes: Created main expense form with react-hook-form, zodResolver, all required fields including collapsible notes section. Uses responsive button pattern.
 ---
+---
+Story: EXP-017 Create ExpenseListItem component
+Files changed: src/components/expenses/expense-list-item.tsx
+Notes: Created list item following DESIGN_SYSTEM.md Transaction/Expense List Item pattern with category icon, description, date, formatted amount, and category label.
+---

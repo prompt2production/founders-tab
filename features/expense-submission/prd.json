@@ -244,7 +244,7 @@
         "Follows Transaction/Expense List Item pattern from DESIGN_SYSTEM.md",
         "Accepts expense object and optional onClick prop"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-018",
