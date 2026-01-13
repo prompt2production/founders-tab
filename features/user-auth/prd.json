@@ -477,7 +477,7 @@
         "Test logs out and verifies redirect to /login",
         "npx playwright test auth-login passes"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }

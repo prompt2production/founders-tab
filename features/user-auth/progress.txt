@@ -173,3 +173,8 @@ Story: AUTH-035 E2E test: Signup flow
 Files changed: tests/e2e/auth-signup.spec.ts
 Notes: 4 tests: complete signup flow, validation errors, password mismatch, link to login. All pass with npx playwright test auth-signup.
 ---
+---
+Story: AUTH-036 E2E test: Login and logout flow
+Files changed: tests/e2e/auth-login.spec.ts
+Notes: 5 tests: login success, invalid credentials error, logout success, link to signup, protected route redirect. All pass with npx playwright test auth-login.
+---
