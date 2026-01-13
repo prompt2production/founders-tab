@@ -167,7 +167,7 @@
         "Returns 401 if not authenticated",
         "User object excludes passwordHash"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-014",
