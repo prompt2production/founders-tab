@@ -288,7 +288,7 @@
         "Shows error toast on failure",
         "Accepts onSuccess callback"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-021",

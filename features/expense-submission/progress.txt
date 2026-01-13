@@ -93,3 +93,8 @@ Story: EXP-019 Create useExpenses hook
 Files changed: src/hooks/useExpenses.ts
 Notes: Created hook with expenses array, total count, isLoading, error states, refetch function, pagination and filter support.
 ---
+---
+Story: EXP-020 Create useCreateExpense hook
+Files changed: src/hooks/useCreateExpense.ts
+Notes: Created hook with createExpense function, isLoading/error states, success/error toasts, and onSuccess callback.
+---
