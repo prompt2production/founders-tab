@@ -412,7 +412,7 @@
         "Invite member button (founders only) opens sheet",
         "Cancel invitation functionality"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-032",

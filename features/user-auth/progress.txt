@@ -148,3 +148,8 @@ Story: AUTH-030 Create profile page
 Files changed: src/app/(app)/profile/page.tsx
 Notes: Shows UserAvatar (xl), editable name field, read-only email with role badge, change password sheet, logout with AlertDialog confirmation.
 ---
+---
+Story: AUTH-031 Create team page
+Files changed: src/app/(app)/team/page.tsx
+Notes: Lists members with UserAvatar/name/email/role badge. Founders see pending invitations section and invite button opening sheet. Cancel invitation via DELETE.
+---
