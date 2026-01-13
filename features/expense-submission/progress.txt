@@ -108,3 +108,8 @@ Story: EXP-022 Add recent expenses list to home page
 Files changed: src/app/(app)/page.tsx
 Notes: Added Recent Expenses section with ExpenseListItem, empty state with Add Expense button, View All link, and loading skeletons.
 ---
+---
+Story: EXP-023 Add expense button to home page
+Files changed: src/app/(app)/page.tsx
+Notes: Added Add Expense button in welcome card, integrated AddExpenseSheet, expense list and summary refresh after successful submission.
+---

@@ -326,7 +326,7 @@
         "After successful submission, expense list refreshes",
         "Button follows DESIGN_SYSTEM.md patterns"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-024",

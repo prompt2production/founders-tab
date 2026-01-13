@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useExpenses } from '@/hooks/useExpenses'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,6 +9,7 @@ import { UserAvatar } from '@/components/auth/user-avatar'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ExpenseListItem } from '@/components/expenses/expense-list-item'
+import { AddExpenseSheet } from '@/components/expenses/add-expense-sheet'
 import { DollarSign, TrendingUp, Receipt, Plus } from 'lucide-react'
 
 interface ExpenseSummary {
@@ -20,27 +21,33 @@ export default function HomePage() {
   const { user } = useAuth()
   const [summary, setSummary] = useState<ExpenseSummary | null>(null)
   const [isSummaryLoading, setIsSummaryLoading] = useState(true)
-  const { expenses, isLoading: isExpensesLoading } = useExpenses({ limit: 5 })
+  const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false)
+  const { expenses, isLoading: isExpensesLoading, refetch: refetchExpenses } = useExpenses({ limit: 5 })
+
+  const fetchSummary = useCallback(async () => {
+    try {
+      const response = await fetch('/api/expenses/summary')
+      if (response.ok) {
+        const data = await response.json()
+        setSummary(data)
+      }
+    } catch (error) {
+      console.error('Error fetching expense summary:', error)
+    } finally {
+      setIsSummaryLoading(false)
+    }
+  }, [])
 
   useEffect(() => {
-    async function fetchSummary() {
-      try {
-        const response = await fetch('/api/expenses/summary')
-        if (response.ok) {
-          const data = await response.json()
-          setSummary(data)
-        }
-      } catch (error) {
-        console.error('Error fetching expense summary:', error)
-      } finally {
-        setIsSummaryLoading(false)
-      }
-    }
-
     if (user) {
       fetchSummary()
     }
-  }, [user])
+  }, [user, fetchSummary])
+
+  const handleExpenseSuccess = useCallback(() => {
+    refetchExpenses()
+    fetchSummary()
+  }, [refetchExpenses, fetchSummary])
 
   if (!user) return null
 
@@ -62,6 +69,13 @@ export default function HomePage() {
             size="lg"
           />
         </div>
+        <Button
+          className="mt-4 bg-white text-primary hover:bg-white/90"
+          onClick={() => setIsAddExpenseOpen(true)}
+        >
+          <Plus className="mr-2 h-4 w-4" />
+          Add Expense
+        </Button>
       </div>
 
       {/* Quick Stats */}
@@ -151,7 +165,7 @@ export default function HomePage() {
               <p className="text-muted-foreground mb-4">
                 No expenses yet. Start tracking by adding your first expense.
               </p>
-              <Button>
+              <Button onClick={() => setIsAddExpenseOpen(true)}>
                 <Plus className="mr-2 h-4 w-4" />
                 Add Expense
               </Button>
@@ -171,6 +185,13 @@ export default function HomePage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Add Expense Sheet */}
+      <AddExpenseSheet
+        open={isAddExpenseOpen}
+        onOpenChange={setIsAddExpenseOpen}
+        onSuccess={handleExpenseSuccess}
+      />
     </div>
   )
 }
