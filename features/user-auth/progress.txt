@@ -93,3 +93,8 @@ Story: AUTH-019 Create cancel invitation API route
 Files changed: src/app/api/invitations/[id]/route.ts
 Notes: Implemented DELETE handler with auth check, FOUNDER-only check, 404 for missing invitation, deletes and returns 200 on success.
 ---
+---
+Story: AUTH-020 Create accept invitation API routes
+Files changed: src/app/api/invitations/accept/[token]/route.ts
+Notes: GET returns invitation details (email, inviter name, message) if valid. POST creates user with MEMBER role, marks invitation ACCEPTED, creates session and sets cookie.
+---

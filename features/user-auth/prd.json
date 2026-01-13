@@ -262,7 +262,7 @@
         "POST creates session and sets cookie",
         "POST returns user data with 201 status"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-021",
