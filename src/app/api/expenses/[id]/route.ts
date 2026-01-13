@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { updateExpenseSchema } from '@/lib/validations/expense'
 import { z } from 'zod'
+import { Category } from '@prisma/client'
 
 export async function GET(
   request: NextRequest,
@@ -69,10 +70,27 @@ export async function PATCH(
     const body = await request.json()
     const validated = updateExpenseSchema.parse(body)
 
+    // Build update data with proper types
+    const updateData: {
+      description?: string
+      date?: Date
+      amount?: number
+      category?: Category
+      receiptUrl?: string | null
+      notes?: string | null
+    } = {}
+
+    if (validated.description !== undefined) updateData.description = validated.description
+    if (validated.date !== undefined) updateData.date = validated.date
+    if (validated.amount !== undefined) updateData.amount = validated.amount
+    if (validated.category !== undefined) updateData.category = validated.category as Category
+    if (validated.receiptUrl !== undefined) updateData.receiptUrl = validated.receiptUrl
+    if (validated.notes !== undefined) updateData.notes = validated.notes
+
     // Update expense
     const updatedExpense = await prisma.expense.update({
       where: { id },
-      data: validated,
+      data: updateData,
     })
 
     return NextResponse.json(updatedExpense)

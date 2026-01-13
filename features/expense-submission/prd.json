@@ -301,7 +301,7 @@
         "Values update when expenses are added",
         "Shows loading skeleton while fetching"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-022",

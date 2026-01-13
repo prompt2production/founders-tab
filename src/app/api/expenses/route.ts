@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { createExpenseSchema, listExpensesQuerySchema } from '@/lib/validations/expense'
 import { z } from 'zod'
-import { Prisma } from '@prisma/client'
+import { Prisma, Category } from '@prisma/client'
 
 export async function GET(request: NextRequest) {
   try {
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (query.category) {
-      where.category = query.category
+      where.category = query.category as Category
     }
 
     if (query.startDate || query.endDate) {
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
         date: validated.date,
         amount: validated.amount,
         description: validated.description,
-        category: validated.category,
+        category: validated.category as Category,
         receiptUrl: validated.receiptUrl || null,
         notes: validated.notes || null,
       },

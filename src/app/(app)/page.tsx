@@ -1,13 +1,42 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { UserAvatar } from '@/components/auth/user-avatar'
 import { Badge } from '@/components/ui/badge'
+import { Skeleton } from '@/components/ui/skeleton'
 import { DollarSign, TrendingUp, Users } from 'lucide-react'
+
+interface ExpenseSummary {
+  userTotal: number
+  teamTotal: number
+}
 
 export default function HomePage() {
   const { user } = useAuth()
+  const [summary, setSummary] = useState<ExpenseSummary | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchSummary() {
+      try {
+        const response = await fetch('/api/expenses/summary')
+        if (response.ok) {
+          const data = await response.json()
+          setSummary(data)
+        }
+      } catch (error) {
+        console.error('Error fetching expense summary:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    if (user) {
+      fetchSummary()
+    }
+  }, [user])
 
   if (!user) return null
 
@@ -41,8 +70,19 @@ export default function HomePage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold tabular-nums">$0.00</p>
-            <p className="text-xs text-muted-foreground mt-1">This month</p>
+            {isLoading ? (
+              <>
+                <Skeleton className="h-8 w-24" />
+                <Skeleton className="h-3 w-16 mt-2" />
+              </>
+            ) : (
+              <>
+                <p className="text-2xl font-bold tabular-nums">
+                  ${(summary?.userTotal || 0).toFixed(2)}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">This month</p>
+              </>
+            )}
           </CardContent>
         </Card>
 
@@ -54,8 +94,19 @@ export default function HomePage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold tabular-nums">$0.00</p>
-            <p className="text-xs text-muted-foreground mt-1">This month</p>
+            {isLoading ? (
+              <>
+                <Skeleton className="h-8 w-24" />
+                <Skeleton className="h-3 w-16 mt-2" />
+              </>
+            ) : (
+              <>
+                <p className="text-2xl font-bold tabular-nums">
+                  ${(summary?.teamTotal || 0).toFixed(2)}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">This month</p>
+              </>
+            )}
           </CardContent>
         </Card>
       </div>

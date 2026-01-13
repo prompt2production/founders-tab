@@ -98,3 +98,8 @@ Story: EXP-020 Create useCreateExpense hook
 Files changed: src/hooks/useCreateExpense.ts
 Notes: Created hook with createExpense function, isLoading/error states, success/error toasts, and onSuccess callback.
 ---
+---
+Story: EXP-021 Update home page with expense summary
+Files changed: src/app/(app)/page.tsx, src/app/api/expenses/summary/route.ts, src/app/api/expenses/route.ts, src/app/api/expenses/[id]/route.ts
+Notes: Created summary API endpoint, updated home page to fetch and display totals with loading skeletons. Fixed Category type issues in API routes.
+---
