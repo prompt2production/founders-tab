@@ -340,7 +340,7 @@
         "Includes Delete button with confirmation",
         "Accepts expense object, open, onOpenChange, onSuccess props"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-025",
