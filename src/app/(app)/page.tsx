@@ -2,11 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/useAuth'
+import { useExpenses } from '@/hooks/useExpenses'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { UserAvatar } from '@/components/auth/user-avatar'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { DollarSign, TrendingUp, Users } from 'lucide-react'
+import { ExpenseListItem } from '@/components/expenses/expense-list-item'
+import { DollarSign, TrendingUp, Receipt, Plus } from 'lucide-react'
 
 interface ExpenseSummary {
   userTotal: number
@@ -16,7 +19,8 @@ interface ExpenseSummary {
 export default function HomePage() {
   const { user } = useAuth()
   const [summary, setSummary] = useState<ExpenseSummary | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isSummaryLoading, setIsSummaryLoading] = useState(true)
+  const { expenses, isLoading: isExpensesLoading } = useExpenses({ limit: 5 })
 
   useEffect(() => {
     async function fetchSummary() {
@@ -29,7 +33,7 @@ export default function HomePage() {
       } catch (error) {
         console.error('Error fetching expense summary:', error)
       } finally {
-        setIsLoading(false)
+        setIsSummaryLoading(false)
       }
     }
 
@@ -70,7 +74,7 @@ export default function HomePage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {isLoading ? (
+            {isSummaryLoading ? (
               <>
                 <Skeleton className="h-8 w-24" />
                 <Skeleton className="h-3 w-16 mt-2" />
@@ -94,7 +98,7 @@ export default function HomePage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {isLoading ? (
+            {isSummaryLoading ? (
               <>
                 <Skeleton className="h-8 w-24" />
                 <Skeleton className="h-3 w-16 mt-2" />
@@ -111,20 +115,60 @@ export default function HomePage() {
         </Card>
       </div>
 
-      {/* Ready for Expenses Feature */}
+      {/* Recent Expenses */}
       <Card className="bg-card border-border rounded-xl">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base font-medium flex items-center gap-2">
-            <Users className="h-5 w-5 text-primary" />
-            Getting Started
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base font-medium flex items-center gap-2">
+              <Receipt className="h-5 w-5 text-primary" />
+              Recent Expenses
+            </CardTitle>
+            <Button variant="ghost" size="sm" className="text-muted-foreground">
+              View All
+            </Button>
+          </div>
         </CardHeader>
-        <CardContent className="text-sm text-muted-foreground">
-          <p>
-            Welcome to Founders Tab! This is your dashboard for tracking
-            expenses with your co-founders. The expenses feature will be
-            available soon.
-          </p>
+        <CardContent>
+          {isExpensesLoading ? (
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex items-center gap-3 py-3">
+                  <Skeleton className="h-10 w-10 rounded-full" />
+                  <div className="flex-1">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-3 w-20 mt-1" />
+                  </div>
+                  <div className="text-right">
+                    <Skeleton className="h-4 w-16" />
+                    <Skeleton className="h-3 w-12 mt-1" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : expenses.length === 0 ? (
+            <div className="text-center py-8">
+              <Receipt className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+              <p className="text-muted-foreground mb-4">
+                No expenses yet. Start tracking by adding your first expense.
+              </p>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Expense
+              </Button>
+            </div>
+          ) : (
+            <div className="divide-y divide-border">
+              {expenses.map((expense) => (
+                <ExpenseListItem
+                  key={expense.id}
+                  expense={expense}
+                  onClick={() => {
+                    // TODO: Open edit sheet
+                  }}
+                />
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

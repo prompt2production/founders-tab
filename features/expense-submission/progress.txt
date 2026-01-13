@@ -103,3 +103,8 @@ Story: EXP-021 Update home page with expense summary
 Files changed: src/app/(app)/page.tsx, src/app/api/expenses/summary/route.ts, src/app/api/expenses/route.ts, src/app/api/expenses/[id]/route.ts
 Notes: Created summary API endpoint, updated home page to fetch and display totals with loading skeletons. Fixed Category type issues in API routes.
 ---
+---
+Story: EXP-022 Add recent expenses list to home page
+Files changed: src/app/(app)/page.tsx
+Notes: Added Recent Expenses section with ExpenseListItem, empty state with Add Expense button, View All link, and loading skeletons.
+---

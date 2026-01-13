@@ -314,7 +314,7 @@
         "Each item is clickable (for future edit functionality)",
         "Section has 'View All' link (can be placeholder for now)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-023",
