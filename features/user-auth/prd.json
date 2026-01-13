@@ -88,7 +88,7 @@
         "validateSession function checks token and expiry, returns user if valid",
         "deleteSession function removes session from database"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-008",
