@@ -192,7 +192,7 @@
         "Only allows numeric input with single decimal point",
         "Follows DESIGN_SYSTEM.md form patterns"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-015",

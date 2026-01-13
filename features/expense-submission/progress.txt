@@ -63,3 +63,8 @@ Story: EXP-013 Create CategoryPicker component
 Files changed: src/components/expenses/category-picker.tsx
 Notes: Created responsive grid (3 cols mobile, 5 cols desktop) with selection highlighting.
 ---
+---
+Story: EXP-014 Create AmountInput component
+Files changed: src/components/expenses/amount-input.tsx
+Notes: Created with $ prefix, text-2xl styling, decimal validation, and auto-formatting on blur.
+---
