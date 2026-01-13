@@ -138,3 +138,8 @@ Story: AUTH-028 Create signup page
 Files changed: src/app/(auth)/signup/page.tsx
 Notes: Mobile-first layout, gradient app name at top, SignupForm, link to /login, redirects to / if authenticated.
 ---
+---
+Story: AUTH-029 Create auth layout
+Files changed: src/app/(auth)/layout.tsx
+Notes: Wraps children in AuthProvider, centers content vertically/horizontally, max-w-md constraint, subtle gradient background.
+---

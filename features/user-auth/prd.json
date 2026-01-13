@@ -383,7 +383,7 @@
         "Max width constraint for larger screens",
         "Dark background with subtle gradient"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-030",
