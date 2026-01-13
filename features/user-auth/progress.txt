@@ -48,3 +48,8 @@ Story: AUTH-010 Create signup API route
 Files changed: src/app/api/auth/signup/route.ts
 Notes: Implemented POST handler with validation, duplicate email check, first user FOUNDER role, password hashing, avatar initials generation, session creation.
 ---
+---
+Story: AUTH-011 Create login API route
+Files changed: src/app/api/auth/login/route.ts
+Notes: Implemented POST handler with validation, generic error messages for security, password verification, session creation.
+---
