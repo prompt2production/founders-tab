@@ -53,3 +53,8 @@ Story: AUTH-011 Create login API route
 Files changed: src/app/api/auth/login/route.ts
 Notes: Implemented POST handler with validation, generic error messages for security, password verification, session creation.
 ---
+---
+Story: AUTH-012 Create logout API route
+Files changed: src/app/api/auth/logout/route.ts
+Notes: Implemented POST handler that deletes session, clears cookie, handles missing session gracefully.
+---

@@ -155,7 +155,7 @@
         "Returns 200 status on success",
         "Handles case where no session exists gracefully"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-013",
