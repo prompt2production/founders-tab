@@ -275,7 +275,7 @@
         "Fetches user on mount from /api/auth/me",
         "Handles loading state during initial fetch"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-022",
