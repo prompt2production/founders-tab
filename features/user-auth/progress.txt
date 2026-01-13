@@ -23,3 +23,8 @@ Story: AUTH-005 Create auth validation unit tests
 Files changed: tests/unit/validations/auth.test.ts
 Notes: Created 18 tests covering signup, login, forgotPassword, resetPassword schemas. All tests pass.
 ---
+---
+Story: AUTH-006 Create password hashing utility
+Files changed: src/lib/auth/password.ts, package.json
+Notes: Installed bcryptjs, created hashPassword and verifyPassword async functions with cost factor 12.
+---

@@ -75,7 +75,7 @@
         "verifyPassword function compares password against hash",
         "Both functions are async"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-007",
