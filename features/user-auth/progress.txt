@@ -168,3 +168,8 @@ Story: AUTH-034 Update home page to use auth
 Files changed: src/app/(app)/page.tsx, src/app/page.tsx (deleted)
 Notes: Created new home page in (app) route group showing welcome card with user name, quick stats placeholders, getting started card. Old root page deleted.
 ---
+---
+Story: AUTH-035 E2E test: Signup flow
+Files changed: tests/e2e/auth-signup.spec.ts
+Notes: 4 tests: complete signup flow, validation errors, password mismatch, link to login. All pass with npx playwright test auth-signup.
+---

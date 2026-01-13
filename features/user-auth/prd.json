@@ -463,7 +463,7 @@
         "Test verifies user is logged in",
         "npx playwright test auth-signup passes"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-036",
