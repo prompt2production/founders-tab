@@ -68,3 +68,8 @@ Story: EXP-014 Create AmountInput component
 Files changed: src/components/expenses/amount-input.tsx
 Notes: Created with $ prefix, text-2xl styling, decimal validation, and auto-formatting on blur.
 ---
+---
+Story: EXP-015 Create ReceiptUpload component
+Files changed: src/components/expenses/receipt-upload.tsx
+Notes: Created with click/drag-drop upload, loading state, preview, remove button, and error handling.
+---

@@ -209,7 +209,7 @@
         "Accepts value (URL) and onChange props",
         "Handles upload errors with toast"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-016",
