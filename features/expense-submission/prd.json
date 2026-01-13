@@ -177,7 +177,7 @@
         "Accepts value and onChange props for controlled usage",
         "Follows DESIGN_SYSTEM.md patterns"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-014",
