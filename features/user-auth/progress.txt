@@ -78,3 +78,8 @@ Story: AUTH-016 Create team list API route
 Files changed: src/app/api/team/route.ts
 Notes: Implemented GET handler that returns all team members (sorted by role, then createdAt) without passwordHash.
 ---
+---
+Story: AUTH-017 Create invitation validation schemas
+Files changed: src/lib/validations/invitation.ts
+Notes: Created createInvitationSchema (email, optional message) and acceptInvitationSchema (token, name, password with confirmation).
+---

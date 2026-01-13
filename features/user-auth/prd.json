@@ -218,7 +218,7 @@
         "createInvitationSchema validates email and optional message",
         "acceptInvitationSchema validates token, name, password, confirmPassword"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-018",
