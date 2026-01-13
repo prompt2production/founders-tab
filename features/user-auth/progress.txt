@@ -18,3 +18,8 @@ Story: AUTH-004 Create auth validation schemas
 Files changed: src/lib/validations/auth.ts
 Notes: Created all auth schemas: signup, login, forgotPassword, resetPassword, changePassword, updateProfile with proper Zod validation.
 ---
+---
+Story: AUTH-005 Create auth validation unit tests
+Files changed: tests/unit/validations/auth.test.ts
+Notes: Created 18 tests covering signup, login, forgotPassword, resetPassword schemas. All tests pass.
+---

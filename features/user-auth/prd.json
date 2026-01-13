@@ -63,7 +63,7 @@
         "Tests cover password mismatch rejection",
         "npm run test passes"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-006",
