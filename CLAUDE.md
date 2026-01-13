@@ -462,13 +462,42 @@ A feature is complete when:
 
 **Project:** Founders Tab - Expense tracker for co-founders
 **Design:** Complete - Dark mode with orange/red gradient accents, mobile-first
-**Current Feature:** `features/user-auth` - User Authentication (36 stories)
+**Completed Features:**
+- `features/user-auth` - User Authentication (36 stories) ✓
+
+**Current Feature:** `features/expense-submission` - Expense Submission (27 stories)
 
 ### Next Step
-Review the generated files in `features/user-auth/` and run implementation:
+Review the generated files in `features/expense-submission/` and run Ralph:
 
 ```bash
 claude --dangerously-skip-permissions
-```
+/ralph-loop:ralph-loop "You are working on this project.
 
-Then use the ralph-loop command or implement stories manually.
+BEFORE EACH ITERATION:
+1. Read CLAUDE.md for project context
+2. Read DESIGN_SYSTEM.md for UI patterns
+3. Read features/expense-submission/prd.json and find the first story with passes: false
+
+YOUR TASK:
+1. Implement the story following all acceptance criteria
+2. Run tests to verify:
+   - npm run test (for unit tests)
+   - npx playwright test (only for e2e stories)
+3. Fix any failures before proceeding
+
+WHEN STORY COMPLETE:
+1. Update features/expense-submission/prd.json - set passes: true
+2. Append to features/expense-submission/progress.txt with format:
+   ---
+   Story: [ID] [Title]
+   Files changed: [list]
+   Notes: [any learnings or issues]
+   ---
+3. Commit: git add -A && git commit -m 'feat([ID]): [title]'
+
+WHEN ALL STORIES COMPLETE:
+Output <promise>COMPLETE</promise>
+
+If stuck after 3 attempts, document blockers and move to next story." --max-iterations 50 --completion-promise COMPLETE
+```

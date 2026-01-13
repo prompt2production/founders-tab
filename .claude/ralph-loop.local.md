@@ -3,7 +3,7 @@ active: true
 iteration: 1
 max_iterations: 25
 completion_promise: "COMPLETE"
-started_at: "2026-01-13T21:12:20Z"
+started_at: "2026-01-13T22:48:22Z"
 ---
 
 You are working on this project.
@@ -11,7 +11,7 @@ You are working on this project.
 BEFORE EACH ITERATION:
 1. Read CLAUDE.md for project context
 2. Read DESIGN_SYSTEM.md for UI patterns
-3. Read features/user-auth/prd.json and find the first story with passes: false
+3. Read features/[expense-submission]/prd.json and find the first story with passes: false
 
 YOUR TASK:
 1. Implement the story following all acceptance criteria

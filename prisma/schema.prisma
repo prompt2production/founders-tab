@@ -50,6 +50,7 @@ model User {
   invitationsSent Invitation[]    @relation("InvitedBy")
   invitation      Invitation?     @relation("InvitedUser")
   passwordResets  PasswordReset[]
+  expenses        Expense[]
 }
 
 enum Role {
@@ -97,6 +98,37 @@ model PasswordReset {
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ===========================================
+// Expense Models
+// ===========================================
+
+enum Category {
+  FOOD
+  TRANSPORT
+  SOFTWARE
+  HARDWARE
+  OFFICE
+  TRAVEL
+  MARKETING
+  SERVICES
+  OTHER
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  userId      String
+  date        DateTime
+  amount      Decimal  @db.Decimal(10, 2)
+  description String
+  category    Category
+  receiptUrl  String?
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

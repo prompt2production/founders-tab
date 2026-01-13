@@ -157,46 +157,62 @@ shadow-glow: 0 0 20px rgba(249, 115, 22, 0.3);
 
 ## Layout
 
-### Mobile-First Approach
+### Mobile-First with Centered Desktop Container
 
-The app is designed for mobile first, then scales to desktop.
+The app is designed mobile-first, with a centered container on larger screens for a more comfortable reading experience.
 
 **Mobile (default):**
-- Full-width cards with `px-4` page padding
+- Full-width layout with `px-4` page padding
 - Single column layout
 - Bottom navigation (fixed)
 - Touch-friendly tap targets (min 44px)
 
-**Desktop (`md:` and up):**
-- Centered container `max-w-md` (448px) for phone-like experience
-- Or `max-w-2xl` for dashboard views
-- Optional sidebar navigation
+**Desktop (`lg:` and up):**
+- Centered container with `max-w-6xl` (~1152px)
+- Auto margins (`mx-auto`) for centering
+- Increased horizontal padding (`px-6`)
+- Bottom navigation hidden, consider sidebar for future
+
+### Container Pattern
+
+Use the `AppContainer` pattern for consistent page layouts:
+
+```tsx
+// Container wrapper for centered desktop layout
+<div className="min-h-screen bg-background">
+  <div className="max-w-6xl mx-auto">
+    {/* Page content goes here */}
+  </div>
+</div>
+```
 
 ### Page Structure
 
 ```tsx
-// Mobile-first page layout
-<main className="min-h-screen bg-background">
-  {/* Header */}
-  <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border px-4 py-3">
-    <div className="flex items-center justify-between">
-      <h1 className="text-lg font-semibold">Page Title</h1>
-      <Button variant="ghost" size="icon">
-        <Bell className="h-5 w-5" />
-      </Button>
-    </div>
-  </header>
+// Mobile-first page layout with centered container
+<div className="min-h-screen bg-background">
+  <div className="max-w-6xl mx-auto">
+    {/* Header - spans full container width */}
+    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border px-4 lg:px-6 py-3">
+      <div className="flex items-center justify-between">
+        <h1 className="text-lg font-semibold">Page Title</h1>
+        <Button variant="ghost" size="icon">
+          <Bell className="h-5 w-5" />
+        </Button>
+      </div>
+    </header>
 
-  {/* Content */}
-  <div className="px-4 py-6 space-y-6">
-    {/* Cards and content */}
+    {/* Content */}
+    <div className="px-4 lg:px-6 py-6 space-y-6">
+      {/* Cards and content */}
+    </div>
   </div>
 
-  {/* Bottom Navigation - Mobile */}
-  <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border px-4 py-2 md:hidden">
+  {/* Bottom Navigation - Mobile only */}
+  <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border px-4 py-2 lg:hidden z-50">
     {/* Nav items */}
   </nav>
-</main>
+</div>
 ```
 
 ---
@@ -243,6 +259,26 @@ The gradient balance card is the signature UI element.
 - `default` - Standard (h-10)
 - `lg` - Large (h-12)
 - `icon` - Square icon button (h-10 w-10)
+
+**Responsive Width:**
+Buttons should be full-width on mobile for easy tap targets, but auto-width on desktop for a cleaner look:
+
+```tsx
+// Standard form button - full width on mobile, auto on desktop
+<Button className="w-full lg:w-auto">
+  Save Changes
+</Button>
+
+// For button groups, wrap in a flex container
+<div className="flex flex-col lg:flex-row gap-3">
+  <Button className="w-full lg:w-auto">Primary Action</Button>
+  <Button variant="secondary" className="w-full lg:w-auto">Secondary</Button>
+</div>
+```
+
+- Use `w-full lg:w-auto` for form submit buttons
+- Buttons are left-aligned by default on desktop (follows form flow)
+- For right-aligned buttons, wrap in `<div className="flex justify-end">`
 
 **Quick Action Button Pattern:**
 ```tsx

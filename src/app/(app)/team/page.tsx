@@ -126,7 +126,7 @@ function InviteMemberForm({ onSuccess }: { onSuccess: () => void }) {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full h-12" disabled={isSubmitting}>
+        <Button type="submit" className="w-full lg:w-auto h-12" disabled={isSubmitting}>
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -199,117 +199,114 @@ export default function TeamPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="flex items-center justify-center min-h-[200px]">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border px-4 py-3">
-        <div className="flex items-center justify-between">
-          <h1 className="text-lg font-semibold">Team</h1>
-          {isFounder && (
-            <Sheet open={inviteSheetOpen} onOpenChange={setInviteSheetOpen}>
-              <SheetTrigger asChild>
-                <Button size="sm">
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Invite
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="bottom" className="rounded-t-2xl">
-                <SheetHeader>
-                  <SheetTitle>Invite Team Member</SheetTitle>
-                  <SheetDescription>
-                    Send an invitation to join your team on Founders Tab.
-                  </SheetDescription>
-                </SheetHeader>
-                <div className="py-4">
-                  <InviteMemberForm
-                    onSuccess={() => {
-                      setInviteSheetOpen(false)
-                      fetchData()
-                    }}
-                  />
-                </div>
-              </SheetContent>
-            </Sheet>
-          )}
-        </div>
-      </header>
+    <div className="px-4 lg:px-6 py-6 space-y-6">
+      {/* Page Header with Invite Button */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Team</h1>
+        {isFounder && (
+          <Sheet open={inviteSheetOpen} onOpenChange={setInviteSheetOpen}>
+            <SheetTrigger asChild>
+              <Button size="sm">
+                <UserPlus className="h-4 w-4 mr-2" />
+                Invite
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="rounded-t-2xl">
+              <SheetHeader>
+                <SheetTitle>Invite Team Member</SheetTitle>
+                <SheetDescription>
+                  Send an invitation to join your team on Founders Tab.
+                </SheetDescription>
+              </SheetHeader>
+              <div className="py-4">
+                <InviteMemberForm
+                  onSuccess={() => {
+                    setInviteSheetOpen(false)
+                    fetchData()
+                  }}
+                />
+              </div>
+            </SheetContent>
+          </Sheet>
+        )}
+      </div>
 
-      <div className="px-4 py-6 space-y-6">
-        {/* Team Members */}
+      {/* Team Members */}
+      <Card className="bg-card border-border rounded-xl">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-medium">
+            Members ({members.length})
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {members.map((member) => (
+            <div key={member.id} className="flex items-center gap-3 py-2">
+              <UserAvatar
+                name={member.name}
+                initials={member.avatarInitials || undefined}
+                size="md"
+              />
+              <div className="flex-1 min-w-0">
+                <p className="font-medium truncate">{member.name}</p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {member.email}
+                </p>
+              </div>
+              <Badge
+                variant={member.role === 'FOUNDER' ? 'default' : 'secondary'}
+              >
+                {member.role}
+              </Badge>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      {/* Pending Invitations (Founders only) */}
+      {isFounder && invitations.length > 0 && (
         <Card className="bg-card border-border rounded-xl">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium">
-              Members ({members.length})
+            <CardTitle className="text-base font-medium flex items-center gap-2">
+              <Clock className="h-4 w-4 text-muted-foreground" />
+              Pending Invitations ({invitations.length})
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {members.map((member) => (
-              <div key={member.id} className="flex items-center gap-3 py-2">
-                <UserAvatar
-                  name={member.name}
-                  initials={member.avatarInitials || undefined}
-                  size="md"
-                />
+            {invitations.map((invitation) => (
+              <div
+                key={invitation.id}
+                className="flex items-center gap-3 py-2"
+              >
+                <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center">
+                  <Mail className="h-5 w-5 text-muted-foreground" />
+                </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium truncate">{member.name}</p>
-                  <p className="text-xs text-muted-foreground truncate">
-                    {member.email}
+                  <p className="font-medium truncate">{invitation.email}</p>
+                  <p className="text-xs text-muted-foreground">
+                    Expires{' '}
+                    {new Date(invitation.expiresAt).toLocaleDateString()}
                   </p>
                 </div>
-                <Badge
-                  variant={member.role === 'FOUNDER' ? 'default' : 'secondary'}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => cancelInvitation(invitation.id)}
+                  className="text-muted-foreground hover:text-destructive"
                 >
-                  {member.role}
-                </Badge>
+                  <X className="h-4 w-4" />
+                </Button>
               </div>
             ))}
           </CardContent>
         </Card>
-
-        {/* Pending Invitations (Founders only) */}
-        {isFounder && invitations.length > 0 && (
-          <Card className="bg-card border-border rounded-xl">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base font-medium flex items-center gap-2">
-                <Clock className="h-4 w-4 text-muted-foreground" />
-                Pending Invitations ({invitations.length})
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {invitations.map((invitation) => (
-                <div
-                  key={invitation.id}
-                  className="flex items-center gap-3 py-2"
-                >
-                  <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center">
-                    <Mail className="h-5 w-5 text-muted-foreground" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{invitation.email}</p>
-                    <p className="text-xs text-muted-foreground">
-                      Expires{' '}
-                      {new Date(invitation.expiresAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => cancelInvitation(invitation.id)}
-                    className="text-muted-foreground hover:text-destructive"
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        )}
-      </div>
+      )}
     </div>
   )
 }

@@ -1,0 +1,391 @@
+{
+  "feature": "Expense Submission",
+  "stories": [
+    {
+      "id": "EXP-001",
+      "title": "Add Category enum and Expense model to Prisma schema",
+      "description": "Create the database models for expenses with category support",
+      "acceptance_criteria": [
+        "prisma/schema.prisma contains Category enum with values: FOOD, TRANSPORT, SOFTWARE, HARDWARE, OFFICE, TRAVEL, MARKETING, SERVICES, OTHER",
+        "prisma/schema.prisma contains Expense model with id, userId, date, amount (Decimal), description, category, receiptUrl (optional), notes (optional), createdAt, updatedAt",
+        "Expense has relation to User with onDelete: Cascade",
+        "User model has expenses relation",
+        "npx prisma generate runs without errors"
+      ],
+      "passes": true
+    },
+    {
+      "id": "EXP-002",
+      "title": "Run database migration for Expense model",
+      "description": "Apply the schema changes to the database",
+      "acceptance_criteria": [
+        "npx prisma migrate dev --name add-expense-model completes successfully",
+        "prisma/migrations folder contains the new migration"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-003",
+      "title": "Create expense validation schemas",
+      "description": "Create Zod validation schemas for expense operations",
+      "acceptance_criteria": [
+        "src/lib/validations/expense.ts exists",
+        "createExpenseSchema validates date (required, not future, not older than 1 year), amount (required, positive, max 999999.99, 2 decimal places), description (required, 1-200 chars), category (required, valid enum), receiptUrl (optional URL), notes (optional, max 500 chars)",
+        "updateExpenseSchema allows partial updates of the same fields",
+        "listExpensesQuerySchema validates page, limit, category filter, startDate, endDate",
+        "Schemas export inferred TypeScript types"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-004",
+      "title": "Create expense validation unit tests",
+      "description": "Write unit tests for expense validation schemas",
+      "acceptance_criteria": [
+        "tests/unit/validations/expense.test.ts exists",
+        "Tests cover valid expense data passing validation",
+        "Tests cover invalid amount rejection (negative, too many decimals, too large)",
+        "Tests cover invalid date rejection (future date, too old)",
+        "Tests cover invalid category rejection",
+        "Tests cover description length validation",
+        "npm run test passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-005",
+      "title": "Create POST /api/expenses endpoint",
+      "description": "Implement expense creation API",
+      "acceptance_criteria": [
+        "src/app/api/expenses/route.ts exists with POST handler",
+        "Returns 401 if not authenticated",
+        "Validates input with createExpenseSchema",
+        "Returns 400 with errors if validation fails",
+        "Creates expense in database with current user as owner",
+        "Returns 201 with created expense object"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-006",
+      "title": "Create GET /api/expenses endpoint",
+      "description": "Implement expense listing API with pagination",
+      "acceptance_criteria": [
+        "src/app/api/expenses/route.ts has GET handler",
+        "Returns 401 if not authenticated",
+        "Returns expenses for current user only",
+        "Supports pagination with page and limit query params",
+        "Supports category filter query param",
+        "Supports startDate and endDate filter query params",
+        "Orders by date descending (newest first)",
+        "Returns array of expenses with total count"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-007",
+      "title": "Create GET /api/expenses/[id] endpoint",
+      "description": "Implement single expense retrieval",
+      "acceptance_criteria": [
+        "src/app/api/expenses/[id]/route.ts exists with GET handler",
+        "Returns 401 if not authenticated",
+        "Returns 404 if expense not found",
+        "Returns 403 if expense belongs to different user",
+        "Returns 200 with expense object if found and owned by user"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-008",
+      "title": "Create PATCH /api/expenses/[id] endpoint",
+      "description": "Implement expense update API",
+      "acceptance_criteria": [
+        "src/app/api/expenses/[id]/route.ts has PATCH handler",
+        "Returns 401 if not authenticated",
+        "Returns 404 if expense not found",
+        "Returns 403 if expense belongs to different user",
+        "Validates input with updateExpenseSchema",
+        "Returns 400 with errors if validation fails",
+        "Updates expense and returns 200 with updated object"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-009",
+      "title": "Create DELETE /api/expenses/[id] endpoint",
+      "description": "Implement expense deletion API",
+      "acceptance_criteria": [
+        "src/app/api/expenses/[id]/route.ts has DELETE handler",
+        "Returns 401 if not authenticated",
+        "Returns 404 if expense not found",
+        "Returns 403 if expense belongs to different user",
+        "Deletes expense and returns 200 on success"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-010",
+      "title": "Create receipt upload API endpoint",
+      "description": "Implement file upload for receipts",
+      "acceptance_criteria": [
+        "src/app/api/upload/route.ts exists with POST handler",
+        "Returns 401 if not authenticated",
+        "Accepts multipart/form-data with 'file' field",
+        "Validates file type (JPEG, PNG, WebP, PDF only)",
+        "Validates file size (max 5MB)",
+        "Returns 400 if validation fails",
+        "Saves file to public/uploads/receipts/ with unique filename",
+        "Returns 200 with { url: '/uploads/receipts/filename' }"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-011",
+      "title": "Create category constants and utilities",
+      "description": "Create shared category data for UI components",
+      "acceptance_criteria": [
+        "src/lib/constants/categories.ts exists",
+        "Exports CATEGORIES array with { value, label, icon } for each category",
+        "Icon values reference lucide-react icon names",
+        "Exports getCategoryIcon helper function",
+        "Exports getCategoryLabel helper function"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-012",
+      "title": "Create CategoryIcon component",
+      "description": "Create reusable category icon component",
+      "acceptance_criteria": [
+        "src/components/expenses/category-icon.tsx exists",
+        "Accepts category prop (Category enum value)",
+        "Accepts optional size prop (sm, md, lg)",
+        "Renders correct lucide icon for each category",
+        "Applies consistent styling per DESIGN_SYSTEM.md"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-013",
+      "title": "Create CategoryPicker component",
+      "description": "Create category selection component for expense form",
+      "acceptance_criteria": [
+        "src/components/expenses/category-picker.tsx exists",
+        "Displays grid of category icons (responsive: 3 cols mobile, 5 cols desktop)",
+        "Each category shows icon and label",
+        "Selected category has visual highlight (primary color ring)",
+        "Accepts value and onChange props for controlled usage",
+        "Follows DESIGN_SYSTEM.md patterns"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-014",
+      "title": "Create AmountInput component",
+      "description": "Create styled amount input with currency prefix",
+      "acceptance_criteria": [
+        "src/components/expenses/amount-input.tsx exists",
+        "Shows $ prefix inside input",
+        "Large text styling for prominence (text-2xl or larger)",
+        "Accepts standard input props (value, onChange, etc.)",
+        "Formats display to 2 decimal places on blur",
+        "Only allows numeric input with single decimal point",
+        "Follows DESIGN_SYSTEM.md form patterns"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-015",
+      "title": "Create ReceiptUpload component",
+      "description": "Create receipt file upload component",
+      "acceptance_criteria": [
+        "src/components/expenses/receipt-upload.tsx exists",
+        "Shows upload area with icon and text",
+        "Supports click to select file",
+        "Supports drag and drop",
+        "Shows upload progress/loading state",
+        "Shows thumbnail preview after upload",
+        "Shows remove button to clear uploaded file",
+        "Accepts value (URL) and onChange props",
+        "Handles upload errors with toast"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-016",
+      "title": "Create ExpenseForm component",
+      "description": "Create the main expense entry form",
+      "acceptance_criteria": [
+        "src/components/expenses/expense-form.tsx exists",
+        "Uses react-hook-form with zodResolver",
+        "Includes AmountInput for amount field",
+        "Includes Input for description field",
+        "Includes CategoryPicker for category field",
+        "Includes date picker for date field (defaults to today)",
+        "Includes ReceiptUpload for optional receipt",
+        "Includes Textarea for optional notes (collapsible)",
+        "Shows validation errors inline",
+        "Shows loading state during submission",
+        "Accepts onSubmit and optional defaultValues props",
+        "Submit button uses responsive width pattern (w-full lg:w-auto)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-017",
+      "title": "Create ExpenseListItem component",
+      "description": "Create expense list item for displaying expenses",
+      "acceptance_criteria": [
+        "src/components/expenses/expense-list-item.tsx exists",
+        "Shows category icon on left",
+        "Shows description and date",
+        "Shows amount on right (formatted with $ and 2 decimals)",
+        "Shows category label as secondary text",
+        "Follows Transaction/Expense List Item pattern from DESIGN_SYSTEM.md",
+        "Accepts expense object and optional onClick prop"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-018",
+      "title": "Create AddExpenseSheet component",
+      "description": "Create bottom sheet wrapper for expense form",
+      "acceptance_criteria": [
+        "src/components/expenses/add-expense-sheet.tsx exists",
+        "Uses Sheet component from shadcn/ui",
+        "Opens from bottom on mobile (side='bottom')",
+        "Contains ExpenseForm",
+        "Shows 'Add Expense' title in header",
+        "Closes on successful submission",
+        "Accepts open, onOpenChange props for controlled usage",
+        "Accepts onSuccess callback"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-019",
+      "title": "Create useExpenses hook",
+      "description": "Create hook for fetching and managing expenses",
+      "acceptance_criteria": [
+        "src/hooks/useExpenses.ts exists",
+        "Fetches expenses from /api/expenses",
+        "Returns expenses array, isLoading, error states",
+        "Supports refetch function",
+        "Supports pagination parameters",
+        "Supports filter parameters (category, date range)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-020",
+      "title": "Create useCreateExpense hook",
+      "description": "Create hook for creating expenses",
+      "acceptance_criteria": [
+        "src/hooks/useCreateExpense.ts exists",
+        "Provides createExpense async function",
+        "Returns isLoading, error states",
+        "Shows success toast on completion",
+        "Shows error toast on failure",
+        "Accepts onSuccess callback"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-021",
+      "title": "Update home page with expense summary",
+      "description": "Replace placeholder stats with real expense data",
+      "acceptance_criteria": [
+        "src/app/(app)/page.tsx fetches user's expense totals",
+        "'Your Expenses' card shows sum of current user's expenses this month",
+        "'Team Total' card shows sum of all team expenses this month",
+        "Values update when expenses are added",
+        "Shows loading skeleton while fetching"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-022",
+      "title": "Add recent expenses list to home page",
+      "description": "Show recent expenses on the dashboard",
+      "acceptance_criteria": [
+        "Home page shows 'Recent Expenses' section below stats",
+        "Displays last 5 expenses using ExpenseListItem",
+        "Shows empty state if no expenses",
+        "Each item is clickable (for future edit functionality)",
+        "Section has 'View All' link (can be placeholder for now)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-023",
+      "title": "Add expense button to home page",
+      "description": "Add prominent button to create new expense",
+      "acceptance_criteria": [
+        "Home page has 'Add Expense' button in welcome card or quick actions area",
+        "Button opens AddExpenseSheet when clicked",
+        "After successful submission, expense list refreshes",
+        "Button follows DESIGN_SYSTEM.md patterns"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-024",
+      "title": "Create EditExpenseSheet component",
+      "description": "Create sheet for editing existing expenses",
+      "acceptance_criteria": [
+        "src/components/expenses/edit-expense-sheet.tsx exists",
+        "Uses Sheet component from shadcn/ui",
+        "Contains ExpenseForm with defaultValues from expense",
+        "Shows 'Edit Expense' title in header",
+        "Includes Delete button with confirmation",
+        "Accepts expense object, open, onOpenChange, onSuccess props"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-025",
+      "title": "Add edit/delete functionality to expense list",
+      "description": "Allow users to edit and delete expenses from list",
+      "acceptance_criteria": [
+        "Clicking expense item opens EditExpenseSheet",
+        "User can edit expense details and save",
+        "User can delete expense with confirmation",
+        "List refreshes after edit or delete",
+        "Success/error toasts shown appropriately"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-026",
+      "title": "E2E test: Create expense flow",
+      "description": "Write end-to-end test for expense creation",
+      "acceptance_criteria": [
+        "tests/e2e/expense-create.spec.ts exists",
+        "Test logs in as existing user",
+        "Test clicks Add Expense button",
+        "Test fills in amount, description, selects category",
+        "Test submits form",
+        "Test verifies expense appears in recent list",
+        "Test verifies expense total updates",
+        "npx playwright test expense-create passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "EXP-027",
+      "title": "E2E test: Edit and delete expense flow",
+      "description": "Write end-to-end test for expense editing and deletion",
+      "acceptance_criteria": [
+        "tests/e2e/expense-edit.spec.ts exists",
+        "Test creates an expense first",
+        "Test clicks on expense to open edit sheet",
+        "Test modifies description and saves",
+        "Test verifies updated description in list",
+        "Test opens expense again and deletes it",
+        "Test verifies expense removed from list",
+        "npx playwright test expense-edit passes"
+      ],
+      "passes": false
+    }
+  ]
+}

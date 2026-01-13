@@ -72,18 +72,19 @@ export default function DesignPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border px-4 py-3">
-        <div className="flex items-center justify-between max-w-2xl mx-auto">
-          <h1 className="text-lg font-semibold">Design System</h1>
-          <Button variant="ghost" size="icon" aria-label="Notifications">
-            <Bell className="h-5 w-5" />
-          </Button>
-        </div>
-      </header>
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border px-4 lg:px-6 py-3">
+          <div className="flex items-center justify-between">
+            <h1 className="text-lg font-semibold">Design System</h1>
+            <Button variant="ghost" size="icon" aria-label="Notifications">
+              <Bell className="h-5 w-5" />
+            </Button>
+          </div>
+        </header>
 
-      {/* Content */}
-      <div className="px-4 py-6 space-y-8 max-w-2xl mx-auto pb-24">
+        {/* Content */}
+        <div className="px-4 lg:px-6 py-6 space-y-8 pb-24">
         {/* Colour Palette */}
         <section>
           <h2 className="text-2xl font-semibold mb-4">Colour Palette</h2>
@@ -540,7 +541,7 @@ export default function DesignPage() {
               </Select>
             </div>
 
-            <Button className="w-full h-12">Add Expense</Button>
+            <Button className="w-full lg:w-auto h-12">Add Expense</Button>
           </div>
         </section>
 
@@ -614,7 +615,7 @@ export default function DesignPage() {
                       <Input className="pl-10 bg-card-elevated text-3xl font-bold h-16" placeholder="0.00" />
                     </div>
                   </div>
-                  <Button className="w-full h-12">Add Expense</Button>
+                  <Button className="w-full lg:w-auto h-12">Add Expense</Button>
                 </div>
               </SheetContent>
             </Sheet>
@@ -734,11 +735,12 @@ export default function DesignPage() {
             ))}
           </div>
         </section>
+        </div>
       </div>
 
-      {/* Bottom Navigation Example */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border px-4 py-2">
-        <div className="max-w-2xl mx-auto flex items-center justify-around">
+      {/* Bottom Navigation Example - Mobile only */}
+      <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border px-4 py-2 lg:hidden z-50">
+        <div className="max-w-6xl mx-auto flex items-center justify-around">
           <button className="flex flex-col items-center gap-1 py-2 px-4 text-primary">
             <Home className="h-5 w-5" />
             <span className="text-xs font-medium">Home</span>
