@@ -48,3 +48,8 @@ Story: EXP-010 Create receipt upload API endpoint
 Files changed: src/app/api/upload/route.ts, public/uploads/receipts/.gitkeep
 Notes: Implemented file upload with type/size validation and unique filename generation.
 ---
+---
+Story: EXP-011 Create category constants and utilities
+Files changed: src/lib/constants/categories.ts
+Notes: Created CATEGORIES array with all 9 categories and helper functions.
+---

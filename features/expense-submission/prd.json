@@ -150,7 +150,7 @@
         "Exports getCategoryIcon helper function",
         "Exports getCategoryLabel helper function"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-012",
