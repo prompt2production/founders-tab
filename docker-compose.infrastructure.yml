@@ -1,0 +1,34 @@
+# docker-compose.infrastructure.yml
+# Database Infrastructure Setup
+# Run once for initial setup, rarely needs updates
+# Usage: docker-compose -f docker-compose.infrastructure.yml up -d
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: ${APP_NAME:-myapp}-db
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${DB_USER:-appuser}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME:-appdb}
+    ports:
+      - "${DB_PORT:-5466}:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-appuser} -d ${DB_NAME:-appdb}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    name: ${APP_NAME:-myapp}-postgres-data
+
+networks:
+  app-network:
+    name: ${APP_NAME:-myapp}-network
+    driver: bridge

@@ -1,0 +1,483 @@
+{
+  "feature": "User Authentication",
+  "stories": [
+    {
+      "id": "AUTH-001",
+      "title": "Add User and Session models to Prisma schema",
+      "description": "Create the User and Session database models with all required fields",
+      "acceptance_criteria": [
+        "prisma/schema.prisma contains User model with id, email, name, passwordHash, avatarInitials, role, createdAt, updatedAt",
+        "prisma/schema.prisma contains Role enum with FOUNDER and MEMBER values",
+        "prisma/schema.prisma contains Session model with id, userId, token, expiresAt, createdAt",
+        "Session has relation to User with onDelete: Cascade",
+        "npx prisma generate runs without errors"
+      ],
+      "passes": true
+    },
+    {
+      "id": "AUTH-002",
+      "title": "Add Invitation and PasswordReset models to Prisma schema",
+      "description": "Create invitation and password reset database models",
+      "acceptance_criteria": [
+        "prisma/schema.prisma contains Invitation model with id, email, token, message, status, expiresAt, createdAt, acceptedAt, invitedById, acceptedById",
+        "prisma/schema.prisma contains InvitationStatus enum with PENDING, ACCEPTED, EXPIRED values",
+        "prisma/schema.prisma contains PasswordReset model with id, userId, token, expiresAt, usedAt, createdAt",
+        "Invitation has relations to User for invitedBy and acceptedBy",
+        "npx prisma generate runs without errors"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-003",
+      "title": "Run database migration for auth models",
+      "description": "Apply the schema changes to the database",
+      "acceptance_criteria": [
+        "npx prisma migrate dev --name add-auth-models completes successfully",
+        "prisma/migrations folder contains the new migration"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-004",
+      "title": "Create auth validation schemas",
+      "description": "Create Zod validation schemas for authentication",
+      "acceptance_criteria": [
+        "src/lib/validations/auth.ts exists",
+        "signupSchema validates name (2-100 chars), email, password (min 8, uppercase, lowercase, number), confirmPassword",
+        "loginSchema validates email and password as required strings",
+        "forgotPasswordSchema validates email",
+        "resetPasswordSchema validates token, password, confirmPassword",
+        "npm run test passes for auth validation tests"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-005",
+      "title": "Create auth validation unit tests",
+      "description": "Write unit tests for auth validation schemas",
+      "acceptance_criteria": [
+        "tests/unit/validations/auth.test.ts exists",
+        "Tests cover valid signup data passing validation",
+        "Tests cover invalid email rejection",
+        "Tests cover weak password rejection (missing uppercase, number, etc)",
+        "Tests cover password mismatch rejection",
+        "npm run test passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-006",
+      "title": "Create password hashing utility",
+      "description": "Create utility functions for hashing and verifying passwords",
+      "acceptance_criteria": [
+        "src/lib/auth/password.ts exists",
+        "hashPassword function uses bcrypt with cost factor 12",
+        "verifyPassword function compares password against hash",
+        "Both functions are async"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-007",
+      "title": "Create session management utility",
+      "description": "Create utility functions for session token generation and management",
+      "acceptance_criteria": [
+        "src/lib/auth/session.ts exists",
+        "generateSessionToken function creates cryptographically random 32-byte token",
+        "createSession function creates session in database with 7-day expiry",
+        "validateSession function checks token and expiry, returns user if valid",
+        "deleteSession function removes session from database"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-008",
+      "title": "Create auth cookie utilities",
+      "description": "Create utilities for setting and reading auth cookies",
+      "acceptance_criteria": [
+        "src/lib/auth/cookies.ts exists",
+        "setSessionCookie function sets HttpOnly, Secure, SameSite=Lax cookie",
+        "getSessionCookie function reads session token from cookies",
+        "clearSessionCookie function removes the session cookie",
+        "Cookie name is 'session_token'"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-009",
+      "title": "Create getCurrentUser helper",
+      "description": "Create server-side helper to get current authenticated user",
+      "acceptance_criteria": [
+        "src/lib/auth/getCurrentUser.ts exists",
+        "Function reads session cookie, validates session, returns user or null",
+        "Returns user object without passwordHash field",
+        "Handles expired sessions by returning null"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-010",
+      "title": "Create signup API route",
+      "description": "Implement POST /api/auth/signup endpoint",
+      "acceptance_criteria": [
+        "src/app/api/auth/signup/route.ts exists",
+        "Validates input with signupSchema",
+        "Returns 400 if email already exists",
+        "Hashes password before storing",
+        "First user gets FOUNDER role, subsequent users get MEMBER role",
+        "Creates session and sets cookie on success",
+        "Returns user data (without passwordHash) with 201 status"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-011",
+      "title": "Create login API route",
+      "description": "Implement POST /api/auth/login endpoint",
+      "acceptance_criteria": [
+        "src/app/api/auth/login/route.ts exists",
+        "Validates input with loginSchema",
+        "Returns 401 with generic message for invalid credentials",
+        "Verifies password hash on valid email",
+        "Creates session and sets cookie on success",
+        "Returns user data (without passwordHash) with 200 status"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-012",
+      "title": "Create logout API route",
+      "description": "Implement POST /api/auth/logout endpoint",
+      "acceptance_criteria": [
+        "src/app/api/auth/logout/route.ts exists",
+        "Deletes session from database",
+        "Clears session cookie",
+        "Returns 200 status on success",
+        "Handles case where no session exists gracefully"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-013",
+      "title": "Create me API route",
+      "description": "Implement GET /api/auth/me endpoint",
+      "acceptance_criteria": [
+        "src/app/api/auth/me/route.ts exists",
+        "Returns current user if authenticated",
+        "Returns 401 if not authenticated",
+        "User object excludes passwordHash"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-014",
+      "title": "Create profile update API route",
+      "description": "Implement PATCH /api/users/me endpoint",
+      "acceptance_criteria": [
+        "src/app/api/users/me/route.ts exists with GET and PATCH handlers",
+        "GET returns current user profile",
+        "PATCH validates input (name, avatarInitials optional)",
+        "PATCH updates user and returns updated data",
+        "Both return 401 if not authenticated"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-015",
+      "title": "Create change password API route",
+      "description": "Implement POST /api/users/me/change-password endpoint",
+      "acceptance_criteria": [
+        "src/app/api/users/me/change-password/route.ts exists",
+        "Validates currentPassword, newPassword, confirmPassword",
+        "Returns 401 if not authenticated",
+        "Returns 400 if current password is wrong",
+        "Updates password hash on success",
+        "Returns 200 on success"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-016",
+      "title": "Create team list API route",
+      "description": "Implement GET /api/team endpoint",
+      "acceptance_criteria": [
+        "src/app/api/team/route.ts exists",
+        "Returns 401 if not authenticated",
+        "Returns list of all users (team members)",
+        "Each user includes id, name, email, avatarInitials, role, createdAt",
+        "Excludes passwordHash from response"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-017",
+      "title": "Create invitation validation schemas",
+      "description": "Add Zod schemas for invitation operations",
+      "acceptance_criteria": [
+        "src/lib/validations/invitation.ts exists",
+        "createInvitationSchema validates email and optional message",
+        "acceptInvitationSchema validates token, name, password, confirmPassword"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-018",
+      "title": "Create send invitation API route",
+      "description": "Implement POST /api/invitations endpoint",
+      "acceptance_criteria": [
+        "src/app/api/invitations/route.ts exists with GET and POST handlers",
+        "GET returns list of invitations sent by current user",
+        "POST returns 401 if not authenticated",
+        "POST returns 403 if user is not a FOUNDER",
+        "POST returns 400 if email is already a member",
+        "POST returns 400 if invitation already pending for email",
+        "POST creates invitation with 7-day expiry",
+        "POST returns invitation data with 201 status"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-019",
+      "title": "Create cancel invitation API route",
+      "description": "Implement DELETE /api/invitations/[id] endpoint",
+      "acceptance_criteria": [
+        "src/app/api/invitations/[id]/route.ts exists",
+        "Returns 401 if not authenticated",
+        "Returns 403 if user is not a FOUNDER",
+        "Returns 404 if invitation not found",
+        "Deletes invitation and returns 200 on success"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-020",
+      "title": "Create accept invitation API routes",
+      "description": "Implement invitation acceptance endpoints",
+      "acceptance_criteria": [
+        "src/app/api/invitations/accept/[token]/route.ts exists with GET and POST",
+        "GET validates token and returns invitation details (email, inviter name) if valid",
+        "GET returns 400 if token invalid or expired",
+        "POST creates user account with MEMBER role",
+        "POST marks invitation as ACCEPTED",
+        "POST creates session and sets cookie",
+        "POST returns user data with 201 status"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-021",
+      "title": "Create AuthProvider context",
+      "description": "Create React context for authentication state",
+      "acceptance_criteria": [
+        "src/components/auth/auth-provider.tsx exists",
+        "Provides user state, isLoading, isAuthenticated",
+        "Provides login, logout, refreshUser functions",
+        "Fetches user on mount from /api/auth/me",
+        "Handles loading state during initial fetch"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-022",
+      "title": "Create useAuth hook",
+      "description": "Create hook for accessing auth context",
+      "acceptance_criteria": [
+        "src/hooks/useAuth.ts exists",
+        "Returns user, isLoading, isAuthenticated, login, logout, refreshUser",
+        "Throws error if used outside AuthProvider"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-023",
+      "title": "Create AuthGuard component",
+      "description": "Create component to protect authenticated routes",
+      "acceptance_criteria": [
+        "src/components/auth/auth-guard.tsx exists",
+        "Shows loading spinner while checking auth",
+        "Redirects to /login if not authenticated",
+        "Renders children if authenticated",
+        "Uses useAuth hook"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-024",
+      "title": "Create UserAvatar component",
+      "description": "Create avatar component with gradient backgrounds",
+      "acceptance_criteria": [
+        "src/components/auth/user-avatar.tsx exists",
+        "Accepts name or initials prop",
+        "Generates consistent gradient based on name/initials",
+        "Supports size variants: sm (h-8), md (h-10), lg (h-12), xl (h-16)",
+        "Uses design system gradient colours"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-025",
+      "title": "Create LoginForm component",
+      "description": "Create the login form with validation",
+      "acceptance_criteria": [
+        "src/components/auth/login-form.tsx exists",
+        "Uses react-hook-form with zodResolver",
+        "Email and password fields per DESIGN_SYSTEM.md",
+        "Shows validation errors",
+        "Shows loading state during submission",
+        "Calls login function from useAuth on submit",
+        "Shows error toast on failure"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-026",
+      "title": "Create SignupForm component",
+      "description": "Create the signup form with validation",
+      "acceptance_criteria": [
+        "src/components/auth/signup-form.tsx exists",
+        "Uses react-hook-form with zodResolver",
+        "Name, email, password, confirm password fields",
+        "Password strength indicator",
+        "Shows validation errors",
+        "Shows loading state during submission",
+        "Shows success toast and redirects on success"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-027",
+      "title": "Create login page",
+      "description": "Create the /login page",
+      "acceptance_criteria": [
+        "src/app/(auth)/login/page.tsx exists",
+        "Mobile-first layout per DESIGN_SYSTEM.md",
+        "Shows app name/logo at top",
+        "Renders LoginForm component",
+        "Link to /signup",
+        "Link to /forgot-password",
+        "Redirects to / if already authenticated"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-028",
+      "title": "Create signup page",
+      "description": "Create the /signup page",
+      "acceptance_criteria": [
+        "src/app/(auth)/signup/page.tsx exists",
+        "Mobile-first layout per DESIGN_SYSTEM.md",
+        "Shows app name/logo at top",
+        "Renders SignupForm component",
+        "Link to /login",
+        "Redirects to / if already authenticated"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-029",
+      "title": "Create auth layout",
+      "description": "Create shared layout for auth pages",
+      "acceptance_criteria": [
+        "src/app/(auth)/layout.tsx exists",
+        "Centers content vertically and horizontally",
+        "Max width constraint for larger screens",
+        "Dark background with subtle gradient"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-030",
+      "title": "Create profile page",
+      "description": "Create the /profile page",
+      "acceptance_criteria": [
+        "src/app/(app)/profile/page.tsx exists",
+        "Protected by AuthGuard",
+        "Shows large UserAvatar",
+        "Editable name field with save button",
+        "Shows email (read-only) and role badge",
+        "Change password button opens sheet",
+        "Logout button with confirmation"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-031",
+      "title": "Create team page",
+      "description": "Create the /team page",
+      "acceptance_criteria": [
+        "src/app/(app)/team/page.tsx exists",
+        "Protected by AuthGuard",
+        "Lists all team members with UserAvatar, name, email, role",
+        "Shows pending invitations section (for founders)",
+        "Invite member button (founders only) opens sheet",
+        "Cancel invitation functionality"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-032",
+      "title": "Create app layout with AuthProvider",
+      "description": "Create authenticated app layout",
+      "acceptance_criteria": [
+        "src/app/(app)/layout.tsx exists",
+        "Wraps children in AuthProvider",
+        "Wraps children in AuthGuard",
+        "Includes bottom navigation"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-033",
+      "title": "Create invitation acceptance page",
+      "description": "Create page for accepting invitations",
+      "acceptance_criteria": [
+        "src/app/(auth)/invite/[token]/page.tsx exists",
+        "Validates token on load, shows error if invalid",
+        "Shows inviter info and pre-filled email",
+        "Signup form with name and password only",
+        "Redirects to / on successful signup"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-034",
+      "title": "Update home page to use auth",
+      "description": "Update the main page to require authentication",
+      "acceptance_criteria": [
+        "src/app/(app)/page.tsx exists (moved from src/app/page.tsx)",
+        "Shows welcome message with user's name",
+        "Basic dashboard layout ready for expenses feature",
+        "Uses AuthGuard protection via layout"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-035",
+      "title": "E2E test: Signup flow",
+      "description": "Write end-to-end test for user signup",
+      "acceptance_criteria": [
+        "tests/e2e/auth-signup.spec.ts exists",
+        "Test visits /signup",
+        "Test fills in valid form data",
+        "Test submits and verifies redirect to dashboard",
+        "Test verifies user is logged in",
+        "npx playwright test auth-signup passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "AUTH-036",
+      "title": "E2E test: Login and logout flow",
+      "description": "Write end-to-end test for login and logout",
+      "acceptance_criteria": [
+        "tests/e2e/auth-login.spec.ts exists",
+        "Test creates user via API or signup",
+        "Test visits /login and logs in",
+        "Test verifies redirect to dashboard",
+        "Test logs out and verifies redirect to /login",
+        "npx playwright test auth-login passes"
+      ],
+      "passes": false
+    }
+  ]
+}

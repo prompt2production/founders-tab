@@ -1,0 +1,5 @@
+---
+Story: AUTH-001 Add User and Session models to Prisma schema
+Files changed: prisma/schema.prisma
+Notes: Added User model with all required fields, Role enum (FOUNDER, MEMBER), and Session model with cascade delete relation to User.
+---
