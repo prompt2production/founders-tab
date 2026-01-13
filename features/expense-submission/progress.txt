@@ -53,3 +53,8 @@ Story: EXP-011 Create category constants and utilities
 Files changed: src/lib/constants/categories.ts
 Notes: Created CATEGORIES array with all 9 categories and helper functions.
 ---
+---
+Story: EXP-012 Create CategoryIcon component
+Files changed: src/components/expenses/category-icon.tsx
+Notes: Created component with category-to-icon mapping and sm/md/lg sizes.
+---
