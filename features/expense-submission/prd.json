@@ -108,7 +108,7 @@
         "Returns 400 with errors if validation fails",
         "Updates expense and returns 200 with updated object"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-009",

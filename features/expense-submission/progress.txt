@@ -33,3 +33,8 @@ Story: EXP-007 Create GET /api/expenses/[id] endpoint
 Files changed: src/app/api/expenses/[id]/route.ts
 Notes: Implemented GET handler with auth, 404, and 403 checks.
 ---
+---
+Story: EXP-008 Create PATCH /api/expenses/[id] endpoint
+Files changed: src/app/api/expenses/[id]/route.ts
+Notes: Added PATCH handler with auth, ownership checks, and validation.
+---
