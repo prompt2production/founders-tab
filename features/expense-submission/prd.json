@@ -80,7 +80,7 @@
         "Orders by date descending (newest first)",
         "Returns array of expenses with total count"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-007",

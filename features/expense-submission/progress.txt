@@ -23,3 +23,8 @@ Story: EXP-005 Create POST /api/expenses endpoint
 Files changed: src/app/api/expenses/route.ts
 Notes: Implemented POST handler with auth check, validation, and expense creation.
 ---
+---
+Story: EXP-006 Create GET /api/expenses endpoint
+Files changed: src/app/api/expenses/route.ts
+Notes: Added GET handler with pagination, category filter, and date range filters. Returns expenses array with total count.
+---
