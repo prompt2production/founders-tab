@@ -3,3 +3,8 @@ Story: EXP-001 Add Category enum and Expense model to Prisma schema
 Files changed: prisma/schema.prisma
 Notes: Added Category enum with 9 values and Expense model with all required fields. Prisma validate passes. Generate has file lock issue but schema is valid.
 ---
+---
+Story: EXP-002 Run database migration for Expense model
+Files changed: prisma/migrations/20260113225024_add_expense_model/migration.sql
+Notes: Migration applied successfully to PostgreSQL database.
+---

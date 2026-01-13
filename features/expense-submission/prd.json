@@ -22,7 +22,7 @@
         "npx prisma migrate dev --name add-expense-model completes successfully",
         "prisma/migrations folder contains the new migration"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-003",
