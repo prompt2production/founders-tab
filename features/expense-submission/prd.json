@@ -93,7 +93,7 @@
         "Returns 403 if expense belongs to different user",
         "Returns 200 with expense object if found and owned by user"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-008",

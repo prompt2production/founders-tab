@@ -28,3 +28,8 @@ Story: EXP-006 Create GET /api/expenses endpoint
 Files changed: src/app/api/expenses/route.ts
 Notes: Added GET handler with pagination, category filter, and date range filters. Returns expenses array with total count.
 ---
+---
+Story: EXP-007 Create GET /api/expenses/[id] endpoint
+Files changed: src/app/api/expenses/[id]/route.ts
+Notes: Implemented GET handler with auth, 404, and 403 checks.
+---
