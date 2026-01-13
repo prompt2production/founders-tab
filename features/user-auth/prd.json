@@ -247,7 +247,7 @@
         "Returns 404 if invitation not found",
         "Deletes invitation and returns 200 on success"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-020",
