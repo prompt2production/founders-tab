@@ -18,3 +18,8 @@ Story: EXP-004 Create expense validation unit tests
 Files changed: tests/unit/validations/expense.test.ts
 Notes: Created 31 tests covering all validation scenarios. All 50 tests pass.
 ---
+---
+Story: EXP-005 Create POST /api/expenses endpoint
+Files changed: src/app/api/expenses/route.ts
+Notes: Implemented POST handler with auth check, validation, and expense creation.
+---

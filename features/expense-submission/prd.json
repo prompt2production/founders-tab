@@ -64,7 +64,7 @@
         "Creates expense in database with current user as owner",
         "Returns 201 with created expense object"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-006",
