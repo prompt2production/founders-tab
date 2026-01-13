@@ -357,7 +357,7 @@
         "Link to /forgot-password",
         "Redirects to / if already authenticated"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-028",

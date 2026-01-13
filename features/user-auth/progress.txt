@@ -128,3 +128,8 @@ Story: AUTH-026 Create SignupForm component
 Files changed: src/components/auth/signup-form.tsx
 Notes: Uses react-hook-form with zodResolver, name/email/password/confirmPassword fields, password strength indicator with check/x icons, loading state, success toast and redirect.
 ---
+---
+Story: AUTH-027 Create login page
+Files changed: src/app/(auth)/login/page.tsx
+Notes: Mobile-first layout, gradient app name at top, LoginForm, links to /signup and /forgot-password, redirects to / if authenticated.
+---
