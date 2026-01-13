@@ -424,7 +424,7 @@
         "Wraps children in AuthGuard",
         "Includes bottom navigation"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-033",

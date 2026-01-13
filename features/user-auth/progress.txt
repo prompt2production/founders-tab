@@ -153,3 +153,8 @@ Story: AUTH-031 Create team page
 Files changed: src/app/(app)/team/page.tsx
 Notes: Lists members with UserAvatar/name/email/role badge. Founders see pending invitations section and invite button opening sheet. Cancel invitation via DELETE.
 ---
+---
+Story: AUTH-032 Create app layout with AuthProvider
+Files changed: src/app/(app)/layout.tsx
+Notes: Wraps children in AuthProvider and AuthGuard. Includes bottom navigation with Home/Team/Profile links, active state highlighting, hidden on md+.
+---
