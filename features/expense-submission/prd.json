@@ -353,7 +353,7 @@
         "List refreshes after edit or delete",
         "Success/error toasts shown appropriately"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-026",

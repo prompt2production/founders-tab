@@ -118,3 +118,8 @@ Story: EXP-024 Create EditExpenseSheet component
 Files changed: src/components/expenses/edit-expense-sheet.tsx
 Notes: Created sheet with ExpenseForm, defaultValues from expense, Delete button with AlertDialog confirmation, toast notifications.
 ---
+---
+Story: EXP-025 Add edit/delete functionality to expense list
+Files changed: src/app/(app)/page.tsx
+Notes: Integrated EditExpenseSheet, expense item onClick opens edit sheet, list and summary refresh after edit/delete.
+---

@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ExpenseListItem } from '@/components/expenses/expense-list-item'
 import { AddExpenseSheet } from '@/components/expenses/add-expense-sheet'
+import { EditExpenseSheet } from '@/components/expenses/edit-expense-sheet'
 import { DollarSign, TrendingUp, Receipt, Plus } from 'lucide-react'
 
 interface ExpenseSummary {
@@ -17,11 +18,22 @@ interface ExpenseSummary {
   teamTotal: number
 }
 
+interface Expense {
+  id: string
+  date: string
+  amount: string
+  description: string
+  category: string
+  receiptUrl: string | null
+  notes: string | null
+}
+
 export default function HomePage() {
   const { user } = useAuth()
   const [summary, setSummary] = useState<ExpenseSummary | null>(null)
   const [isSummaryLoading, setIsSummaryLoading] = useState(true)
   const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false)
+  const [editingExpense, setEditingExpense] = useState<Expense | null>(null)
   const { expenses, isLoading: isExpensesLoading, refetch: refetchExpenses } = useExpenses({ limit: 5 })
 
   const fetchSummary = useCallback(async () => {
@@ -176,9 +188,7 @@ export default function HomePage() {
                 <ExpenseListItem
                   key={expense.id}
                   expense={expense}
-                  onClick={() => {
-                    // TODO: Open edit sheet
-                  }}
+                  onClick={() => setEditingExpense(expense as Expense)}
                 />
               ))}
             </div>
@@ -192,6 +202,18 @@ export default function HomePage() {
         onOpenChange={setIsAddExpenseOpen}
         onSuccess={handleExpenseSuccess}
       />
+
+      {/* Edit Expense Sheet */}
+      {editingExpense && (
+        <EditExpenseSheet
+          expense={editingExpense}
+          open={!!editingExpense}
+          onOpenChange={(open) => {
+            if (!open) setEditingExpense(null)
+          }}
+          onSuccess={handleExpenseSuccess}
+        />
+      )}
     </div>
   )
 }
