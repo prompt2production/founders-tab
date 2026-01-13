@@ -1,5 +1,6 @@
 'use client'
 
+import { toast } from 'sonner'
 import {
   Sheet,
   SheetContent,
@@ -30,8 +31,14 @@ export function AddExpenseSheet({ open, onOpenChange, onSuccess }: AddExpenseShe
 
     if (!response.ok) {
       const error = await response.json()
-      throw new Error(error.error || 'Failed to create expense')
+      const message = typeof error.error === 'string' ? error.error : 'Failed to create expense'
+      toast.error('Failed to add expense', { description: message })
+      throw new Error(message)
     }
+
+    toast.success('Expense added', {
+      description: `$${data.amount.toFixed(2)} logged to your account`,
+    })
 
     onOpenChange(false)
     onSuccess?.()
