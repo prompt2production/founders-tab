@@ -369,7 +369,7 @@
         "Test verifies expense total updates",
         "npx playwright test expense-create passes"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "EXP-027",
@@ -385,7 +385,7 @@
         "Test verifies expense removed from list",
         "npx playwright test expense-edit passes"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }

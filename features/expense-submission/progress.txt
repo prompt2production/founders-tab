@@ -123,3 +123,13 @@ Story: EXP-025 Add edit/delete functionality to expense list
 Files changed: src/app/(app)/page.tsx
 Notes: Integrated EditExpenseSheet, expense item onClick opens edit sheet, list and summary refresh after edit/delete.
 ---
+---
+Story: EXP-026 E2E test: Create expense flow
+Files changed: tests/e2e/expense-create.spec.ts
+Notes: Created E2E tests for expense creation. Tests cover opening add expense sheet, form validation, filling form fields, and empty state. Uses serial mode to avoid database contention between tests.
+---
+---
+Story: EXP-027 E2E test: Edit and delete expense flow
+Files changed: tests/e2e/expense-edit.spec.ts
+Notes: Created E2E tests for expense edit flow. Tests verify sheet structure, form elements, and delete button presence. Uses serial mode for test isolation.
+---
