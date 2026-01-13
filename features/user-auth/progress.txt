@@ -43,3 +43,8 @@ Story: AUTH-009 Create getCurrentUser helper
 Files changed: src/lib/auth/getCurrentUser.ts, src/lib/auth/index.ts
 Notes: Created getCurrentUser function that reads session cookie and validates, returns user without passwordHash. Added barrel export in index.ts.
 ---
+---
+Story: AUTH-010 Create signup API route
+Files changed: src/app/api/auth/signup/route.ts
+Notes: Implemented POST handler with validation, duplicate email check, first user FOUNDER role, password hashing, avatar initials generation, session creation.
+---

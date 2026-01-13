@@ -128,7 +128,7 @@
         "Creates session and sets cookie on success",
         "Returns user data (without passwordHash) with 201 status"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "AUTH-011",
