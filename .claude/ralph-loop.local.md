@@ -1,25 +1,27 @@
 ---
 active: true
 iteration: 1
-max_iterations: 25
+max_iterations: 10
 completion_promise: "COMPLETE"
-started_at: "2026-01-14T09:25:43Z"
+started_at: "2026-01-14T09:50:09Z"
 ---
 
 You are working on this project.
 
   BEFORE EACH ITERATION:
   1. Read CLAUDE.md for project context
-  2. Read features/db-console/prd.json and find the first story with passes: false
+  2. Read DESIGN_SYSTEM.md for UI patterns
+  3. Read features/dev-quick-login/prd.json and find the first story with passes: false
 
   YOUR TASK:
   1. Implement the story following all acceptance criteria
-  2. This is a console application - no unit tests or e2e tests required
-  3. Verify the code compiles and runs
+  2. Run tests to verify:
+     - npm run test (for unit tests)
+  3. Fix any failures before proceeding
 
   WHEN STORY COMPLETE:
-  1. Update features/db-console/prd.json - set passes: true
-  2. Append to features/db-console/progress.txt with format:
+  1. Update features/dev-quick-login/prd.json - set passes: true
+  2. Append to features/dev-quick-login/progress.txt with format:
      ---
      Story: [ID] [Title]
      Files changed: [list]

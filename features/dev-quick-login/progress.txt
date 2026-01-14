@@ -1,0 +1,5 @@
+---
+Story: DQL-001 Create DevQuickLogin component
+Files changed: src/components/auth/dev-quick-login.tsx
+Notes: Created component with Select dropdown for 3 users (Chris, Candice, Adrian). Returns null in non-development. Uses useAuth for login, shows loading spinner, and displays toast on error.
+---

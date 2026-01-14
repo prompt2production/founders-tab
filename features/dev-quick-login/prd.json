@@ -15,7 +15,7 @@
         "Shows toast error if login fails",
         "Calls onSuccess callback after successful login"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "DQL-002",
