@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
+import { ExpenseStatus } from '@prisma/client'
 
 export async function GET() {
   try {
@@ -10,13 +11,16 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Get all users with their expense totals
+    // Get all users with their APPROVED expense totals only
     const usersWithTotals = await prisma.user.findMany({
       select: {
         id: true,
         name: true,
         email: true,
         expenses: {
+          where: {
+            status: ExpenseStatus.APPROVED,
+          },
           select: {
             amount: true,
           },
@@ -24,7 +28,7 @@ export async function GET() {
       },
     })
 
-    // Calculate totals for each user
+    // Calculate totals for each user (only approved expenses)
     const balances = usersWithTotals.map((u) => {
       const total = u.expenses.reduce((sum, expense) => {
         return sum + (expense.amount?.toNumber() || 0)

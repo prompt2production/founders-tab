@@ -101,7 +101,7 @@
         "Percentages calculated from approved totals only",
         "expenseCount only counts APPROVED expenses"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "TXA-009",

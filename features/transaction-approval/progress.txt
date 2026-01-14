@@ -39,3 +39,9 @@ Story: TXA-007 Update GET /api/expenses to include approval info
 Files changed: src/app/api/expenses/route.ts
 Notes: Added approvals array with user info to each expense. Added approvalsNeeded, isFullyApproved, and canCurrentUserApprove computed fields.
 ---
+
+---
+Story: TXA-008 Update GET /api/balances to only count approved expenses
+Files changed: src/app/api/balances/route.ts
+Notes: Updated Prisma query to filter expenses by status=APPROVED. Only approved expenses are now counted in teamTotal, user totals, and expenseCount.
+---
