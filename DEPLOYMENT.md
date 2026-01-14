@@ -13,6 +13,7 @@
 # 1. Create directories
 ssh your-server
 mkdir -p /opt/docker/founders-tab/uploads/receipts
+chmod 644 /opt/docker/founders-tab/uploads/receipts/*
 cd /opt/docker/founders-tab
 
 # 2. Clone repository

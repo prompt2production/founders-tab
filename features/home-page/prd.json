@@ -13,7 +13,7 @@
         "Page displays a brief supporting text about target audience",
         "Page is styled according to DESIGN_SYSTEM.md (dark mode, proper spacing, typography)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HOME-002",
