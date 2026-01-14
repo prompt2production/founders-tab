@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { createExpenseSchema, listExpensesQuerySchema } from '@/lib/validations/expense'
 import { z } from 'zod'
-import { Prisma, Category } from '@prisma/client'
+import { Prisma, Category, ExpenseStatus } from '@prisma/client'
 
 export async function GET(request: NextRequest) {
   try {
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const validated = createExpenseSchema.parse(body)
 
-    // Create expense in database
+    // Create expense in database with PENDING_APPROVAL status
     const expense = await prisma.expense.create({
       data: {
         userId: user.id,
@@ -101,6 +101,7 @@ export async function POST(request: NextRequest) {
         amount: validated.amount,
         description: validated.description,
         category: validated.category as Category,
+        status: ExpenseStatus.PENDING_APPROVAL,
         receiptUrl: validated.receiptUrl || null,
         notes: validated.notes || null,
       },
