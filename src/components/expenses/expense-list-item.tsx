@@ -5,6 +5,11 @@ import { CategoryIcon } from './category-icon'
 import { getCategoryLabel } from '@/lib/constants/categories'
 import { cn } from '@/lib/utils'
 
+interface ExpenseUser {
+  id: string
+  name: string
+}
+
 interface Expense {
   id: string
   date: Date | string
@@ -13,18 +18,21 @@ interface Expense {
   category: string
   receiptUrl?: string | null
   notes?: string | null
+  user?: ExpenseUser
 }
 
 interface ExpenseListItemProps {
   expense: Expense
   onClick?: () => void
+  showUser?: boolean
 }
 
-export function ExpenseListItem({ expense, onClick }: ExpenseListItemProps) {
+export function ExpenseListItem({ expense, onClick, showUser = false }: ExpenseListItemProps) {
   const date = expense.date instanceof Date ? expense.date : new Date(expense.date)
   const amount = typeof expense.amount === 'string' ? parseFloat(expense.amount) : expense.amount
   const formattedAmount = `$${amount.toFixed(2)}`
   const categoryLabel = getCategoryLabel(expense.category)
+  const userName = expense.user?.name
 
   return (
     <div
@@ -45,7 +53,12 @@ export function ExpenseListItem({ expense, onClick }: ExpenseListItemProps) {
       {/* Details */}
       <div className="flex-1 min-w-0">
         <p className="font-medium truncate">{expense.description}</p>
-        <p className="text-xs text-muted-foreground">{format(date, 'MMM d, yyyy')}</p>
+        <p className="text-xs text-muted-foreground">
+          {format(date, 'MMM d, yyyy')}
+          {showUser && userName && (
+            <span className="text-muted-foreground"> · {userName}</span>
+          )}
+        </p>
       </div>
 
       {/* Amount */}

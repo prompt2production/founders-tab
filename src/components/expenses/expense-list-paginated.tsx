@@ -116,6 +116,7 @@ export function ExpenseListPaginated({
           <ExpenseListItem
             key={expense.id}
             expense={expense}
+            showUser
             onClick={onExpenseClick ? () => onExpenseClick(expense) : undefined}
           />
         ))}

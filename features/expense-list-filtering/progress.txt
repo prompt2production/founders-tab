@@ -43,3 +43,8 @@ Story: ELF-009 Create ExpenseListPaginated component
 Files changed: src/components/expenses/expense-list-paginated.tsx, src/hooks/useExpenses.ts
 Notes: Created paginated expense list with filters support. Updated useExpenses hook to support userId filter and return totalPages/page. Shows loading skeletons, empty states for no expenses and no filter matches, pagination controls, and total amount.
 ---
+---
+Story: ELF-010 Update ExpenseListItem to show submitter name
+Files changed: src/components/expenses/expense-list-item.tsx, src/components/expenses/expense-list-paginated.tsx
+Notes: Added optional showUser prop to ExpenseListItem. When true, displays user name alongside date with dot separator. Updated ExpenseListPaginated to use showUser.
+---

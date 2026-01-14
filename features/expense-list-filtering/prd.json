@@ -140,7 +140,7 @@
         "User name styled as secondary text per DESIGN_SYSTEM.md",
         "Existing usage without showUser continues to work"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ELF-011",
