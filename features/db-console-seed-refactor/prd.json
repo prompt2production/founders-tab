@@ -26,7 +26,7 @@
         "Command displays summary: X users created, Y users skipped",
         "Command is blocked on production environment with appropriate message"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "SEED-003",
