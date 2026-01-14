@@ -76,6 +76,16 @@ export async function GET(request: NextRequest) {
               },
             },
           },
+          withdrawalApprovals: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
         },
       }),
       prisma.user.count({ where: { role: Role.FOUNDER } }),
@@ -91,13 +101,26 @@ export async function GET(request: NextRequest) {
         !isCreator &&
         !hasUserApproved &&
         user.role === Role.FOUNDER &&
-        !isFullyApproved
+        expense.status === ExpenseStatus.PENDING_APPROVAL
+
+      // Withdrawal approval info
+      const withdrawalApprovalsNeeded = foundersCount - 1 // All founders except owner
+      const hasUserApprovedWithdrawal = expense.withdrawalApprovals.some(
+        (a) => a.user.id === user.id
+      )
+      const canCurrentUserApproveWithdrawal =
+        !isCreator &&
+        !hasUserApprovedWithdrawal &&
+        user.role === Role.FOUNDER &&
+        expense.status === ExpenseStatus.WITHDRAWAL_REQUESTED
 
       return {
         ...expense,
         approvalsNeeded: Math.max(0, approvalsNeeded),
         isFullyApproved,
         canCurrentUserApprove,
+        withdrawalApprovalsNeeded: Math.max(0, withdrawalApprovalsNeeded),
+        canCurrentUserApproveWithdrawal,
       }
     })
 

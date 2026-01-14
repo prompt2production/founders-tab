@@ -107,7 +107,7 @@
         "Each expense includes canCurrentUserApproveWithdrawal boolean",
         "Status filter accepts new withdrawal status values"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "WDR-009",
