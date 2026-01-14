@@ -48,3 +48,8 @@ Story: ELF-010 Update ExpenseListItem to show submitter name
 Files changed: src/components/expenses/expense-list-item.tsx, src/components/expenses/expense-list-paginated.tsx
 Notes: Added optional showUser prop to ExpenseListItem. When true, displays user name alongside date with dot separator. Updated ExpenseListPaginated to use showUser.
 ---
+---
+Story: ELF-011 Create expenses page route
+Files changed: src/app/(app)/expenses/page.tsx
+Notes: Created expenses page with ExpenseFilters and ExpenseListPaginated. Connected via useExpenseFilters hook. Includes Add Expense button and Edit/Delete via sheets. Responsive layout with centered container.
+---

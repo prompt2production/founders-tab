@@ -155,7 +155,7 @@
         "Page is responsive (works on mobile and desktop)",
         "Shows Add Expense button that opens AddExpenseSheet"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ELF-012",
