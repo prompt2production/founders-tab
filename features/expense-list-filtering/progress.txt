@@ -68,3 +68,18 @@ Story: ELF-014 Add filter summary display
 Files changed: src/components/expenses/expense-list-paginated.tsx
 Notes: Enhanced summary to show active filters as badges (category name, date range). Shows "Showing X of Y expenses" count and "Total: $X,XXX.XX". Updates when filters change.
 ---
+---
+Story: ELF-015 E2E test: Navigate to expenses page
+Files changed: tests/e2e/expense-list.spec.ts
+Notes: Created E2E tests for expenses page. Tests navigation via link, filter controls visibility, Add Expense button. All 7 tests pass.
+---
+---
+Story: ELF-016 E2E test: Filter expenses by category
+Files changed: tests/e2e/expense-list.spec.ts
+Notes: Added tests for category filter - select category, verify URL updates, clear filter via Clear All button.
+---
+---
+Story: ELF-017 E2E test: Filter expenses by date range
+Files changed: tests/e2e/expense-list.spec.ts
+Notes: Added test for date range preset - select "This Month", verify URL updates with startDate/endDate params.
+---

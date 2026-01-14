@@ -204,7 +204,7 @@
         "Test verifies filter controls are visible",
         "npx playwright test expense-list passes"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ELF-016",
@@ -217,7 +217,7 @@
         "Test clears filter and verifies full list returns",
         "npx playwright test expense-list passes"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ELF-017",
@@ -230,7 +230,7 @@
         "Test uses custom date range picker",
         "npx playwright test expense-list passes"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }
