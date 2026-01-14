@@ -87,3 +87,9 @@ Story: WDR-015 Create WithdrawalStatusBadge component
 Files changed: src/components/expenses/withdrawal-status-badge.tsx
 Notes: Created badge with warning colors for requested, info colors for ready for receipt, success colors for received. Shows approval progress.
 ---
+
+---
+Story: WDR-016 Create RequestWithdrawalButton component
+Files changed: src/components/expenses/request-withdrawal-button.tsx
+Notes: Created button with AlertDialog confirmation. Hidden when not owner or not APPROVED status.
+---

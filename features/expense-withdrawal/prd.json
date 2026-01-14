@@ -210,7 +210,7 @@
         "Shows loading state during request",
         "Shows confirmation dialog before request"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "WDR-017",
