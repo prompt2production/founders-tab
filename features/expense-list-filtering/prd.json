@@ -178,7 +178,7 @@
         "Link works correctly",
         "Uses Next.js Link component for client-side navigation"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ELF-014",

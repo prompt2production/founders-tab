@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
 import { useExpenses } from '@/hooks/useExpenses'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -149,8 +150,8 @@ export default function HomePage() {
               <Receipt className="h-5 w-5 text-primary" />
               Recent Expenses
             </CardTitle>
-            <Button variant="ghost" size="sm" className="text-muted-foreground">
-              View All
+            <Button variant="ghost" size="sm" className="text-muted-foreground" asChild>
+              <Link href="/expenses">View All</Link>
             </Button>
           </div>
         </CardHeader>

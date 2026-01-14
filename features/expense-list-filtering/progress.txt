@@ -58,3 +58,8 @@ Story: ELF-012 Add Expenses link to navigation
 Files changed: src/app/(app)/layout.tsx
 Notes: Added Expenses link to navItems array with Receipt icon. Shows in both desktop header and mobile bottom nav with active state styling.
 ---
+---
+Story: ELF-013 Update View All link on home page
+Files changed: src/app/(app)/page.tsx
+Notes: Updated View All button to use Next.js Link component with href="/expenses" for client-side navigation.
+---
