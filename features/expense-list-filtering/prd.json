@@ -1,0 +1,236 @@
+{
+  "feature": "Expense List & Filtering",
+  "stories": [
+    {
+      "id": "ELF-001",
+      "title": "Add userId filter to GET /api/expenses",
+      "description": "Update expenses API to support filtering by user ID for team-wide expense viewing",
+      "acceptance_criteria": [
+        "GET /api/expenses accepts optional userId query parameter",
+        "When userId provided, returns expenses for that user only",
+        "When userId not provided, returns expenses for all users (team view)",
+        "Existing category, startDate, endDate filters continue to work",
+        "Returns user info (id, name) with each expense"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ELF-002",
+      "title": "Create GET /api/users endpoint",
+      "description": "API endpoint to get list of team members for the person filter dropdown",
+      "acceptance_criteria": [
+        "src/app/api/users/route.ts exists with GET handler",
+        "Returns 401 if not authenticated",
+        "Returns array of users with id, name, email fields",
+        "Orders users alphabetically by name",
+        "Does not expose sensitive user data (password hash, etc.)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ELF-003",
+      "title": "Create unit tests for users API",
+      "description": "Write unit tests for the users endpoint",
+      "acceptance_criteria": [
+        "tests/unit/api/users.test.ts exists",
+        "Tests verify 401 returned when not authenticated",
+        "Tests verify user list is returned with correct fields",
+        "npm run test passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ELF-004",
+      "title": "Create PersonFilter component",
+      "description": "Dropdown component to filter expenses by team member",
+      "acceptance_criteria": [
+        "src/components/expenses/filters/person-filter.tsx exists",
+        "Uses Select component from shadcn/ui",
+        "Fetches users from /api/users on mount",
+        "Shows 'All Members' as default option",
+        "Shows user names in dropdown options",
+        "Accepts value and onChange props for controlled usage",
+        "Shows loading state while fetching users"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ELF-005",
+      "title": "Create DateRangeFilter component",
+      "description": "Component for filtering expenses by date range with presets",
+      "acceptance_criteria": [
+        "src/components/expenses/filters/date-range-filter.tsx exists",
+        "Shows preset buttons: Today, This Week, This Month, Last Month, This Year",
+        "Has custom date range picker with start and end date",
+        "Selected preset is visually highlighted",
+        "Accepts value (startDate, endDate) and onChange props",
+        "Clear button resets to no date filter",
+        "Uses Popover and Calendar components from shadcn/ui"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ELF-006",
+      "title": "Create CategoryFilter component",
+      "description": "Component for filtering expenses by category",
+      "acceptance_criteria": [
+        "src/components/expenses/filters/category-filter.tsx exists",
+        "Uses Select component from shadcn/ui",
+        "Shows 'All Categories' as default option",
+        "Shows category icon and label for each option",
+        "Accepts value and onChange props for controlled usage",
+        "Uses CATEGORIES constant from lib/constants/categories"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ELF-007",
+      "title": "Create ExpenseFilters bar component",
+      "description": "Container component that combines all filter controls",
+      "acceptance_criteria": [
+        "src/components/expenses/expense-filters.tsx exists",
+        "Contains PersonFilter, DateRangeFilter, CategoryFilter",
+        "Horizontal layout on desktop, stacked on mobile",
+        "Shows 'Clear All' button when any filter is active",
+        "Shows count of active filters",
+        "Accepts filters object and onFiltersChange callback",
+        "Follows DESIGN_SYSTEM.md patterns"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ELF-008",
+      "title": "Create useExpenseFilters hook",
+      "description": "Hook to manage filter state synced with URL params",
+      "acceptance_criteria": [
+        "src/hooks/useExpenseFilters.ts exists",
+        "Reads initial filter values from URL search params",
+        "Updates URL when filters change (without page reload)",
+        "Provides filters object with userId, category, startDate, endDate",
+        "Provides setFilters function to update individual filters",
+        "Provides clearFilters function to reset all filters",
+        "Provides activeFilterCount computed value"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ELF-009",
+      "title": "Create ExpenseListPaginated component",
+      "description": "Paginated expense list with loading and empty states",
+      "acceptance_criteria": [
+        "src/components/expenses/expense-list-paginated.tsx exists",
+        "Uses useExpenses hook with filter params",
+        "Shows ExpenseListItem for each expense",
+        "Includes user name on each expense item (who submitted)",
+        "Shows pagination controls (Previous/Next or page numbers)",
+        "Shows total expense count above list",
+        "Shows sum of filtered expenses",
+        "Shows loading skeleton while fetching",
+        "Shows appropriate empty state message"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ELF-010",
+      "title": "Update ExpenseListItem to show submitter name",
+      "description": "Add option to display who submitted the expense",
+      "acceptance_criteria": [
+        "ExpenseListItem accepts optional showUser prop",
+        "When showUser is true, displays user name alongside date",
+        "User name styled as secondary text per DESIGN_SYSTEM.md",
+        "Existing usage without showUser continues to work"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ELF-011",
+      "title": "Create expenses page route",
+      "description": "Create the main expenses list page",
+      "acceptance_criteria": [
+        "src/app/(app)/expenses/page.tsx exists",
+        "Page title: 'Expenses'",
+        "Contains ExpenseFilters component",
+        "Contains ExpenseListPaginated component",
+        "Filters and list are connected via useExpenseFilters hook",
+        "Page is responsive (works on mobile and desktop)",
+        "Shows Add Expense button that opens AddExpenseSheet"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ELF-012",
+      "title": "Add Expenses link to navigation",
+      "description": "Add navigation link to the expenses page",
+      "acceptance_criteria": [
+        "Expenses link appears in main navigation/header",
+        "Link navigates to /expenses",
+        "Link shows active state when on expenses page",
+        "Uses Receipt or List icon from lucide-react"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ELF-013",
+      "title": "Update View All link on home page",
+      "description": "Connect the View All link to the expenses page",
+      "acceptance_criteria": [
+        "View All link in Recent Expenses section navigates to /expenses",
+        "Link works correctly",
+        "Uses Next.js Link component for client-side navigation"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ELF-014",
+      "title": "Add filter summary display",
+      "description": "Show summary of current filters and totals",
+      "acceptance_criteria": [
+        "Above expense list, show 'Showing X expenses' count",
+        "Show 'Total: $X,XXX.XX' sum of filtered expenses",
+        "When filters active, show which filters are applied",
+        "Summary updates when filters change"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ELF-015",
+      "title": "E2E test: Navigate to expenses page",
+      "description": "Test navigation to expenses page works",
+      "acceptance_criteria": [
+        "tests/e2e/expense-list.spec.ts exists",
+        "Test logs in as user",
+        "Test clicks Expenses link in navigation",
+        "Test verifies /expenses page loads",
+        "Test verifies filter controls are visible",
+        "npx playwright test expense-list passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ELF-016",
+      "title": "E2E test: Filter expenses by category",
+      "description": "Test category filtering works correctly",
+      "acceptance_criteria": [
+        "Test selects a category from dropdown",
+        "Test verifies URL updates with category param",
+        "Test verifies list updates to show filtered results",
+        "Test clears filter and verifies full list returns",
+        "npx playwright test expense-list passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ELF-017",
+      "title": "E2E test: Filter expenses by date range",
+      "description": "Test date range filtering works correctly",
+      "acceptance_criteria": [
+        "Test selects 'This Month' preset",
+        "Test verifies URL updates with date params",
+        "Test verifies list shows filtered results",
+        "Test uses custom date range picker",
+        "npx playwright test expense-list passes"
+      ],
+      "passes": false
+    }
+  ]
+}

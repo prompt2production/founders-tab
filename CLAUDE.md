@@ -464,11 +464,12 @@ A feature is complete when:
 **Design:** Complete - Dark mode with orange/red gradient accents, mobile-first
 **Completed Features:**
 - `features/user-auth` - User Authentication (36 stories) ✓
+- `features/expense-submission` - Expense Submission (27 stories) ✓
 
-**Current Feature:** `features/expense-submission` - Expense Submission (27 stories)
+**Current Feature:** `features/expense-list-filtering` - Expense List & Filtering (17 stories)
 
 ### Next Step
-Review the generated files in `features/expense-submission/` and run Ralph:
+Review the generated files in `features/expense-list-filtering/` and run Ralph:
 
 ```bash
 claude --dangerously-skip-permissions
@@ -477,7 +478,7 @@ claude --dangerously-skip-permissions
 BEFORE EACH ITERATION:
 1. Read CLAUDE.md for project context
 2. Read DESIGN_SYSTEM.md for UI patterns
-3. Read features/expense-submission/prd.json and find the first story with passes: false
+3. Read features/expense-list-filtering/prd.json and find the first story with passes: false
 
 YOUR TASK:
 1. Implement the story following all acceptance criteria
@@ -487,8 +488,8 @@ YOUR TASK:
 3. Fix any failures before proceeding
 
 WHEN STORY COMPLETE:
-1. Update features/expense-submission/prd.json - set passes: true
-2. Append to features/expense-submission/progress.txt with format:
+1. Update features/expense-list-filtering/prd.json - set passes: true
+2. Append to features/expense-list-filtering/progress.txt with format:
    ---
    Story: [ID] [Title]
    Files changed: [list]
