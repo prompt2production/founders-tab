@@ -3,3 +3,9 @@ Story: DBC-001 Create project structure and dependencies
 Files changed: tools/db-console/package.json, tools/db-console/tsconfig.json
 Notes: Created folder structure, package.json with dependencies (@prisma/client, dotenv) and devDependencies (typescript, tsx, @types/node). ES2022 target in tsconfig. npm install succeeded.
 ---
+
+---
+Story: DBC-002 Create environment configuration
+Files changed: tools/db-console/.env.example, tools/db-console/src/config.ts
+Notes: Created .env.example with three connection string variables. config.ts exports Environment type, getConnectionString function, and environmentDisplayNames mapping.
+---
