@@ -13,3 +13,8 @@ Story: ROLE-003 Add unit tests for role API endpoint
 Files changed: tests/unit/api/role.test.ts
 Notes: Created 8 comprehensive unit tests covering all acceptance criteria. All 104 tests pass.
 ---
+---
+Story: ROLE-004 Install dropdown-menu shadcn component
+Files changed: none
+Notes: Component already exists at src/components/ui/dropdown-menu.tsx. No action needed.
+---

@@ -48,7 +48,7 @@
         "File exists at src/components/ui/dropdown-menu.tsx",
         "Component can be imported without errors"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ROLE-005",
