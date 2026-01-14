@@ -18,6 +18,8 @@ import {
 import { Home, Receipt, Users, User, LogOut, Settings, Wallet } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
+import { usePendingApprovalCount } from '@/hooks/usePendingApprovalCount'
+import { Badge } from '@/components/ui/badge'
 
 const navItems = [
   { href: '/', icon: Home, label: 'Home' },
@@ -31,6 +33,7 @@ function AppHeader() {
   const pathname = usePathname()
   const router = useRouter()
   const { user, logout } = useAuth()
+  const { count: pendingCount } = usePendingApprovalCount()
 
   async function handleLogout() {
     try {
@@ -58,18 +61,24 @@ function AppHeader() {
           <nav className="hidden lg:flex items-center gap-1">
             {navItems.map(({ href, label }) => {
               const isActive = pathname === href
+              const showBadge = href === '/expenses' && pendingCount > 0
               return (
                 <Link
                   key={href}
                   href={href}
                   className={cn(
-                    'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+                    'px-4 py-2 rounded-lg text-sm font-medium transition-colors relative',
                     isActive
                       ? 'bg-primary/10 text-primary'
                       : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
                   )}
                 >
                   {label}
+                  {showBadge && (
+                    <Badge className="absolute -top-1 -right-1 h-5 min-w-5 flex items-center justify-center p-0 text-xs">
+                      {pendingCount}
+                    </Badge>
+                  )}
                 </Link>
               )
             })}
@@ -118,24 +127,33 @@ function AppHeader() {
 
 function BottomNav() {
   const pathname = usePathname()
+  const { count: pendingCount } = usePendingApprovalCount()
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border px-4 py-2 lg:hidden z-50">
       <div className="flex items-center justify-around">
         {navItems.map(({ href, icon: Icon, label }) => {
           const isActive = pathname === href
+          const showBadge = href === '/expenses' && pendingCount > 0
           return (
             <Link
               key={href}
               href={href}
               className={cn(
-                'flex flex-col items-center gap-1 p-2 rounded-lg transition-colors min-w-[64px]',
+                'flex flex-col items-center gap-1 p-2 rounded-lg transition-colors min-w-[64px] relative',
                 isActive
                   ? 'text-primary'
                   : 'text-muted-foreground hover:text-foreground'
               )}
             >
-              <Icon className="h-5 w-5" />
+              <div className="relative">
+                <Icon className="h-5 w-5" />
+                {showBadge && (
+                  <Badge className="absolute -top-2 -right-3 h-4 min-w-4 flex items-center justify-center p-0 text-[10px]">
+                    {pendingCount}
+                  </Badge>
+                )}
+              </div>
               <span className="text-xs">{label}</span>
             </Link>
           )

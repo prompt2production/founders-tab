@@ -225,7 +225,7 @@
         "Badge updates after approving an expense",
         "Badge hidden when count is zero"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "TXA-019",

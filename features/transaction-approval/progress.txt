@@ -99,3 +99,9 @@ Story: TXA-017 Update AddExpenseSheet with approval notice
 Files changed: src/components/expenses/add-expense-sheet.tsx
 Notes: Added info banner explaining approval requirement. Updated success toast to show pending status or auto-approved message based on response.
 ---
+
+---
+Story: TXA-018 Add pending approval count to navigation
+Files changed: src/hooks/usePendingApprovalCount.ts, src/app/(app)/layout.tsx
+Notes: Created usePendingApprovalCount hook that fetches pending expenses and counts those current user can approve. Added badge to both desktop and mobile navigation on Expenses link.
+---
