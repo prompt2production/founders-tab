@@ -9,3 +9,9 @@ Story: SEED-002 Create seed users command
 Files changed: tools/db-console/src/commands/seed-users.ts
 Notes: Created seedUsersCommand that checks for existing users by email, skips if present, creates if not. Blocked on production. Shows summary with created/skipped counts.
 ---
+
+---
+Story: SEED-003 Create seed expenses command
+Files changed: tools/db-console/src/commands/seed-expenses.ts
+Notes: Created seedExpensesCommand that queries existing users, validates at least 2 exist, distributes expenses across all users using modulo. Creates approvals and withdrawal approvals based on status.
+---

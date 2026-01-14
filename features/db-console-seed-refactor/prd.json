@@ -41,7 +41,7 @@
         "Command creates appropriate approvals and withdrawal approvals",
         "Command is blocked on production environment with appropriate message"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "SEED-004",
