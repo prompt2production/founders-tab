@@ -85,7 +85,7 @@
         "Cancel closes dialog without making changes",
         "Confirm triggers the onRoleChange callback"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ROLE-008",

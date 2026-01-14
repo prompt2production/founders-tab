@@ -28,3 +28,8 @@ Story: ROLE-006 Install alert-dialog shadcn component
 Files changed: none
 Notes: Component already exists at src/components/ui/alert-dialog.tsx. No action needed.
 ---
+---
+Story: ROLE-007 Add confirmation dialog to RoleBadge
+Files changed: src/components/team/role-badge.tsx
+Notes: Added AlertDialog with state management. Shows appropriate messages for promote, demote, and self-demote scenarios. Added currentUserId prop for self-identification.
+---
