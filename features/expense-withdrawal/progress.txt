@@ -3,3 +3,9 @@ Story: WDR-001 Add withdrawal status values to ExpenseStatus enum
 Files changed: prisma/schema.prisma, prisma/migrations/20260114084535_add_withdrawal_statuses/migration.sql
 Notes: Added WITHDRAWAL_REQUESTED, WITHDRAWAL_APPROVED, and RECEIVED values to ExpenseStatus enum.
 ---
+
+---
+Story: WDR-002 Add WithdrawalApproval model to schema
+Files changed: prisma/schema.prisma, prisma/migrations/20260114084652_add_withdrawal_approval_model/migration.sql
+Notes: Added WithdrawalApproval model with relations to Expense and User. Added unique constraint on [expenseId, userId].
+---
