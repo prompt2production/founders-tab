@@ -28,7 +28,7 @@
         "Returns byMonth array with month (YYYY-MM), total",
         "byMonth covers last 12 months"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "RBD-003",

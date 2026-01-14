@@ -3,3 +3,9 @@ Story: RBD-001 Create GET /api/balances endpoint
 Files changed: src/app/api/balances/route.ts
 Notes: Created balances API that returns teamTotal and balances array with user info, total, expenseCount, percentage. Sorted by total descending.
 ---
+
+---
+Story: RBD-002 Create GET /api/balances/[userId] endpoint
+Files changed: src/app/api/balances/[userId]/route.ts
+Notes: Created user balance detail API with byCategory and byMonth breakdown. Returns 401 if not authenticated, 404 if user not found. byMonth covers last 12 months.
+---
