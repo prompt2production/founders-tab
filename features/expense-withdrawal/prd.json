@@ -238,7 +238,7 @@
         "Shows loading state during confirmation",
         "Shows confirmation dialog before confirming"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "WDR-019",
