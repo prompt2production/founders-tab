@@ -262,7 +262,7 @@
         "StatusFilter includes 'Received' option",
         "Filter values map to correct ExpenseStatus enum values"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "WDR-021",

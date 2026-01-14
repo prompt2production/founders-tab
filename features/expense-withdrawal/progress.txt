@@ -111,3 +111,9 @@ Story: WDR-019 Update ApprovalStatusBadge for withdrawal states
 Files changed: src/components/expenses/approval-status-badge.tsx
 Notes: Extended interface and component to handle WITHDRAWAL_REQUESTED (warning), WITHDRAWAL_APPROVED (info), and RECEIVED (success) states.
 ---
+
+---
+Story: WDR-020 Update StatusFilter for withdrawal statuses
+Files changed: src/components/expenses/filters/status-filter.tsx
+Notes: Added Withdrawal Requested, Ready for Receipt, and Received options to dropdown.
+---
