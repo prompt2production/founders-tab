@@ -99,7 +99,7 @@
         "Error shows toast with error message",
         "Team member list refreshes after successful role change"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ROLE-009",

@@ -33,3 +33,8 @@ Story: ROLE-007 Add confirmation dialog to RoleBadge
 Files changed: src/components/team/role-badge.tsx
 Notes: Added AlertDialog with state management. Shows appropriate messages for promote, demote, and self-demote scenarios. Added currentUserId prop for self-identification.
 ---
+---
+Story: ROLE-008 Integrate RoleBadge into Team page
+Files changed: src/app/(app)/team/page.tsx
+Notes: Integrated RoleBadge component, added founderCount state for isLastFounder check, implemented handleRoleChange function with API call, toast notifications, and user context refresh. All 104 tests pass.
+---

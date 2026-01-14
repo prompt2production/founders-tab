@@ -5,9 +5,9 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useAuth } from '@/hooks/useAuth'
 import { UserAvatar } from '@/components/auth/user-avatar'
+import { RoleBadge } from '@/components/team/role-badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Form,
@@ -145,11 +145,12 @@ function InviteMemberForm({ onSuccess }: { onSuccess: () => void }) {
 }
 
 export default function TeamPage() {
-  const { user } = useAuth()
+  const { user, refreshUser } = useAuth()
   const [members, setMembers] = useState<TeamMember[]>([])
   const [invitations, setInvitations] = useState<Invitation[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [inviteSheetOpen, setInviteSheetOpen] = useState(false)
+  const [founderCount, setFounderCount] = useState(0)
 
   const isFounder = user?.role === 'FOUNDER'
 
@@ -163,6 +164,9 @@ export default function TeamPage() {
       if (membersRes.ok) {
         const membersData = await membersRes.json()
         setMembers(membersData)
+        // Count founders for isLastFounder check
+        const founders = membersData.filter((m: TeamMember) => m.role === 'FOUNDER')
+        setFounderCount(founders.length)
       }
 
       if (invitationsRes && invitationsRes.ok) {
@@ -194,6 +198,39 @@ export default function TeamPage() {
       toast.success('Invitation cancelled')
     } catch {
       toast.error('Failed to cancel invitation')
+    }
+  }
+
+  async function handleRoleChange(userId: string, newRole: 'FOUNDER' | 'MEMBER') {
+    try {
+      const response = await fetch(`/api/users/${userId}/role`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: newRole }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to update role')
+      }
+
+      const updatedUser = await response.json()
+
+      toast.success('Role updated', {
+        description: `${updatedUser.name} is now a ${newRole.toLowerCase()}`,
+      })
+
+      // Refresh the team list
+      await fetchData()
+
+      // If the current user changed their own role, refresh user context
+      if (userId === user?.id) {
+        refreshUser()
+      }
+    } catch (error) {
+      toast.error('Failed to update role', {
+        description: error instanceof Error ? error.message : 'Please try again',
+      })
     }
   }
 
@@ -259,11 +296,15 @@ export default function TeamPage() {
                   {member.email}
                 </p>
               </div>
-              <Badge
-                variant={member.role === 'FOUNDER' ? 'default' : 'secondary'}
-              >
-                {member.role}
-              </Badge>
+              <RoleBadge
+                role={member.role}
+                userName={member.name}
+                userId={member.id}
+                currentUserId={user?.id || ''}
+                isCurrentUserFounder={isFounder}
+                isLastFounder={founderCount <= 1}
+                onRoleChange={handleRoleChange}
+              />
             </div>
           ))}
         </CardContent>
