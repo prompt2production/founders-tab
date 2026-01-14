@@ -38,7 +38,7 @@
         "Function returns configured PrismaClient instance",
         "Uses connection string from config based on environment"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "DBC-004",

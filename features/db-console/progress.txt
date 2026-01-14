@@ -9,3 +9,9 @@ Story: DBC-002 Create environment configuration
 Files changed: tools/db-console/.env.example, tools/db-console/src/config.ts
 Notes: Created .env.example with three connection string variables. config.ts exports Environment type, getConnectionString function, and environmentDisplayNames mapping.
 ---
+
+---
+Story: DBC-003 Create Prisma client with dynamic connection
+Files changed: tools/db-console/src/prisma.ts
+Notes: Created createPrismaClient function that accepts environment parameter and returns PrismaClient with dynamic datasource URL.
+---
