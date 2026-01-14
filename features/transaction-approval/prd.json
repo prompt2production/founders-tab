@@ -25,7 +25,7 @@
         "Expense model has approvals relation",
         "npx prisma migrate dev succeeds"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "TXA-003",

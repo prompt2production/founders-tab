@@ -3,3 +3,9 @@ Story: TXA-001 Add ExpenseStatus enum and status field to schema
 Files changed: prisma/schema.prisma, prisma/migrations/20260114075434_add_expense_status/migration.sql
 Notes: Added ExpenseStatus enum with PENDING_APPROVAL and APPROVED values. Added status field to Expense model with default PENDING_APPROVAL.
 ---
+
+---
+Story: TXA-002 Add Approval model to schema
+Files changed: prisma/schema.prisma, prisma/migrations/20260114075658_add_approval_model/migration.sql
+Notes: Added Approval model with expenseId, userId relations. Added unique constraint on [expenseId, userId]. Added approvals relation to User and Expense models.
+---
