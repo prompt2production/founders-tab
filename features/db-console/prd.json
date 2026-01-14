@@ -104,7 +104,7 @@
         "Expenses span all statuses: PENDING_APPROVAL, APPROVED, WITHDRAWAL_REQUESTED, WITHDRAWAL_APPROVED, RECEIVED",
         "Expenses use various categories and realistic amounts"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "DBC-009",
