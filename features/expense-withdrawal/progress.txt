@@ -9,3 +9,9 @@ Story: WDR-002 Add WithdrawalApproval model to schema
 Files changed: prisma/schema.prisma, prisma/migrations/20260114084652_add_withdrawal_approval_model/migration.sql
 Notes: Added WithdrawalApproval model with relations to Expense and User. Added unique constraint on [expenseId, userId].
 ---
+
+---
+Story: WDR-003 Create POST /api/expenses/[id]/request-withdrawal endpoint
+Files changed: src/app/api/expenses/[id]/request-withdrawal/route.ts
+Notes: Created endpoint with validation for auth, expense exists, owner check, and APPROVED status check.
+---

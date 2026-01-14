@@ -41,7 +41,7 @@
         "Updates expense status to WITHDRAWAL_REQUESTED on success",
         "Returns updated expense"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "WDR-004",
