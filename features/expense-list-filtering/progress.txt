@@ -13,3 +13,8 @@ Story: ELF-003 Create unit tests for users API
 Files changed: tests/unit/api/users.test.ts
 Notes: Created 4 unit tests covering 401 on unauthenticated, correct fields returned, proper Prisma query, and empty array handling. All 54 tests pass.
 ---
+---
+Story: ELF-004 Create PersonFilter component
+Files changed: src/components/expenses/filters/person-filter.tsx
+Notes: Created dropdown filter component using shadcn Select. Fetches users on mount with loading skeleton state. Shows "All Members" as default, user names in options.
+---
