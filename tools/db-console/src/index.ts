@@ -6,7 +6,8 @@ import { closeReadline } from './prompts.js'
 import { selectEnvironment } from './commands/select-environment.js'
 import { showMainMenu, MenuOption } from './commands/main-menu.js'
 import { clearData } from './commands/clear-data.js'
-import { seedData } from './commands/seed-data.js'
+import { seedUsersCommand } from './commands/seed-users.js'
+import { seedExpensesCommand } from './commands/seed-expenses.js'
 
 async function main(): Promise<void> {
   let prisma: PrismaClient | null = null
@@ -32,8 +33,12 @@ async function main(): Promise<void> {
           await clearData(prisma, environment)
           break
 
-        case 'seed-data':
-          await seedData(prisma, environment)
+        case 'seed-users':
+          await seedUsersCommand(prisma, environment)
+          break
+
+        case 'seed-expenses':
+          await seedExpensesCommand(prisma, environment)
           break
 
         case 'exit':

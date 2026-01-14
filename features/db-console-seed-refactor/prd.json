@@ -57,7 +57,7 @@
         "Old seed-data.ts file is deleted",
         "Application runs without errors: npm run start in tools/db-console directory"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }

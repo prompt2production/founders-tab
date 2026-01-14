@@ -95,7 +95,7 @@ export async function seedExpensesCommand(prisma: PrismaClient, environment: Env
           },
         })
         approvalCount++
-      } else if (expense.status !== ExpenseStatus.PENDING_APPROVAL) {
+      } else {
         // Full approval - all other users have approved
         for (let j = 0; j < users.length; j++) {
           if (j !== expense.ownerIndex) {
