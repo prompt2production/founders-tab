@@ -51,8 +51,8 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Get total count and expenses with user info
-    const [total, expenses] = await Promise.all([
+    // Get total count, expenses with user and approval info, and founders count
+    const [total, expenses, foundersCount] = await Promise.all([
       prisma.expense.count({ where }),
       prisma.expense.findMany({
         where,
@@ -66,12 +66,43 @@ export async function GET(request: NextRequest) {
               name: true,
             },
           },
+          approvals: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
         },
       }),
+      prisma.user.count({ where: { role: Role.FOUNDER } }),
     ])
 
+    // Enrich expenses with approval info
+    const enrichedExpenses = expenses.map((expense) => {
+      const approvalsNeeded = foundersCount - 1 // All founders except creator
+      const isFullyApproved = expense.status === ExpenseStatus.APPROVED
+      const hasUserApproved = expense.approvals.some((a) => a.user.id === user.id)
+      const isCreator = expense.userId === user.id
+      const canCurrentUserApprove =
+        !isCreator &&
+        !hasUserApproved &&
+        user.role === Role.FOUNDER &&
+        !isFullyApproved
+
+      return {
+        ...expense,
+        approvalsNeeded: Math.max(0, approvalsNeeded),
+        isFullyApproved,
+        canCurrentUserApprove,
+      }
+    })
+
     return NextResponse.json({
-      expenses,
+      expenses: enrichedExpenses,
       total,
       page: query.page,
       limit: query.limit,

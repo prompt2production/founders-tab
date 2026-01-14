@@ -89,7 +89,7 @@
         "Each expense includes isFullyApproved boolean",
         "Each expense includes canCurrentUserApprove boolean"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "TXA-008",

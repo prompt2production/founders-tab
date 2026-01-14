@@ -33,3 +33,9 @@ Story: TXA-006 Update GET /api/expenses to include status filter
 Files changed: src/lib/validations/expense.ts, src/app/api/expenses/route.ts
 Notes: Added ExpenseStatus enum to validation schema. Added status filter parameter to listExpensesQuerySchema. Updated GET endpoint to filter by status.
 ---
+
+---
+Story: TXA-007 Update GET /api/expenses to include approval info
+Files changed: src/app/api/expenses/route.ts
+Notes: Added approvals array with user info to each expense. Added approvalsNeeded, isFullyApproved, and canCurrentUserApprove computed fields.
+---
