@@ -1,0 +1,5 @@
+---
+Story: SEED-001 Update test data definitions with new seed users
+Files changed: tools/db-console/src/seed-data/test-data.ts
+Notes: Updated users to Chris, Candice, Adrian with @founderstab.com emails. Changed password hash to Password123!. Renamed exports to seedUsers and expenseTemplates for clearer API.
+---

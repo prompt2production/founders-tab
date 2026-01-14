@@ -2,80 +2,16 @@
 
 ## Overview
 
-This feature has two parts:
+A development-only feature that provides quick login buttons on the login page for predefined test user accounts. This allows developers to quickly switch between different user accounts during local development without having to manually type credentials each time.
 
-1. **Database Console Refactoring** - Refactor the db-console seed functionality to separate user seeding from expense data seeding, providing more granular control over test data creation
-2. **Quick Login UI** - A development-only component that provides quick login buttons on the login page for predefined test user accounts
+## User Stories
 
-## Part 1: Database Console Seed Refactoring
-
-### Current State
-
-The existing `seed-data.ts` command:
-- Seeds 3 test users (Alice, Bob, Carol) with example.com emails
-- Seeds 13 expenses with various statuses
-- Seeds approvals and withdrawal approvals
-- All done in a single command
-
-### Proposed Changes
-
-Replace the single "Seed test data" option with two separate options:
-1. **Seed users** - Creates the three founder accounts
-2. **Seed expense data** - Creates expenses for all existing users
-
-### New Menu Structure
-
-```
-Database Console
-================
-Environment: Development
-1. Clear all data
-2. Seed users
-3. Seed expense data
-4. Exit
-```
-
-### Seed Users Command
-
-Creates three founder accounts:
-
-| Name | Email | Password |
-|------|-------|----------|
-| Chris | chris@founderstab.com | Password123! |
-| Candice | candice@founderstab.com | Password123! |
-| Adrian | adrian@founderstab.com | Password123! |
-
-**Behaviour:**
-- Checks if users already exist (by email) and skips if present
-- Uses bcrypt to hash passwords (same hash as existing)
-- Creates users with initials: C, C, A
-- Shows summary of users created/skipped
-
-### Seed Expense Data Command
-
-Creates realistic expense data for **all users currently in the database**.
-
-**Dependency:**
-- Requires at least 2 users to exist in the database
-- Shows error message if insufficient users exist
-
-**Behaviour:**
-- Queries all existing users from database
-- Creates expenses distributed across all users
-- Creates approval records based on existing users
-- Creates withdrawal approval records where applicable
-- Maintains realistic distribution of expense statuses
-
----
-
-## Part 2: Quick Login UI Component
-
-### User Stories
-
-**As a developer:**
+### As a developer
 - I want to quickly log in as different test users during development
 - I want this feature to only appear in development mode (not in production)
 - I want a simple click-to-login experience
+
+## Detailed Requirements
 
 ### Environment Detection
 
@@ -87,7 +23,7 @@ This ensures the feature never appears in production builds.
 
 ### Predefined Users
 
-The same accounts from Part 1:
+The following test accounts are available for quick login:
 
 | Name | Email | Password |
 |------|-------|----------|
@@ -119,7 +55,7 @@ src/components/auth/dev-quick-login.tsx
 
 ## Technical Requirements
 
-### Environment Check (UI Component)
+### Environment Check
 
 ```typescript
 // Only render in development
@@ -136,6 +72,6 @@ if (process.env.NODE_ENV !== 'development') {
 
 ## Security Considerations
 
-- Quick login UI MUST NOT appear in production
+- This feature MUST NOT appear in production
 - The predefined passwords should match what's in the dev/test database
-- Both db-console commands blocked on production environment
+- Consider using environment variables for the credentials (optional)

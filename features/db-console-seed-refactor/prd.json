@@ -1,0 +1,63 @@
+{
+  "feature": "DB Console Seed Refactor",
+  "stories": [
+    {
+      "id": "SEED-001",
+      "title": "Update test data definitions with new seed users",
+      "description": "Update the test-data.ts file to define the three new seed users",
+      "acceptance_criteria": [
+        "tools/db-console/src/seed-data/test-data.ts contains user definitions for Chris, Candice, and Adrian",
+        "User emails are chris@founderstab.com, candice@founderstab.com, adrian@founderstab.com",
+        "All users have password hash for 'Password123!' (use bcrypt)",
+        "User initials are C, C, and A respectively",
+        "Expense template data remains available for dynamic seeding"
+      ],
+      "passes": true
+    },
+    {
+      "id": "SEED-002",
+      "title": "Create seed users command",
+      "description": "Create a new command to seed only users without expense data",
+      "acceptance_criteria": [
+        "tools/db-console/src/commands/seed-users.ts exists",
+        "Command checks if each user already exists by email before creating",
+        "Command skips existing users and reports them as skipped",
+        "Command creates non-existing users with correct data",
+        "Command displays summary: X users created, Y users skipped",
+        "Command is blocked on production environment with appropriate message"
+      ],
+      "passes": false
+    },
+    {
+      "id": "SEED-003",
+      "title": "Create seed expenses command",
+      "description": "Create a new command to seed expense data for all existing users",
+      "acceptance_criteria": [
+        "tools/db-console/src/commands/seed-expenses.ts exists",
+        "Command queries all existing users from the database",
+        "Command validates at least 2 users exist before proceeding",
+        "Command shows error and exits gracefully if fewer than 2 users exist",
+        "Command creates expenses distributed across all users",
+        "Command creates appropriate approvals and withdrawal approvals",
+        "Command is blocked on production environment with appropriate message"
+      ],
+      "passes": false
+    },
+    {
+      "id": "SEED-004",
+      "title": "Update main menu with new seed options",
+      "description": "Replace the single seed option with two separate options in the main menu",
+      "acceptance_criteria": [
+        "tools/db-console/src/commands/main-menu.ts shows 'Seed users' as option 2",
+        "tools/db-console/src/commands/main-menu.ts shows 'Seed expense data' as option 3",
+        "Old 'Seed test data' option is removed",
+        "Exit option is renumbered to 4",
+        "Menu routes correctly to seed-users.ts for option 2",
+        "Menu routes correctly to seed-expenses.ts for option 3",
+        "Old seed-data.ts file is deleted",
+        "Application runs without errors: npm run start in tools/db-console directory"
+      ],
+      "passes": false
+    }
+  ]
+}

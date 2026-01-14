@@ -3,7 +3,7 @@ active: true
 iteration: 1
 max_iterations: 10
 completion_promise: "COMPLETE"
-started_at: "2026-01-14T09:50:09Z"
+started_at: "2026-01-14T09:57:43Z"
 ---
 
 You are working on this project.
@@ -11,7 +11,7 @@ You are working on this project.
   BEFORE EACH ITERATION:
   1. Read CLAUDE.md for project context
   2. Read DESIGN_SYSTEM.md for UI patterns
-  3. Read features/dev-quick-login/prd.json and find the first story with passes: false
+  3. Read features/db-console-seed-refactor/prd.json and find the first story with passes: false
 
   YOUR TASK:
   1. Implement the story following all acceptance criteria

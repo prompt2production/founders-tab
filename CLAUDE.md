@@ -470,11 +470,12 @@ A feature is complete when:
 - `features/transaction-approval` - Transaction Approval (21 stories) ✓
 - `features/expense-withdrawal` - Expense Withdrawal (24 stories) ✓
 - `features/db-console` - Database Console Application (11 stories) ✓
+- `features/dev-quick-login` - Dev Quick Login (2 stories) ✓
 
-**Current Feature:** `features/dev-quick-login` - Dev Quick Login (2 stories)
+**Current Feature:** `features/db-console-seed-refactor` - DB Console Seed Refactor (4 stories)
 
 ### Next Step
-Review the generated files in `features/dev-quick-login/` and run Ralph:
+Review the generated files in `features/db-console-seed-refactor/` and run Ralph:
 
 ```bash
 claude --dangerously-skip-permissions
@@ -482,18 +483,15 @@ claude --dangerously-skip-permissions
 
 BEFORE EACH ITERATION:
 1. Read CLAUDE.md for project context
-2. Read DESIGN_SYSTEM.md for UI patterns
-3. Read features/dev-quick-login/prd.json and find the first story with passes: false
+2. Read features/db-console-seed-refactor/prd.json and find the first story with passes: false
 
 YOUR TASK:
 1. Implement the story following all acceptance criteria
-2. Run tests to verify:
-   - npm run test (for unit tests)
-3. Fix any failures before proceeding
+2. This is a console application - verify code compiles and runs
 
 WHEN STORY COMPLETE:
-1. Update features/dev-quick-login/prd.json - set passes: true
-2. Append to features/dev-quick-login/progress.txt with format:
+1. Update features/db-console-seed-refactor/prd.json - set passes: true
+2. Append to features/db-console-seed-refactor/progress.txt with format:
    ---
    Story: [ID] [Title]
    Files changed: [list]
