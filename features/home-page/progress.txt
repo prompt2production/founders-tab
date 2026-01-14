@@ -8,3 +8,8 @@ Story: HOME-002 Add CTA buttons linking to auth pages
 Files changed: (included in HOME-001)
 Notes: CTA buttons were already implemented in HOME-001 with proper styling (primary/outline variants), responsive behavior (stack vertically on mobile, side-by-side on desktop), and keyboard accessibility via Link components.
 ---
+---
+Story: HOME-003 Add authenticated user redirect
+Files changed: src/app/page.tsx
+Notes: Converted to client component, wrapped in AuthProvider, added useAuth hook to check auth status. Shows loading spinner while checking, redirects authenticated users to /expenses, shows marketing content for unauthenticated users.
+---

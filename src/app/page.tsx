@@ -1,7 +1,42 @@
+'use client'
+
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { AuthProvider } from '@/components/auth/auth-provider'
+import { useAuth } from '@/hooks/useAuth'
+import { Loader2 } from 'lucide-react'
 
-export default function HomePage() {
+function HomePageContent() {
+  const router = useRouter()
+  const { isAuthenticated, isLoading } = useAuth()
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.push('/expenses')
+    }
+  }, [isAuthenticated, isLoading, router])
+
+  // Show loading spinner while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+  // If authenticated, show nothing while redirecting
+  if (isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+  // Show marketing content for unauthenticated users
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4 lg:px-6">
       <div className="max-w-md w-full text-center space-y-8">
@@ -47,5 +82,13 @@ export default function HomePage() {
         </p>
       </div>
     </div>
+  )
+}
+
+export default function HomePage() {
+  return (
+    <AuthProvider>
+      <HomePageContent />
+    </AuthProvider>
   )
 }

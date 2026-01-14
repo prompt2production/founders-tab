@@ -39,7 +39,7 @@
         "Loading state shows a spinner while checking auth status",
         "Unauthenticated users see the marketing content without delay"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HOME-004",
