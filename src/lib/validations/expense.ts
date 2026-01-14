@@ -4,6 +4,9 @@ import { z } from 'zod'
 export const ExpenseStatus = {
   PENDING_APPROVAL: 'PENDING_APPROVAL',
   APPROVED: 'APPROVED',
+  WITHDRAWAL_REQUESTED: 'WITHDRAWAL_REQUESTED',
+  WITHDRAWAL_APPROVED: 'WITHDRAWAL_APPROVED',
+  RECEIVED: 'RECEIVED',
 } as const
 
 export type ExpenseStatusType = (typeof ExpenseStatus)[keyof typeof ExpenseStatus]

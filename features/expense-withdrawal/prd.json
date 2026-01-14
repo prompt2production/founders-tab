@@ -118,7 +118,7 @@
         "ExpenseStatus enum in validations includes WITHDRAWAL_APPROVED",
         "ExpenseStatus enum in validations includes RECEIVED"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "WDR-010",

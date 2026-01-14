@@ -45,3 +45,9 @@ Story: WDR-008 Update GET /api/expenses to include withdrawal info
 Files changed: src/app/api/expenses/route.ts
 Notes: Added withdrawalApprovals to include, added withdrawalApprovalsNeeded and canCurrentUserApproveWithdrawal computed fields.
 ---
+
+---
+Story: WDR-009 Update src/lib/validations/expense.ts for withdrawal statuses
+Files changed: src/lib/validations/expense.ts
+Notes: Added WITHDRAWAL_REQUESTED, WITHDRAWAL_APPROVED, and RECEIVED to ExpenseStatus enum.
+---
