@@ -2,12 +2,14 @@
 
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-import { Clock, CheckCircle } from 'lucide-react'
+import { Clock, CheckCircle, ArrowUpRight } from 'lucide-react'
 
 interface ApprovalStatusBadgeProps {
-  status: 'PENDING_APPROVAL' | 'APPROVED'
+  status: 'PENDING_APPROVAL' | 'APPROVED' | 'WITHDRAWAL_REQUESTED' | 'WITHDRAWAL_APPROVED' | 'RECEIVED'
   approvalsReceived?: number
   approvalsNeeded?: number
+  withdrawalApprovalsReceived?: number
+  withdrawalApprovalsNeeded?: number
   className?: string
 }
 
@@ -15,11 +17,12 @@ export function ApprovalStatusBadge({
   status,
   approvalsReceived = 0,
   approvalsNeeded = 0,
+  withdrawalApprovalsReceived = 0,
+  withdrawalApprovalsNeeded = 0,
   className,
 }: ApprovalStatusBadgeProps) {
-  const isPending = status === 'PENDING_APPROVAL'
-
-  if (isPending) {
+  // Pending approval status
+  if (status === 'PENDING_APPROVAL') {
     return (
       <Badge
         className={cn(
@@ -37,6 +40,56 @@ export function ApprovalStatusBadge({
     )
   }
 
+  // Withdrawal requested status
+  if (status === 'WITHDRAWAL_REQUESTED') {
+    return (
+      <Badge
+        className={cn(
+          'bg-[#422006] text-[#FBBF24] border-[#854D0E]',
+          className
+        )}
+      >
+        <ArrowUpRight className="h-3 w-3" />
+        {withdrawalApprovalsNeeded > 0 ? (
+          <span>Withdrawal {withdrawalApprovalsReceived}/{withdrawalApprovalsNeeded}</span>
+        ) : (
+          <span>Withdrawal Requested</span>
+        )}
+      </Badge>
+    )
+  }
+
+  // Withdrawal approved - ready for receipt
+  if (status === 'WITHDRAWAL_APPROVED') {
+    return (
+      <Badge
+        className={cn(
+          'bg-[#0C1929] text-[#60A5FA] border-[#1E40AF]',
+          className
+        )}
+      >
+        <Clock className="h-3 w-3" />
+        <span>Ready for Receipt</span>
+      </Badge>
+    )
+  }
+
+  // Received status - terminal state
+  if (status === 'RECEIVED') {
+    return (
+      <Badge
+        className={cn(
+          'bg-[#052E16] text-[#4ADE80] border-[#166534]',
+          className
+        )}
+      >
+        <CheckCircle className="h-3 w-3" />
+        <span>Received</span>
+      </Badge>
+    )
+  }
+
+  // Approved status (default)
   return (
     <Badge
       className={cn(

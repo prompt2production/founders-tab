@@ -105,3 +105,9 @@ Story: WDR-018 Create ConfirmReceiptButton component
 Files changed: src/components/expenses/confirm-receipt-button.tsx
 Notes: Created button with AlertDialog confirmation. Only shows for owner when WITHDRAWAL_APPROVED.
 ---
+
+---
+Story: WDR-019 Update ApprovalStatusBadge for withdrawal states
+Files changed: src/components/expenses/approval-status-badge.tsx
+Notes: Extended interface and component to handle WITHDRAWAL_REQUESTED (warning), WITHDRAWAL_APPROVED (info), and RECEIVED (success) states.
+---

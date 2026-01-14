@@ -250,7 +250,7 @@
         "ApprovalStatusBadge handles RECEIVED status",
         "Uses distinct visual styling for each withdrawal state"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "WDR-020",
