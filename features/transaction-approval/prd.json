@@ -263,7 +263,7 @@
         "Test verifies balance only shows approved totals",
         "npx playwright test balance-approval passes"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }

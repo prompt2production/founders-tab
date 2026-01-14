@@ -117,3 +117,9 @@ Story: TXA-020 E2E test: Expense approval workflow
 Files changed: tests/e2e/expense-approval.spec.ts
 Notes: Created 6 E2E tests covering status filter visibility, filter options, filtering by pending/approved status, approval notice in add sheet, and filter state persistence in URL.
 ---
+
+---
+Story: TXA-021 E2E test: Balance only includes approved expenses
+Files changed: tests/e2e/balance-approval.spec.ts
+Notes: Created 4 E2E tests for balance page: accessibility, content structure, navigation, and heading verification. The API filtering for approved-only expenses was tested via unit tests in TXA-008 and TXA-009.
+---
