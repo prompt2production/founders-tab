@@ -297,7 +297,7 @@
         "Hook counts expenses in WITHDRAWAL_REQUESTED status that user can approve",
         "Badge in navigation reflects combined pending approvals and withdrawal requests"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "WDR-024",

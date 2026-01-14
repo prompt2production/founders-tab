@@ -15,18 +15,33 @@ export function usePendingApprovalCount(): UsePendingApprovalCountResult {
   const fetchCount = useCallback(async () => {
     try {
       setIsLoading(true)
-      const response = await fetch('/api/expenses?status=PENDING_APPROVAL&limit=100')
-      if (!response.ok) {
+
+      // Fetch both pending approvals and withdrawal requests
+      const [pendingResponse, withdrawalResponse] = await Promise.all([
+        fetch('/api/expenses?status=PENDING_APPROVAL&limit=100'),
+        fetch('/api/expenses?status=WITHDRAWAL_REQUESTED&limit=100'),
+      ])
+
+      if (!pendingResponse.ok || !withdrawalResponse.ok) {
         throw new Error('Failed to fetch pending approvals')
       }
-      const data = await response.json()
+
+      const [pendingData, withdrawalData] = await Promise.all([
+        pendingResponse.json(),
+        withdrawalResponse.json(),
+      ])
 
       // Count expenses the current user can approve
-      const canApproveCount = data.expenses.filter(
+      const canApproveCount = pendingData.expenses.filter(
         (expense: { canCurrentUserApprove: boolean }) => expense.canCurrentUserApprove
       ).length
 
-      setCount(canApproveCount)
+      // Count withdrawal requests the current user can approve
+      const canApproveWithdrawalCount = withdrawalData.expenses.filter(
+        (expense: { canCurrentUserApproveWithdrawal: boolean }) => expense.canCurrentUserApproveWithdrawal
+      ).length
+
+      setCount(canApproveCount + canApproveWithdrawalCount)
     } catch (error) {
       console.error('Error fetching pending approval count:', error)
       setCount(0)

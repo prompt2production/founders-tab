@@ -129,3 +129,9 @@ Story: WDR-022 Update EditExpenseSheet for withdrawal flow
 Files changed: src/components/expenses/edit-expense-sheet.tsx
 Notes: Added withdrawal buttons (Request, Approve, Confirm Receipt), withdrawal approval display, and disabled editing during withdrawal flow.
 ---
+
+---
+Story: WDR-023 Update usePendingApprovalCount for withdrawals
+Files changed: src/hooks/usePendingApprovalCount.ts
+Notes: Now fetches both PENDING_APPROVAL and WITHDRAWAL_REQUESTED expenses. Combines counts of canCurrentUserApprove and canCurrentUserApproveWithdrawal.
+---
