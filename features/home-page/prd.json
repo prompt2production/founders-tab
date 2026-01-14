@@ -67,7 +67,7 @@
         "Test verifies authenticated users are redirected away from home page",
         "All tests pass when running npx playwright test tests/e2e/home-page.spec.ts"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }

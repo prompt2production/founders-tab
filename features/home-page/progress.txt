@@ -18,3 +18,8 @@ Story: HOME-004 Responsive layout and centering
 Files changed: (already implemented)
 Notes: Responsive design was built into initial implementation: min-h-screen with flex centering, max-w-md content constraint, px-4/lg:px-6 padding, flex-col/lg:flex-row for buttons, space-y-8 for vertical rhythm.
 ---
+---
+Story: HOME-005 Add E2E tests for home page
+Files changed: tests/e2e/home-page.spec.ts
+Notes: Created 4 Playwright tests covering: marketing content display, Get Started navigation to /signup, Log In navigation to /login, and authenticated user redirect to /expenses. All tests pass.
+---
