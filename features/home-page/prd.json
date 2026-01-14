@@ -27,7 +27,7 @@
         "Buttons display side-by-side on desktop (lg breakpoint and above)",
         "Buttons are keyboard accessible"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HOME-003",

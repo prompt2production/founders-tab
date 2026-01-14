@@ -3,3 +3,8 @@ Story: HOME-001 Create basic home page component
 Files changed: src/app/page.tsx
 Notes: Created the marketing home page with Founders Tab branding, gradient text, tagline, 3 value proposition bullet points, CTA buttons, and supporting text. Follows DESIGN_SYSTEM.md patterns for dark mode styling.
 ---
+---
+Story: HOME-002 Add CTA buttons linking to auth pages
+Files changed: (included in HOME-001)
+Notes: CTA buttons were already implemented in HOME-001 with proper styling (primary/outline variants), responsive behavior (stack vertically on mobile, side-by-side on desktop), and keyboard accessibility via Link components.
+---
