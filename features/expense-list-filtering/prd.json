@@ -111,7 +111,7 @@
         "Provides clearFilters function to reset all filters",
         "Provides activeFilterCount computed value"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ELF-009",

@@ -33,3 +33,8 @@ Story: ELF-007 Create ExpenseFilters bar component
 Files changed: src/components/expenses/expense-filters.tsx
 Notes: Created container component combining PersonFilter, DateRangeFilter, CategoryFilter. Horizontal on desktop (lg:flex-row), stacked on mobile. Shows active filter count badge and Clear All button when filters active.
 ---
+---
+Story: ELF-008 Create useExpenseFilters hook
+Files changed: src/hooks/useExpenseFilters.ts
+Notes: Created hook that syncs filter state with URL search params. Reads/writes userId, category, startDate, endDate from URL. Provides setFilters, clearFilters functions and activeFilterCount.
+---
