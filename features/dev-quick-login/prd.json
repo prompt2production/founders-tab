@@ -27,7 +27,7 @@
         "Clicking a user triggers login and redirects to home page",
         "Component is not visible in production build"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }

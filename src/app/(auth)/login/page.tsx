@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
 import { LoginForm } from '@/components/auth/login-form'
+import { DevQuickLogin } from '@/components/auth/dev-quick-login'
 import { Loader2 } from 'lucide-react'
 
 export default function LoginPage() {
@@ -65,6 +66,9 @@ export default function LoginPage() {
               </Link>
             </div>
           </div>
+
+          {/* Dev Quick Login - only visible in development */}
+          <DevQuickLogin onSuccess={() => router.push('/')} />
         </div>
       </div>
     </div>
