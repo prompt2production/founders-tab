@@ -81,7 +81,7 @@
         "Accepts value and onChange props for controlled usage",
         "Uses CATEGORIES constant from lib/constants/categories"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ELF-007",

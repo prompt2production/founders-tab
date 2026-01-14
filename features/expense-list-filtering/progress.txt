@@ -23,3 +23,8 @@ Story: ELF-005 Create DateRangeFilter component
 Files changed: src/components/expenses/filters/date-range-filter.tsx
 Notes: Created date range filter with 5 presets (Today, This Week, This Month, Last Month, This Year). Includes custom date range picker with dual calendars. Active preset is highlighted. Clear button to reset filter.
 ---
+---
+Story: ELF-006 Create CategoryFilter component
+Files changed: src/components/expenses/filters/category-filter.tsx
+Notes: Created category dropdown using shadcn Select. Shows "All Categories" as default with category icons and labels for each option. Uses CATEGORIES constant.
+---
