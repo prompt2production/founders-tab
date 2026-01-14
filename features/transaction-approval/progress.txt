@@ -87,3 +87,9 @@ Story: TXA-015 Update ExpenseListItem to show approval status
 Files changed: src/components/expenses/expense-list-item.tsx
 Notes: Added ApprovalStatusBadge to list items. Shows approval progress for pending expenses. Pending expenses have muted amount text as visual distinction.
 ---
+
+---
+Story: TXA-016 Update EditExpenseSheet to show approvals
+Files changed: src/components/expenses/edit-expense-sheet.tsx
+Notes: Added approval status section showing badge, list of users who approved, count of remaining approvals needed, and ApproveButton for eligible users.
+---

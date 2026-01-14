@@ -21,8 +21,20 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { ExpenseForm } from './expense-form'
+import { ApprovalStatusBadge } from './approval-status-badge'
+import { ApproveButton } from './approve-button'
 import { CreateExpenseInput } from '@/lib/validations/expense'
-import { Trash2, Loader2 } from 'lucide-react'
+import { Trash2, Loader2, User } from 'lucide-react'
+
+interface ApprovalUser {
+  id: string
+  name: string
+}
+
+interface Approval {
+  id: string
+  user: ApprovalUser
+}
 
 interface Expense {
   id: string
@@ -30,19 +42,29 @@ interface Expense {
   amount: string
   description: string
   category: string
+  status?: 'PENDING_APPROVAL' | 'APPROVED'
   receiptUrl: string | null
   notes: string | null
+  userId?: string
+  approvals?: Approval[]
+  approvalsNeeded?: number
+  canCurrentUserApprove?: boolean
 }
 
 interface EditExpenseSheetProps {
   expense: Expense
+  currentUserId?: string
   open: boolean
   onOpenChange: (open: boolean) => void
   onSuccess?: () => void
 }
 
-export function EditExpenseSheet({ expense, open, onOpenChange, onSuccess }: EditExpenseSheetProps) {
+export function EditExpenseSheet({ expense, currentUserId, open, onOpenChange, onSuccess }: EditExpenseSheetProps) {
   const [isDeleting, setIsDeleting] = useState(false)
+
+  const isCreator = currentUserId === expense.userId
+  const hasApproved = expense.approvals?.some((a) => a.user.id === currentUserId) || false
+  const approvalsReceived = expense.approvals?.length || 0
 
   async function handleSubmit(data: CreateExpenseInput) {
     const response = await fetch(`/api/expenses/${expense.id}`, {
@@ -143,7 +165,56 @@ export function EditExpenseSheet({ expense, open, onOpenChange, onSuccess }: Edi
             </AlertDialog>
           </div>
         </SheetHeader>
-        <div className="px-4 pb-4">
+        <div className="px-4 pb-4 space-y-4">
+          {/* Approval Status Section */}
+          {expense.status && (
+            <div className="rounded-lg bg-card-elevated p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Approval Status</span>
+                <ApprovalStatusBadge
+                  status={expense.status}
+                  approvalsReceived={approvalsReceived}
+                  approvalsNeeded={expense.approvalsNeeded}
+                />
+              </div>
+
+              {/* Who has approved */}
+              {expense.approvals && expense.approvals.length > 0 && (
+                <div className="space-y-2">
+                  <span className="text-xs text-muted-foreground">Approved by:</span>
+                  <div className="flex flex-wrap gap-2">
+                    {expense.approvals.map((approval) => (
+                      <div
+                        key={approval.id}
+                        className="flex items-center gap-1.5 text-xs bg-secondary px-2 py-1 rounded-full"
+                      >
+                        <User className="h-3 w-3" />
+                        {approval.user.name}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Who still needs to approve */}
+              {expense.status === 'PENDING_APPROVAL' && expense.approvalsNeeded && approvalsReceived < expense.approvalsNeeded && (
+                <p className="text-xs text-muted-foreground">
+                  {expense.approvalsNeeded - approvalsReceived} more approval{expense.approvalsNeeded - approvalsReceived > 1 ? 's' : ''} needed
+                </p>
+              )}
+
+              {/* Approve button */}
+              <ApproveButton
+                expenseId={expense.id}
+                canApprove={expense.canCurrentUserApprove || false}
+                isCreator={isCreator}
+                hasApproved={hasApproved}
+                onSuccess={onSuccess}
+                className="w-full"
+              />
+            </div>
+          )}
+
           <ExpenseForm
             onSubmit={handleSubmit}
             defaultValues={defaultValues}

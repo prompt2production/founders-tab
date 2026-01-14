@@ -202,7 +202,7 @@
         "Shows ApproveButton if user can approve",
         "Shows who still needs to approve"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "TXA-017",
