@@ -287,7 +287,7 @@
         "Shows ConfirmReceiptButton for owner when withdrawal approved",
         "Disables editing for expenses in withdrawal flow"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "WDR-023",

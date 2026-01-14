@@ -23,6 +23,9 @@ import { Button } from '@/components/ui/button'
 import { ExpenseForm } from './expense-form'
 import { ApprovalStatusBadge } from './approval-status-badge'
 import { ApproveButton } from './approve-button'
+import { RequestWithdrawalButton } from './request-withdrawal-button'
+import { ApproveWithdrawalButton } from './approve-withdrawal-button'
+import { ConfirmReceiptButton } from './confirm-receipt-button'
 import { CreateExpenseInput } from '@/lib/validations/expense'
 import { Trash2, Loader2, User } from 'lucide-react'
 
@@ -36,19 +39,27 @@ interface Approval {
   user: ApprovalUser
 }
 
+interface WithdrawalApproval {
+  id: string
+  user: ApprovalUser
+}
+
 interface Expense {
   id: string
   date: string
   amount: string
   description: string
   category: string
-  status?: 'PENDING_APPROVAL' | 'APPROVED'
+  status?: 'PENDING_APPROVAL' | 'APPROVED' | 'WITHDRAWAL_REQUESTED' | 'WITHDRAWAL_APPROVED' | 'RECEIVED'
   receiptUrl: string | null
   notes: string | null
   userId?: string
   approvals?: Approval[]
   approvalsNeeded?: number
   canCurrentUserApprove?: boolean
+  withdrawalApprovals?: WithdrawalApproval[]
+  withdrawalApprovalsNeeded?: number
+  canCurrentUserApproveWithdrawal?: boolean
 }
 
 interface EditExpenseSheetProps {
@@ -65,6 +76,9 @@ export function EditExpenseSheet({ expense, currentUserId, open, onOpenChange, o
   const isCreator = currentUserId === expense.userId
   const hasApproved = expense.approvals?.some((a) => a.user.id === currentUserId) || false
   const approvalsReceived = expense.approvals?.length || 0
+  const hasApprovedWithdrawal = expense.withdrawalApprovals?.some((a) => a.user.id === currentUserId) || false
+  const withdrawalApprovalsReceived = expense.withdrawalApprovals?.length || 0
+  const isInWithdrawalFlow = expense.status === 'WITHDRAWAL_REQUESTED' || expense.status === 'WITHDRAWAL_APPROVED' || expense.status === 'RECEIVED'
 
   async function handleSubmit(data: CreateExpenseInput) {
     const response = await fetch(`/api/expenses/${expense.id}`, {
@@ -170,16 +184,18 @@ export function EditExpenseSheet({ expense, currentUserId, open, onOpenChange, o
           {expense.status && (
             <div className="rounded-lg bg-card-elevated p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Approval Status</span>
+                <span className="text-sm font-medium">Status</span>
                 <ApprovalStatusBadge
                   status={expense.status}
                   approvalsReceived={approvalsReceived}
                   approvalsNeeded={expense.approvalsNeeded}
+                  withdrawalApprovalsReceived={withdrawalApprovalsReceived}
+                  withdrawalApprovalsNeeded={expense.withdrawalApprovalsNeeded}
                 />
               </div>
 
-              {/* Who has approved */}
-              {expense.approvals && expense.approvals.length > 0 && (
+              {/* Who has approved (for pending approval) */}
+              {expense.status === 'PENDING_APPROVAL' && expense.approvals && expense.approvals.length > 0 && (
                 <div className="space-y-2">
                   <span className="text-xs text-muted-foreground">Approved by:</span>
                   <div className="flex flex-wrap gap-2">
@@ -196,14 +212,39 @@ export function EditExpenseSheet({ expense, currentUserId, open, onOpenChange, o
                 </div>
               )}
 
-              {/* Who still needs to approve */}
+              {/* Who has approved withdrawal */}
+              {expense.status === 'WITHDRAWAL_REQUESTED' && expense.withdrawalApprovals && expense.withdrawalApprovals.length > 0 && (
+                <div className="space-y-2">
+                  <span className="text-xs text-muted-foreground">Withdrawal approved by:</span>
+                  <div className="flex flex-wrap gap-2">
+                    {expense.withdrawalApprovals.map((approval) => (
+                      <div
+                        key={approval.id}
+                        className="flex items-center gap-1.5 text-xs bg-secondary px-2 py-1 rounded-full"
+                      >
+                        <User className="h-3 w-3" />
+                        {approval.user.name}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Who still needs to approve (expense approval) */}
               {expense.status === 'PENDING_APPROVAL' && expense.approvalsNeeded && approvalsReceived < expense.approvalsNeeded && (
                 <p className="text-xs text-muted-foreground">
                   {expense.approvalsNeeded - approvalsReceived} more approval{expense.approvalsNeeded - approvalsReceived > 1 ? 's' : ''} needed
                 </p>
               )}
 
-              {/* Approve button */}
+              {/* Who still needs to approve (withdrawal) */}
+              {expense.status === 'WITHDRAWAL_REQUESTED' && expense.withdrawalApprovalsNeeded && withdrawalApprovalsReceived < expense.withdrawalApprovalsNeeded && (
+                <p className="text-xs text-muted-foreground">
+                  {expense.withdrawalApprovalsNeeded - withdrawalApprovalsReceived} more withdrawal approval{expense.withdrawalApprovalsNeeded - withdrawalApprovalsReceived > 1 ? 's' : ''} needed
+                </p>
+              )}
+
+              {/* Approve button for pending approval */}
               <ApproveButton
                 expenseId={expense.id}
                 canApprove={expense.canCurrentUserApprove || false}
@@ -212,14 +253,49 @@ export function EditExpenseSheet({ expense, currentUserId, open, onOpenChange, o
                 onSuccess={onSuccess}
                 className="w-full"
               />
+
+              {/* Request Withdrawal button for approved expenses */}
+              <RequestWithdrawalButton
+                expenseId={expense.id}
+                isOwner={isCreator}
+                status={expense.status}
+                onSuccess={onSuccess}
+                className="w-full"
+              />
+
+              {/* Approve Withdrawal button */}
+              <ApproveWithdrawalButton
+                expenseId={expense.id}
+                isOwner={isCreator}
+                status={expense.status}
+                hasApproved={hasApprovedWithdrawal}
+                onSuccess={onSuccess}
+                className="w-full"
+              />
+
+              {/* Confirm Receipt button */}
+              <ConfirmReceiptButton
+                expenseId={expense.id}
+                isOwner={isCreator}
+                status={expense.status}
+                onSuccess={onSuccess}
+                className="w-full"
+              />
             </div>
           )}
 
-          <ExpenseForm
-            onSubmit={handleSubmit}
-            defaultValues={defaultValues}
-            submitLabel="Update Expense"
-          />
+          {/* Disable editing during withdrawal flow */}
+          {isInWithdrawalFlow ? (
+            <div className="rounded-lg border border-muted p-4 text-center text-muted-foreground text-sm">
+              Expense cannot be edited while in withdrawal process
+            </div>
+          ) : (
+            <ExpenseForm
+              onSubmit={handleSubmit}
+              defaultValues={defaultValues}
+              submitLabel="Update Expense"
+            />
+          )}
         </div>
       </SheetContent>
     </Sheet>

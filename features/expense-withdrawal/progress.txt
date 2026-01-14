@@ -123,3 +123,9 @@ Story: WDR-021 Update ExpenseListItem for withdrawal states
 Files changed: src/components/expenses/expense-list-item.tsx
 Notes: Added withdrawal approval types, color-coded amounts for withdrawal states, and pass withdrawal approval counts to badge.
 ---
+
+---
+Story: WDR-022 Update EditExpenseSheet for withdrawal flow
+Files changed: src/components/expenses/edit-expense-sheet.tsx
+Notes: Added withdrawal buttons (Request, Approve, Confirm Receipt), withdrawal approval display, and disabled editing during withdrawal flow.
+---
