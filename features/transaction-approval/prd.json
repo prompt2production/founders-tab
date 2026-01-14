@@ -153,7 +153,7 @@
         "Shows approval progress (e.g., '2/3 approved')",
         "Uses appropriate colors per DESIGN_SYSTEM.md"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "TXA-013",

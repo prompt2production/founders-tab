@@ -63,3 +63,9 @@ Story: TXA-011 Create useApproveExpense hook
 Files changed: src/hooks/useApproveExpense.ts
 Notes: Created hook with approve function, isLoading, error, and isSuccess states. Uses sonner toast for success/error feedback. Follows same pattern as useCreateExpense.
 ---
+
+---
+Story: TXA-012 Create ApprovalStatusBadge component
+Files changed: src/components/expenses/approval-status-badge.tsx
+Notes: Created badge component using semantic colors from DESIGN_SYSTEM.md. Shows pending with clock icon (warning colors), approved with check icon (success colors). Displays approval progress when approvalsNeeded > 0.
+---
