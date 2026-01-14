@@ -145,7 +145,7 @@
         "Running 'npm start' in tools/db-console displays environment selection",
         "Application does not crash on startup"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }

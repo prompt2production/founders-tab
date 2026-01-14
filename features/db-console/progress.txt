@@ -57,3 +57,9 @@ Story: DBC-010 Create application entry point
 Files changed: tools/db-console/src/index.ts
 Notes: Created main function with dotenv loading, environment selection, Prisma client creation, main menu loop, error handling, and cleanup on exit.
 ---
+
+---
+Story: DBC-011 Add npm scripts and verify application runs
+Files changed: tools/db-console/package.json, tools/db-console/tsconfig.json
+Notes: Updated tsconfig with paths to reference parent project's @prisma/client. Verified app starts and displays environment selection menu.
+---
