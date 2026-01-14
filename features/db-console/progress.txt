@@ -21,3 +21,9 @@ Story: DBC-004 Create readline-based prompt utilities
 Files changed: tools/db-console/src/prompts.ts
 Notes: Created askQuestion, selectOption, confirm functions using Node.js readline. Also added closeReadline for cleanup.
 ---
+
+---
+Story: DBC-005 Create environment selection flow
+Files changed: tools/db-console/src/commands/select-environment.ts
+Notes: Created selectEnvironment function with welcome banner, environment selection, and production warning with confirmation.
+---

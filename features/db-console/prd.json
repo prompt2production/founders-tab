@@ -64,7 +64,7 @@
         "Shows warning message when Production is selected",
         "Requires confirmation to proceed with Production"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "DBC-006",
