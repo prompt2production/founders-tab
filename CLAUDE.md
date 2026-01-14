@@ -472,10 +472,10 @@ A feature is complete when:
 - `features/db-console` - Database Console Application (11 stories) ✓
 - `features/dev-quick-login` - Dev Quick Login (2 stories) ✓
 
-**Current Feature:** `features/db-console-seed-refactor` - DB Console Seed Refactor (4 stories)
+**Current Feature:** `features/role-management` - Role Management (9 stories)
 
 ### Next Step
-Review the generated files in `features/db-console-seed-refactor/` and run Ralph:
+Review the generated files in `features/role-management/` and run Ralph:
 
 ```bash
 claude --dangerously-skip-permissions
@@ -483,15 +483,19 @@ claude --dangerously-skip-permissions
 
 BEFORE EACH ITERATION:
 1. Read CLAUDE.md for project context
-2. Read features/db-console-seed-refactor/prd.json and find the first story with passes: false
+2. Read DESIGN_SYSTEM.md for UI patterns
+3. Read features/role-management/prd.json and find the first story with passes: false
 
 YOUR TASK:
 1. Implement the story following all acceptance criteria
-2. This is a console application - verify code compiles and runs
+2. Run tests to verify:
+   - npm run test (for unit tests)
+   - npx playwright test (only for e2e stories)
+3. Fix any failures before proceeding
 
 WHEN STORY COMPLETE:
-1. Update features/db-console-seed-refactor/prd.json - set passes: true
-2. Append to features/db-console-seed-refactor/progress.txt with format:
+1. Update features/role-management/prd.json - set passes: true
+2. Append to features/role-management/progress.txt with format:
    ---
    Story: [ID] [Title]
    Files changed: [list]
@@ -502,5 +506,5 @@ WHEN STORY COMPLETE:
 WHEN ALL STORIES COMPLETE:
 Output <promise>COMPLETE</promise>
 
-If stuck after 3 attempts, document blockers and move to next story." --max-iterations 10 --completion-promise COMPLETE
+If stuck after 3 attempts, document blockers and move to next story." --max-iterations 15 --completion-promise COMPLETE
 ```

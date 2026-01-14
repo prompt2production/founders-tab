@@ -1,9 +1,18 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { ExpenseStatus } from '@prisma/client'
 
-export async function GET() {
+// Predefined filter presets
+const STATUS_PRESETS: Record<string, ExpenseStatus[]> = {
+  owed: [ExpenseStatus.APPROVED, ExpenseStatus.WITHDRAWAL_REQUESTED, ExpenseStatus.WITHDRAWAL_APPROVED],
+  approved: [ExpenseStatus.APPROVED],
+  pending: [ExpenseStatus.PENDING_APPROVAL],
+  active: [ExpenseStatus.PENDING_APPROVAL, ExpenseStatus.APPROVED, ExpenseStatus.WITHDRAWAL_REQUESTED, ExpenseStatus.WITHDRAWAL_APPROVED],
+  all: [ExpenseStatus.PENDING_APPROVAL, ExpenseStatus.APPROVED, ExpenseStatus.WITHDRAWAL_REQUESTED, ExpenseStatus.WITHDRAWAL_APPROVED, ExpenseStatus.RECEIVED],
+}
+
+export async function GET(request: NextRequest) {
   try {
     // Check authentication
     const user = await getCurrentUser()
@@ -11,7 +20,12 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Get all users with their APPROVED expense totals only
+    // Get filter from query params (default to 'owed')
+    const { searchParams } = new URL(request.url)
+    const filter = searchParams.get('filter') || 'owed'
+    const statuses = STATUS_PRESETS[filter] || STATUS_PRESETS.owed
+
+    // Get all users with their expense totals for selected statuses
     const usersWithTotals = await prisma.user.findMany({
       select: {
         id: true,
@@ -19,7 +33,7 @@ export async function GET() {
         email: true,
         expenses: {
           where: {
-            status: ExpenseStatus.APPROVED,
+            status: { in: statuses },
           },
           select: {
             amount: true,
@@ -28,7 +42,7 @@ export async function GET() {
       },
     })
 
-    // Calculate totals for each user (only approved expenses)
+    // Calculate totals for each user based on selected filter
     const balances = usersWithTotals.map((u) => {
       const total = u.expenses.reduce((sum, expense) => {
         return sum + (expense.amount?.toNumber() || 0)

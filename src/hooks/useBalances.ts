@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react'
 
+export type BalanceFilter = 'owed' | 'approved' | 'pending' | 'active' | 'all'
+
 export interface BalanceUser {
   id: string
   name: string
@@ -23,7 +25,7 @@ interface UseBalancesResult {
   refetch: () => Promise<void>
 }
 
-export function useBalances(): UseBalancesResult {
+export function useBalances(filter: BalanceFilter = 'owed'): UseBalancesResult {
   const [teamTotal, setTeamTotal] = useState(0)
   const [balances, setBalances] = useState<Balance[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -34,7 +36,7 @@ export function useBalances(): UseBalancesResult {
     setError(null)
 
     try {
-      const response = await fetch('/api/balances')
+      const response = await fetch(`/api/balances?filter=${filter}`)
 
       if (!response.ok) {
         const data = await response.json()
@@ -49,7 +51,7 @@ export function useBalances(): UseBalancesResult {
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [filter])
 
   useEffect(() => {
     fetchBalances()

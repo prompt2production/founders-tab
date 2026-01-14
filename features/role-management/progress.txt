@@ -1,0 +1,5 @@
+---
+Story: ROLE-001 Create role update validation schema
+Files changed: src/lib/validations/role.ts, tests/unit/validations/role.test.ts
+Notes: Created Zod schema with enum validation for FOUNDER/MEMBER roles. All 7 unit tests pass.
+---

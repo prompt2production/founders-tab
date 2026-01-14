@@ -1,0 +1,116 @@
+{
+  "feature": "Role Management",
+  "stories": [
+    {
+      "id": "ROLE-001",
+      "title": "Create role update validation schema",
+      "description": "Create Zod validation schema for role update requests",
+      "acceptance_criteria": [
+        "File exists at src/lib/validations/role.ts",
+        "Schema validates role field accepts only 'FOUNDER' or 'MEMBER'",
+        "Schema exports updateRoleSchema and UpdateRoleInput type",
+        "Unit test exists at tests/unit/validations/role.test.ts",
+        "Unit test passes for valid and invalid role values"
+      ],
+      "passes": true
+    },
+    {
+      "id": "ROLE-002",
+      "title": "Create PATCH /api/users/[id]/role endpoint",
+      "description": "API endpoint to update a user's role with proper authorization and last-founder protection",
+      "acceptance_criteria": [
+        "File exists at src/app/api/users/[id]/role/route.ts",
+        "Returns 401 if user not authenticated",
+        "Returns 403 if requesting user is not a FOUNDER",
+        "Returns 404 if target user not found",
+        "Returns 403 with error 'Cannot demote the last founder' when attempting to demote the only FOUNDER",
+        "Returns 200 with updated user data on success",
+        "Role is actually updated in database"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ROLE-003",
+      "title": "Add unit tests for role API endpoint",
+      "description": "Comprehensive unit tests for the role update endpoint",
+      "acceptance_criteria": [
+        "File exists at tests/unit/api/role.test.ts",
+        "Tests cover: unauthorized access, non-founder access, user not found, last founder protection, successful promotion, successful demotion",
+        "All tests pass with npm run test"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ROLE-004",
+      "title": "Install dropdown-menu shadcn component",
+      "description": "Install the dropdown-menu component needed for role selection",
+      "acceptance_criteria": [
+        "File exists at src/components/ui/dropdown-menu.tsx",
+        "Component can be imported without errors"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ROLE-005",
+      "title": "Create RoleBadge component with dropdown",
+      "description": "Create a role badge component that shows a dropdown for founders to change roles",
+      "acceptance_criteria": [
+        "File exists at src/components/team/role-badge.tsx",
+        "Component accepts props: role, userName, userId, isCurrentUserFounder, isLastFounder, onRoleChange",
+        "When isCurrentUserFounder is false, renders static Badge with role text",
+        "When isCurrentUserFounder is true, renders dropdown with FOUNDER and MEMBER options",
+        "When isLastFounder is true and role is FOUNDER, the MEMBER option is disabled",
+        "Calls onRoleChange callback with userId and newRole when selection changes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ROLE-006",
+      "title": "Install alert-dialog shadcn component",
+      "description": "Install the alert-dialog component for role change confirmation",
+      "acceptance_criteria": [
+        "File exists at src/components/ui/alert-dialog.tsx",
+        "Component can be imported without errors"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ROLE-007",
+      "title": "Add confirmation dialog to RoleBadge",
+      "description": "Add confirmation dialog before role changes are applied",
+      "acceptance_criteria": [
+        "RoleBadge shows AlertDialog when a different role is selected",
+        "Dialog shows appropriate message for promote vs demote scenarios",
+        "Dialog has Cancel and Confirm buttons",
+        "Cancel closes dialog without making changes",
+        "Confirm triggers the onRoleChange callback"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ROLE-008",
+      "title": "Integrate RoleBadge into Team page",
+      "description": "Replace static badge with RoleBadge component and wire up API calls",
+      "acceptance_criteria": [
+        "Team page imports and uses RoleBadge component",
+        "Team page fetches founder count to determine isLastFounder",
+        "Clicking role and confirming calls PATCH /api/users/[id]/role",
+        "Success shows toast 'Role updated' with user name and new role",
+        "Error shows toast with error message",
+        "Team member list refreshes after successful role change"
+      ],
+      "passes": false
+    },
+    {
+      "id": "ROLE-009",
+      "title": "E2E test for role management",
+      "description": "End-to-end test covering role promotion and demotion flows",
+      "acceptance_criteria": [
+        "File exists at tests/e2e/role-management.spec.ts",
+        "Test covers: founder can see role dropdown, founder can promote member, founder can demote another founder, last founder cannot be demoted",
+        "All E2E tests pass with npx playwright test tests/e2e/role-management.spec.ts"
+      ],
+      "passes": false
+    }
+  ]
+}

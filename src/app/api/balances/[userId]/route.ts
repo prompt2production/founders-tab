@@ -3,6 +3,15 @@ import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { ExpenseStatus } from '@prisma/client'
 
+// Predefined filter presets (same as main balances route)
+const STATUS_PRESETS: Record<string, ExpenseStatus[]> = {
+  owed: [ExpenseStatus.APPROVED, ExpenseStatus.WITHDRAWAL_REQUESTED, ExpenseStatus.WITHDRAWAL_APPROVED],
+  approved: [ExpenseStatus.APPROVED],
+  pending: [ExpenseStatus.PENDING_APPROVAL],
+  active: [ExpenseStatus.PENDING_APPROVAL, ExpenseStatus.APPROVED, ExpenseStatus.WITHDRAWAL_REQUESTED, ExpenseStatus.WITHDRAWAL_APPROVED],
+  all: [ExpenseStatus.PENDING_APPROVAL, ExpenseStatus.APPROVED, ExpenseStatus.WITHDRAWAL_REQUESTED, ExpenseStatus.WITHDRAWAL_APPROVED, ExpenseStatus.RECEIVED],
+}
+
 interface RouteParams {
   params: Promise<{ userId: string }>
 }
@@ -17,7 +26,12 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     const { userId } = await params
 
-    // Get user with APPROVED expenses only
+    // Get filter from query params (default to 'owed')
+    const { searchParams } = new URL(request.url)
+    const filter = searchParams.get('filter') || 'owed'
+    const statuses = STATUS_PRESETS[filter] || STATUS_PRESETS.owed
+
+    // Get user with expenses for selected statuses
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -26,7 +40,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         email: true,
         expenses: {
           where: {
-            status: ExpenseStatus.APPROVED,
+            status: { in: statuses },
           },
           select: {
             amount: true,

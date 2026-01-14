@@ -141,7 +141,7 @@ export function ExpenseForm({ onSubmit, defaultValues, submitLabel = 'Add Expens
                   <Calendar
                     mode="single"
                     selected={field.value instanceof Date ? field.value : new Date(field.value)}
-                    onSelect={field.onChange}
+                    onSelect={(date) => date && field.onChange(date)}
                     disabled={(date) => date > new Date() || date < new Date(new Date().setFullYear(new Date().getFullYear() - 1))}
                     initialFocus
                   />

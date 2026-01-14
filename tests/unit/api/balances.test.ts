@@ -46,7 +46,8 @@ describe('GET /api/balances', () => {
   it('returns 401 when not authenticated', async () => {
     vi.mocked(getCurrentUser).mockResolvedValue(null)
 
-    const response = await getBalances()
+    const request = new NextRequest('http://localhost/api/balances')
+    const response = await getBalances(request)
     const data = await response.json()
 
     expect(response.status).toBe(401)
@@ -78,7 +79,8 @@ describe('GET /api/balances', () => {
     ]
     vi.mocked(prisma.user.findMany).mockResolvedValue(mockUsersWithExpenses as never)
 
-    const response = await getBalances()
+    const request = new NextRequest('http://localhost/api/balances')
+    const response = await getBalances(request)
     const data = await response.json()
 
     expect(response.status).toBe(200)
@@ -125,7 +127,8 @@ describe('GET /api/balances', () => {
     ]
     vi.mocked(prisma.user.findMany).mockResolvedValue(mockUsersWithExpenses as never)
 
-    const response = await getBalances()
+    const request = new NextRequest('http://localhost/api/balances')
+    const response = await getBalances(request)
     const data = await response.json()
 
     expect(data.balances[0].user.name).toBe('Bob')
@@ -156,7 +159,8 @@ describe('GET /api/balances', () => {
     ]
     vi.mocked(prisma.user.findMany).mockResolvedValue(mockUsersWithExpenses as never)
 
-    const response = await getBalances()
+    const request = new NextRequest('http://localhost/api/balances')
+    const response = await getBalances(request)
     const data = await response.json()
 
     expect(data.teamTotal).toBe(100)

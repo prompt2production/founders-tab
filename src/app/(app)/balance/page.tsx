@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { useAuthContext } from '@/components/auth/auth-provider'
-import { useBalances, Balance } from '@/hooks/useBalances'
+import { useBalances, Balance, BalanceFilter } from '@/hooks/useBalances'
 import { useBalance } from '@/hooks/useBalance'
 import { BalanceSummary } from '@/components/balance/balance-summary'
 import { BalanceCard } from '@/components/balance/balance-card'
@@ -15,8 +15,23 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+
+const FILTER_OPTIONS: { value: BalanceFilter; label: string; description: string }[] = [
+  { value: 'owed', label: 'Owed', description: 'Approved + withdrawal in progress' },
+  { value: 'approved', label: 'Approved Only', description: 'Only approved expenses' },
+  { value: 'pending', label: 'Pending', description: 'Awaiting approval' },
+  { value: 'active', label: 'All Active', description: 'Everything except received' },
+  { value: 'all', label: 'All', description: 'Including received payments' },
+]
 
 function BalanceCardSkeleton() {
   return (
@@ -63,12 +78,14 @@ function BalanceSummarySkeleton() {
 
 function BalanceDetailSheet({
   userId,
+  filter,
   onClose,
 }: {
   userId: string | null
+  filter: BalanceFilter
   onClose: () => void
 }) {
-  const { user, total, expenseCount, byCategory, byMonth, isLoading } = useBalance(userId)
+  const { user, total, expenseCount, byCategory, byMonth, isLoading } = useBalance(userId, filter)
 
   return (
     <Sheet open={!!userId} onOpenChange={(open) => !open && onClose()}>
@@ -115,7 +132,8 @@ function BalanceDetailSheet({
 
 export default function BalancePage() {
   const { user: currentUser } = useAuthContext()
-  const { teamTotal, balances, isLoading, error } = useBalances()
+  const [filter, setFilter] = useState<BalanceFilter>('owed')
+  const { teamTotal, balances, isLoading, error } = useBalances(filter)
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
 
   return (
@@ -123,7 +141,21 @@ export default function BalancePage() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border px-4 lg:px-6 py-3">
-          <h1 className="text-2xl font-semibold">Running Balances</h1>
+          <div className="flex items-center justify-between gap-4">
+            <h1 className="text-2xl font-semibold">Running Balances</h1>
+            <Select value={filter} onValueChange={(value) => setFilter(value as BalanceFilter)}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {FILTER_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </header>
 
         {/* Content */}
@@ -181,7 +213,7 @@ export default function BalancePage() {
       </div>
 
       {/* Detail Sheet */}
-      <BalanceDetailSheet userId={selectedUserId} onClose={() => setSelectedUserId(null)} />
+      <BalanceDetailSheet userId={selectedUserId} filter={filter} onClose={() => setSelectedUserId(null)} />
     </div>
   )
 }

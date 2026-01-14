@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { BalanceFilter } from './useBalances'
 
 export interface BalanceUser {
   id: string
@@ -30,7 +31,7 @@ interface UseBalanceResult {
   refetch: () => Promise<void>
 }
 
-export function useBalance(userId: string | null): UseBalanceResult {
+export function useBalance(userId: string | null, filter: BalanceFilter = 'owed'): UseBalanceResult {
   const [user, setUser] = useState<BalanceUser | null>(null)
   const [total, setTotal] = useState(0)
   const [expenseCount, setExpenseCount] = useState(0)
@@ -53,7 +54,7 @@ export function useBalance(userId: string | null): UseBalanceResult {
     setError(null)
 
     try {
-      const response = await fetch(`/api/balances/${userId}`)
+      const response = await fetch(`/api/balances/${userId}?filter=${filter}`)
 
       if (!response.ok) {
         const data = await response.json()
@@ -71,7 +72,7 @@ export function useBalance(userId: string | null): UseBalanceResult {
     } finally {
       setIsLoading(false)
     }
-  }, [userId])
+  }, [userId, filter])
 
   useEffect(() => {
     fetchBalance()
