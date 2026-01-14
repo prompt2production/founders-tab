@@ -53,7 +53,7 @@
         "Returns teamTotal, balances array, isLoading, error",
         "Provides refetch function"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "RBD-005",

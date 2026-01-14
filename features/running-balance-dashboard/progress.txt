@@ -15,3 +15,9 @@ Story: RBD-003 Create unit tests for balances API
 Files changed: tests/unit/api/balances.test.ts
 Notes: Added 8 unit tests covering both endpoints - authentication checks, response structure validation, sorting, and category grouping.
 ---
+
+---
+Story: RBD-004 Create useBalances hook
+Files changed: src/hooks/useBalances.ts
+Notes: Created hook following existing patterns. Fetches from /api/balances on mount, returns teamTotal, balances, isLoading, error, and refetch function.
+---
