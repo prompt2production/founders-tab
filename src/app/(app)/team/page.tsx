@@ -225,7 +225,7 @@ export default function TeamPage() {
                   Send an invitation to join your team on Founders Tab.
                 </SheetDescription>
               </SheetHeader>
-              <div className="py-4">
+              <div className="px-4 py-4">
                 <InviteMemberForm
                   onSuccess={() => {
                     setInviteSheetOpen(false)

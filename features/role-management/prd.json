@@ -38,7 +38,7 @@
         "Tests cover: unauthorized access, non-founder access, user not found, last founder protection, successful promotion, successful demotion",
         "All tests pass with npm run test"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ROLE-004",

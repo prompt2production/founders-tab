@@ -8,3 +8,8 @@ Story: ROLE-002 Create PATCH /api/users/[id]/role endpoint
 Files changed: src/app/api/users/[id]/role/route.ts
 Notes: Created PATCH endpoint with auth check, FOUNDER-only access, user not found handling, and last-founder protection.
 ---
+---
+Story: ROLE-003 Add unit tests for role API endpoint
+Files changed: tests/unit/api/role.test.ts
+Notes: Created 8 comprehensive unit tests covering all acceptance criteria. All 104 tests pass.
+---
