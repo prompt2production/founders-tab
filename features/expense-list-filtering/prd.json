@@ -37,7 +37,7 @@
         "Tests verify user list is returned with correct fields",
         "npm run test passes"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ELF-004",
