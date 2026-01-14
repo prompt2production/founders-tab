@@ -213,7 +213,7 @@
         "After submission, shows pending approval status",
         "Text explains other founders will need to approve"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "TXA-018",
