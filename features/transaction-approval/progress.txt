@@ -15,3 +15,9 @@ Story: TXA-003 Update POST /api/expenses to set PENDING_APPROVAL status
 Files changed: src/app/api/expenses/route.ts
 Notes: Updated expense creation to explicitly set status to PENDING_APPROVAL. Response includes status field.
 ---
+
+---
+Story: TXA-004 Create POST /api/expenses/[id]/approve endpoint
+Files changed: src/app/api/expenses/[id]/approve/route.ts
+Notes: Created approval endpoint with validation for: auth, expense exists, not own expense, not already approved, founder role. Returns updated expense with approvals.
+---

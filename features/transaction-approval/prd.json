@@ -52,7 +52,7 @@
         "Creates Approval record on success",
         "Returns updated expense with approvals"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "TXA-005",
