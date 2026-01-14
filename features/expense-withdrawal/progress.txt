@@ -93,3 +93,9 @@ Story: WDR-016 Create RequestWithdrawalButton component
 Files changed: src/components/expenses/request-withdrawal-button.tsx
 Notes: Created button with AlertDialog confirmation. Hidden when not owner or not APPROVED status.
 ---
+
+---
+Story: WDR-017 Create ApproveWithdrawalButton component
+Files changed: src/components/expenses/approve-withdrawal-button.tsx
+Notes: Created button hidden for owners, disabled when already approved, hidden when not WITHDRAWAL_REQUESTED.
+---

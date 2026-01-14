@@ -224,7 +224,7 @@
         "Hidden when expense is not in WITHDRAWAL_REQUESTED status",
         "Shows loading state during approval"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "WDR-018",
