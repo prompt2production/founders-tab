@@ -309,7 +309,7 @@
         "Test verifies filter by withdrawal statuses works",
         "npx playwright test expense-withdrawal passes"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }

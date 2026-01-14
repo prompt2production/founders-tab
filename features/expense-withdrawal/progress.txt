@@ -135,3 +135,9 @@ Story: WDR-023 Update usePendingApprovalCount for withdrawals
 Files changed: src/hooks/usePendingApprovalCount.ts
 Notes: Now fetches both PENDING_APPROVAL and WITHDRAWAL_REQUESTED expenses. Combines counts of canCurrentUserApprove and canCurrentUserApproveWithdrawal.
 ---
+
+---
+Story: WDR-024 E2E test: Withdrawal request flow
+Files changed: tests/e2e/expense-withdrawal.spec.ts
+Notes: Created 7 E2E tests verifying withdrawal status filter options exist (Withdrawal Requested, Ready for Receipt, Received), filter navigation works for all three statuses, and URL state is maintained when navigating directly.
+---
