@@ -108,7 +108,7 @@
         "Uses DESIGN_SYSTEM.md chart colors",
         "Accepts balance detail data as prop"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "RBD-009",
