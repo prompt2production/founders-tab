@@ -1,0 +1,269 @@
+{
+  "feature": "Transaction Approval",
+  "stories": [
+    {
+      "id": "TXA-001",
+      "title": "Add ExpenseStatus enum and status field to schema",
+      "description": "Update Prisma schema with expense status tracking",
+      "acceptance_criteria": [
+        "prisma/schema.prisma has ExpenseStatus enum with PENDING_APPROVAL and APPROVED values",
+        "Expense model has status field with default PENDING_APPROVAL",
+        "npx prisma migrate dev succeeds",
+        "npx prisma generate succeeds"
+      ],
+      "passes": true
+    },
+    {
+      "id": "TXA-002",
+      "title": "Add Approval model to schema",
+      "description": "Create model to track which founders have approved each expense",
+      "acceptance_criteria": [
+        "prisma/schema.prisma has Approval model with id, expenseId, userId, createdAt",
+        "Approval has relation to Expense and User",
+        "Unique constraint on [expenseId, userId] prevents duplicate approvals",
+        "User model has approvals relation",
+        "Expense model has approvals relation",
+        "npx prisma migrate dev succeeds"
+      ],
+      "passes": false
+    },
+    {
+      "id": "TXA-003",
+      "title": "Update POST /api/expenses to set PENDING_APPROVAL status",
+      "description": "New expenses should start with pending approval status",
+      "acceptance_criteria": [
+        "POST /api/expenses creates expense with status PENDING_APPROVAL",
+        "Response includes status field",
+        "Existing tests still pass"
+      ],
+      "passes": false
+    },
+    {
+      "id": "TXA-004",
+      "title": "Create POST /api/expenses/[id]/approve endpoint",
+      "description": "API endpoint for founders to approve expenses",
+      "acceptance_criteria": [
+        "src/app/api/expenses/[id]/approve/route.ts exists with POST handler",
+        "Returns 401 if not authenticated",
+        "Returns 404 if expense not found",
+        "Returns 400 if user is the expense creator",
+        "Returns 400 if user already approved this expense",
+        "Returns 400 if user role is not FOUNDER",
+        "Creates Approval record on success",
+        "Returns updated expense with approvals"
+      ],
+      "passes": false
+    },
+    {
+      "id": "TXA-005",
+      "title": "Auto-approve when all founders have approved",
+      "description": "Automatically change status to APPROVED when all required approvals received",
+      "acceptance_criteria": [
+        "After approval, check if all other founders have approved",
+        "If all founders (except creator) have approved, update status to APPROVED",
+        "Response indicates if expense is now fully approved",
+        "Single-founder scenario: expense auto-approves on creation"
+      ],
+      "passes": false
+    },
+    {
+      "id": "TXA-006",
+      "title": "Update GET /api/expenses to include status filter",
+      "description": "Add ability to filter expenses by approval status",
+      "acceptance_criteria": [
+        "GET /api/expenses accepts status query parameter",
+        "status=PENDING_APPROVAL returns only pending expenses",
+        "status=APPROVED returns only approved expenses",
+        "No status parameter returns all expenses",
+        "Response includes status field for each expense"
+      ],
+      "passes": false
+    },
+    {
+      "id": "TXA-007",
+      "title": "Update GET /api/expenses to include approval info",
+      "description": "Include approval details in expense list response",
+      "acceptance_criteria": [
+        "Each expense includes approvals array with user info",
+        "Each expense includes approvalsNeeded count",
+        "Each expense includes isFullyApproved boolean",
+        "Each expense includes canCurrentUserApprove boolean"
+      ],
+      "passes": false
+    },
+    {
+      "id": "TXA-008",
+      "title": "Update GET /api/balances to only count approved expenses",
+      "description": "Balance calculations should only include approved expenses",
+      "acceptance_criteria": [
+        "teamTotal only sums APPROVED expenses",
+        "Individual user totals only sum APPROVED expenses",
+        "Percentages calculated from approved totals only",
+        "expenseCount only counts APPROVED expenses"
+      ],
+      "passes": false
+    },
+    {
+      "id": "TXA-009",
+      "title": "Update GET /api/balances/[userId] to only count approved expenses",
+      "description": "User balance breakdown should only include approved expenses",
+      "acceptance_criteria": [
+        "User total only sums APPROVED expenses",
+        "byCategory only includes APPROVED expenses",
+        "byMonth only includes APPROVED expenses",
+        "expenseCount only counts APPROVED expenses"
+      ],
+      "passes": false
+    },
+    {
+      "id": "TXA-010",
+      "title": "Create unit tests for approval API",
+      "description": "Write unit tests for the approval endpoint",
+      "acceptance_criteria": [
+        "tests/unit/api/approval.test.ts exists",
+        "Tests verify 401 when not authenticated",
+        "Tests verify 404 when expense not found",
+        "Tests verify 400 when approving own expense",
+        "Tests verify 400 when already approved",
+        "Tests verify successful approval creation",
+        "npm run test passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "TXA-011",
+      "title": "Create useApproveExpense hook",
+      "description": "Hook for approving expenses from the UI",
+      "acceptance_criteria": [
+        "src/hooks/useApproveExpense.ts exists",
+        "Hook calls POST /api/expenses/[id]/approve",
+        "Returns approve function, isLoading, error states",
+        "Returns success state after approval"
+      ],
+      "passes": false
+    },
+    {
+      "id": "TXA-012",
+      "title": "Create ApprovalStatusBadge component",
+      "description": "Badge component showing expense approval status",
+      "acceptance_criteria": [
+        "src/components/expenses/approval-status-badge.tsx exists",
+        "Shows 'Pending' badge for PENDING_APPROVAL status",
+        "Shows 'Approved' badge for APPROVED status",
+        "Shows approval progress (e.g., '2/3 approved')",
+        "Uses appropriate colors per DESIGN_SYSTEM.md"
+      ],
+      "passes": false
+    },
+    {
+      "id": "TXA-013",
+      "title": "Create ApproveButton component",
+      "description": "Button component for approving an expense",
+      "acceptance_criteria": [
+        "src/components/expenses/approve-button.tsx exists",
+        "Shows 'Approve' button when user can approve",
+        "Disabled/hidden when user is expense creator",
+        "Disabled/hidden when user already approved",
+        "Shows loading state during approval",
+        "Shows success state after approval"
+      ],
+      "passes": false
+    },
+    {
+      "id": "TXA-014",
+      "title": "Add status filter to ExpenseFilters component",
+      "description": "Add dropdown to filter by approval status",
+      "acceptance_criteria": [
+        "ExpenseFilters includes status dropdown",
+        "Options: All, Pending Approval, Approved",
+        "Filter syncs with URL params",
+        "Filter works with other filters"
+      ],
+      "passes": false
+    },
+    {
+      "id": "TXA-015",
+      "title": "Update ExpenseListItem to show approval status",
+      "description": "Show approval badge and approve action in list items",
+      "acceptance_criteria": [
+        "ExpenseListItem shows ApprovalStatusBadge",
+        "Shows approval progress for pending expenses",
+        "Visual distinction between pending and approved"
+      ],
+      "passes": false
+    },
+    {
+      "id": "TXA-016",
+      "title": "Update EditExpenseSheet to show approvals",
+      "description": "Show approval status and actions in expense detail view",
+      "acceptance_criteria": [
+        "EditExpenseSheet shows current approval status",
+        "Shows list of who has approved",
+        "Shows ApproveButton if user can approve",
+        "Shows who still needs to approve"
+      ],
+      "passes": false
+    },
+    {
+      "id": "TXA-017",
+      "title": "Update AddExpenseSheet with approval notice",
+      "description": "Inform users that new expenses require approval",
+      "acceptance_criteria": [
+        "AddExpenseSheet shows info text about approval requirement",
+        "After submission, shows pending approval status",
+        "Text explains other founders will need to approve"
+      ],
+      "passes": false
+    },
+    {
+      "id": "TXA-018",
+      "title": "Add pending approval count to navigation",
+      "description": "Show badge with count of expenses needing user's approval",
+      "acceptance_criteria": [
+        "Navigation shows badge on Expenses link when pending approvals exist",
+        "Badge shows count of expenses user can approve",
+        "Badge updates after approving an expense",
+        "Badge hidden when count is zero"
+      ],
+      "passes": false
+    },
+    {
+      "id": "TXA-019",
+      "title": "Update useExpenses hook for status and approvals",
+      "description": "Update hook to handle status filter and approval data",
+      "acceptance_criteria": [
+        "useExpenses accepts status filter parameter",
+        "Returns approval info for each expense",
+        "Expense type includes status and approval fields"
+      ],
+      "passes": false
+    },
+    {
+      "id": "TXA-020",
+      "title": "E2E test: Expense approval workflow",
+      "description": "Test complete approval flow from creation to approved status",
+      "acceptance_criteria": [
+        "tests/e2e/expense-approval.spec.ts exists",
+        "Test creates expense as one user",
+        "Test verifies expense shows as pending",
+        "Test logs in as different founder",
+        "Test approves the expense",
+        "Test verifies status changes appropriately",
+        "npx playwright test expense-approval passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "TXA-021",
+      "title": "E2E test: Balance only includes approved expenses",
+      "description": "Verify balance dashboard respects approval status",
+      "acceptance_criteria": [
+        "tests/e2e/balance-approval.spec.ts exists",
+        "Test creates approved and pending expenses",
+        "Test verifies balance only shows approved totals",
+        "npx playwright test balance-approval passes"
+      ],
+      "passes": false
+    }
+  ]
+}
