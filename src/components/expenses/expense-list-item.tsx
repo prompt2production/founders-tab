@@ -16,18 +16,25 @@ interface Approval {
   user: ExpenseUser
 }
 
+interface WithdrawalApproval {
+  id: string
+  user: ExpenseUser
+}
+
 interface Expense {
   id: string
   date: Date | string
   amount: number | string
   description: string
   category: string
-  status?: 'PENDING_APPROVAL' | 'APPROVED'
+  status?: 'PENDING_APPROVAL' | 'APPROVED' | 'WITHDRAWAL_REQUESTED' | 'WITHDRAWAL_APPROVED' | 'RECEIVED'
   receiptUrl?: string | null
   notes?: string | null
   user?: ExpenseUser
   approvals?: Approval[]
   approvalsNeeded?: number
+  withdrawalApprovals?: WithdrawalApproval[]
+  withdrawalApprovalsNeeded?: number
 }
 
 interface ExpenseListItemProps {
@@ -43,7 +50,10 @@ export function ExpenseListItem({ expense, onClick, showUser = false }: ExpenseL
   const categoryLabel = getCategoryLabel(expense.category)
   const userName = expense.user?.name
   const isPending = expense.status === 'PENDING_APPROVAL'
+  const isWithdrawalPending = expense.status === 'WITHDRAWAL_REQUESTED' || expense.status === 'WITHDRAWAL_APPROVED'
+  const isReceived = expense.status === 'RECEIVED'
   const approvalsReceived = expense.approvals?.length || 0
+  const withdrawalApprovalsReceived = expense.withdrawalApprovals?.length || 0
 
   return (
     <div
@@ -74,7 +84,12 @@ export function ExpenseListItem({ expense, onClick, showUser = false }: ExpenseL
 
       {/* Amount and Status */}
       <div className="text-right flex flex-col items-end gap-1">
-        <p className={cn('font-semibold tabular-nums', isPending && 'text-muted-foreground')}>
+        <p className={cn(
+          'font-semibold tabular-nums',
+          isPending && 'text-muted-foreground',
+          isWithdrawalPending && 'text-[#60A5FA]',
+          isReceived && 'text-[#4ADE80]'
+        )}>
           {formattedAmount}
         </p>
         {expense.status && (
@@ -82,6 +97,8 @@ export function ExpenseListItem({ expense, onClick, showUser = false }: ExpenseL
             status={expense.status}
             approvalsReceived={approvalsReceived}
             approvalsNeeded={expense.approvalsNeeded}
+            withdrawalApprovalsReceived={withdrawalApprovalsReceived}
+            withdrawalApprovalsNeeded={expense.withdrawalApprovalsNeeded}
           />
         )}
         {!expense.status && <p className="text-xs text-muted-foreground">{categoryLabel}</p>}

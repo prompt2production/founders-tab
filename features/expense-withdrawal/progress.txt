@@ -117,3 +117,9 @@ Story: WDR-020 Update StatusFilter for withdrawal statuses
 Files changed: src/components/expenses/filters/status-filter.tsx
 Notes: Added Withdrawal Requested, Ready for Receipt, and Received options to dropdown.
 ---
+
+---
+Story: WDR-021 Update ExpenseListItem for withdrawal states
+Files changed: src/components/expenses/expense-list-item.tsx
+Notes: Added withdrawal approval types, color-coded amounts for withdrawal states, and pass withdrawal approval counts to badge.
+---

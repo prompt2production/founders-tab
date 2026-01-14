@@ -273,7 +273,7 @@
         "Visual distinction between withdrawal states",
         "Shows 'Received' indicator for completed withdrawals"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "WDR-022",
