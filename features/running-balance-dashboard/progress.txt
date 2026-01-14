@@ -57,3 +57,9 @@ Story: RBD-010 Create balance detail sheet/modal
 Files changed: src/app/(app)/balance/page.tsx
 Notes: Integrated detail Sheet inside balance page. Shows BalanceBreakdown and 'View Expenses' link. Opens on BalanceCard click.
 ---
+
+---
+Story: RBD-011 Add Balance link to navigation
+Files changed: src/app/(app)/layout.tsx
+Notes: Added 'Balances' link with Wallet icon to navItems array. Shows in both desktop and mobile navigation with active state support.
+---

@@ -147,7 +147,7 @@
         "Link shows active state when on balance page",
         "Uses Wallet or DollarSign icon from lucide-react"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "RBD-012",
