@@ -2,6 +2,7 @@
 
 import { format } from 'date-fns'
 import { CategoryIcon } from './category-icon'
+import { ApprovalStatusBadge } from './approval-status-badge'
 import { getCategoryLabel } from '@/lib/constants/categories'
 import { cn } from '@/lib/utils'
 
@@ -10,15 +11,23 @@ interface ExpenseUser {
   name: string
 }
 
+interface Approval {
+  id: string
+  user: ExpenseUser
+}
+
 interface Expense {
   id: string
   date: Date | string
   amount: number | string
   description: string
   category: string
+  status?: 'PENDING_APPROVAL' | 'APPROVED'
   receiptUrl?: string | null
   notes?: string | null
   user?: ExpenseUser
+  approvals?: Approval[]
+  approvalsNeeded?: number
 }
 
 interface ExpenseListItemProps {
@@ -33,6 +42,8 @@ export function ExpenseListItem({ expense, onClick, showUser = false }: ExpenseL
   const formattedAmount = `$${amount.toFixed(2)}`
   const categoryLabel = getCategoryLabel(expense.category)
   const userName = expense.user?.name
+  const isPending = expense.status === 'PENDING_APPROVAL'
+  const approvalsReceived = expense.approvals?.length || 0
 
   return (
     <div
@@ -61,10 +72,19 @@ export function ExpenseListItem({ expense, onClick, showUser = false }: ExpenseL
         </p>
       </div>
 
-      {/* Amount */}
-      <div className="text-right">
-        <p className="font-semibold tabular-nums">{formattedAmount}</p>
-        <p className="text-xs text-muted-foreground">{categoryLabel}</p>
+      {/* Amount and Status */}
+      <div className="text-right flex flex-col items-end gap-1">
+        <p className={cn('font-semibold tabular-nums', isPending && 'text-muted-foreground')}>
+          {formattedAmount}
+        </p>
+        {expense.status && (
+          <ApprovalStatusBadge
+            status={expense.status}
+            approvalsReceived={approvalsReceived}
+            approvalsNeeded={expense.approvalsNeeded}
+          />
+        )}
+        {!expense.status && <p className="text-xs text-muted-foreground">{categoryLabel}</p>}
       </div>
     </div>
   )

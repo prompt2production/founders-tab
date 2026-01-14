@@ -81,3 +81,9 @@ Story: TXA-014 Add status filter to ExpenseFilters component
 Files changed: src/components/expenses/filters/status-filter.tsx, src/components/expenses/expense-filters.tsx, src/hooks/useExpenseFilters.ts
 Notes: Created StatusFilter component with All/Pending/Approved options. Updated ExpenseFilters and useExpenseFilters to include status in state and URL params.
 ---
+
+---
+Story: TXA-015 Update ExpenseListItem to show approval status
+Files changed: src/components/expenses/expense-list-item.tsx
+Notes: Added ApprovalStatusBadge to list items. Shows approval progress for pending expenses. Pending expenses have muted amount text as visual distinction.
+---

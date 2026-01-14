@@ -190,7 +190,7 @@
         "Shows approval progress for pending expenses",
         "Visual distinction between pending and approved"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "TXA-016",
