@@ -140,7 +140,7 @@
         "Returns approve function, isLoading, error states",
         "Returns success state after approval"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "TXA-012",

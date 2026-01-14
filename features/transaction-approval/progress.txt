@@ -57,3 +57,9 @@ Story: TXA-010 Create unit tests for approval API
 Files changed: tests/unit/api/approval.test.ts
 Notes: Created 9 tests covering: 401 unauthorized, 404 not found, 400 own expense, 400 already approved, 400 non-founder, approval creation, response structure, auto-approve when all founders approved, no update when more approvals needed.
 ---
+
+---
+Story: TXA-011 Create useApproveExpense hook
+Files changed: src/hooks/useApproveExpense.ts
+Notes: Created hook with approve function, isLoading, error, and isSuccess states. Uses sonner toast for success/error feedback. Follows same pattern as useCreateExpense.
+---
