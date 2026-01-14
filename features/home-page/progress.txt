@@ -13,3 +13,8 @@ Story: HOME-003 Add authenticated user redirect
 Files changed: src/app/page.tsx
 Notes: Converted to client component, wrapped in AuthProvider, added useAuth hook to check auth status. Shows loading spinner while checking, redirects authenticated users to /expenses, shows marketing content for unauthenticated users.
 ---
+---
+Story: HOME-004 Responsive layout and centering
+Files changed: (already implemented)
+Notes: Responsive design was built into initial implementation: min-h-screen with flex centering, max-w-md content constraint, px-4/lg:px-6 padding, flex-col/lg:flex-row for buttons, space-y-8 for vertical rhythm.
+---

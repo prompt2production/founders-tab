@@ -53,7 +53,7 @@
         "Page looks good on desktop (1024px+ width)",
         "No horizontal scrolling on any viewport"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "HOME-005",
