@@ -64,7 +64,7 @@
         "Response indicates if expense is now fully approved",
         "Single-founder scenario: expense auto-approves on creation"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "TXA-006",

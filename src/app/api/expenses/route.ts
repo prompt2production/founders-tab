@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { createExpenseSchema, listExpensesQuerySchema } from '@/lib/validations/expense'
 import { z } from 'zod'
-import { Prisma, Category, ExpenseStatus } from '@prisma/client'
+import { Prisma, Category, ExpenseStatus, Role } from '@prisma/client'
 
 export async function GET(request: NextRequest) {
   try {
@@ -93,7 +93,20 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const validated = createExpenseSchema.parse(body)
 
-    // Create expense in database with PENDING_APPROVAL status
+    // Check if there are other founders who need to approve
+    const otherFoundersCount = await prisma.user.count({
+      where: {
+        role: Role.FOUNDER,
+        id: { not: user.id },
+      },
+    })
+
+    // If no other founders, auto-approve; otherwise set to PENDING_APPROVAL
+    const initialStatus = otherFoundersCount === 0
+      ? ExpenseStatus.APPROVED
+      : ExpenseStatus.PENDING_APPROVAL
+
+    // Create expense in database
     const expense = await prisma.expense.create({
       data: {
         userId: user.id,
@@ -101,7 +114,7 @@ export async function POST(request: NextRequest) {
         amount: validated.amount,
         description: validated.description,
         category: validated.category as Category,
-        status: ExpenseStatus.PENDING_APPROVAL,
+        status: initialStatus,
         receiptUrl: validated.receiptUrl || null,
         notes: validated.notes || null,
       },

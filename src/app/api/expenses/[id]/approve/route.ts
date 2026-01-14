@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
-import { Role } from '@prisma/client'
+import { Role, ExpenseStatus } from '@prisma/client'
 
 export async function POST(
   request: NextRequest,
@@ -69,6 +69,29 @@ export async function POST(
         userId: user.id,
       },
     })
+
+    // Get all founders except the expense creator
+    const foundersExceptCreator = await prisma.user.findMany({
+      where: {
+        role: Role.FOUNDER,
+        id: { not: expense.userId },
+      },
+      select: { id: true },
+    })
+
+    // Get current approvals count (including the one just created)
+    const approvalCount = expense.approvals.length + 1
+
+    // Check if all founders (except creator) have approved
+    const isFullyApproved = approvalCount >= foundersExceptCreator.length
+
+    // Update status if fully approved
+    if (isFullyApproved) {
+      await prisma.expense.update({
+        where: { id },
+        data: { status: ExpenseStatus.APPROVED },
+      })
+    }
 
     // Fetch updated expense with approvals
     const updatedExpense = await prisma.expense.findUnique({
