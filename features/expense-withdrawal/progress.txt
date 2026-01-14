@@ -69,3 +69,9 @@ Story: WDR-012 Create useApproveWithdrawal hook
 Files changed: src/hooks/useApproveWithdrawal.ts
 Notes: Created hook with isFullyApproved handling in toast messages.
 ---
+
+---
+Story: WDR-013 Create useConfirmReceipt hook
+Files changed: src/hooks/useConfirmReceipt.ts
+Notes: Created hook for confirming receipt of funds.
+---
