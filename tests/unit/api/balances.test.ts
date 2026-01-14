@@ -26,6 +26,18 @@ const createDecimal = (value: number) => ({
   toNumber: () => value,
 })
 
+// Helper to create mock current user
+const createMockCurrentUser = (overrides = {}) => ({
+  id: 'user-1',
+  name: 'Test User',
+  email: 'test@example.com',
+  avatarInitials: 'TU',
+  role: 'FOUNDER' as const,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  ...overrides,
+})
+
 describe('GET /api/balances', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -42,7 +54,7 @@ describe('GET /api/balances', () => {
   })
 
   it('returns correct response structure for team balances', async () => {
-    const mockUser = { id: 'user-1', name: 'Test User', email: 'test@example.com' }
+    const mockUser = createMockCurrentUser()
     vi.mocked(getCurrentUser).mockResolvedValue(mockUser)
 
     const mockUsersWithExpenses = [
@@ -88,7 +100,7 @@ describe('GET /api/balances', () => {
   })
 
   it('sorts balances by total descending', async () => {
-    const mockUser = { id: 'user-1', name: 'Test User', email: 'test@example.com' }
+    const mockUser = createMockCurrentUser()
     vi.mocked(getCurrentUser).mockResolvedValue(mockUser)
 
     const mockUsersWithExpenses = [
@@ -125,7 +137,7 @@ describe('GET /api/balances', () => {
   })
 
   it('calculates percentage correctly', async () => {
-    const mockUser = { id: 'user-1', name: 'Test User', email: 'test@example.com' }
+    const mockUser = createMockCurrentUser()
     vi.mocked(getCurrentUser).mockResolvedValue(mockUser)
 
     const mockUsersWithExpenses = [
@@ -170,7 +182,7 @@ describe('GET /api/balances/[userId]', () => {
   })
 
   it('returns 404 when user not found', async () => {
-    const mockUser = { id: 'user-1', name: 'Test User', email: 'test@example.com' }
+    const mockUser = createMockCurrentUser()
     vi.mocked(getCurrentUser).mockResolvedValue(mockUser)
     vi.mocked(prisma.user.findUnique).mockResolvedValue(null)
 
@@ -183,7 +195,7 @@ describe('GET /api/balances/[userId]', () => {
   })
 
   it('returns correct response structure for user balance', async () => {
-    const mockCurrentUser = { id: 'user-1', name: 'Test User', email: 'test@example.com' }
+    const mockCurrentUser = createMockCurrentUser()
     vi.mocked(getCurrentUser).mockResolvedValue(mockCurrentUser)
 
     const mockUserWithExpenses = {
@@ -236,7 +248,7 @@ describe('GET /api/balances/[userId]', () => {
   })
 
   it('groups expenses by category correctly', async () => {
-    const mockCurrentUser = { id: 'user-1', name: 'Test User', email: 'test@example.com' }
+    const mockCurrentUser = createMockCurrentUser()
     vi.mocked(getCurrentUser).mockResolvedValue(mockCurrentUser)
 
     const mockUserWithExpenses = {

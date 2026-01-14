@@ -45,3 +45,15 @@ Story: RBD-008 Create BalanceBreakdown component
 Files changed: src/components/balance/balance-breakdown.tsx
 Notes: Created component with category breakdown (progress bars) and monthly trend chart (bar chart). Shows last 6 months. Uses design system colors.
 ---
+
+---
+Story: RBD-009 Create balance page route
+Files changed: src/app/(app)/balance/page.tsx
+Notes: Created balance page with BalanceSummary at top, responsive grid of BalanceCard components. Current user highlighted. Loading skeletons implemented.
+---
+
+---
+Story: RBD-010 Create balance detail sheet/modal
+Files changed: src/app/(app)/balance/page.tsx
+Notes: Integrated detail Sheet inside balance page. Shows BalanceBreakdown and 'View Expenses' link. Opens on BalanceCard click.
+---

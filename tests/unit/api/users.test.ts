@@ -19,6 +19,18 @@ import { GET } from '@/app/api/users/route'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 
+// Helper to create mock current user
+const createMockCurrentUser = (overrides = {}) => ({
+  id: 'user-1',
+  name: 'Test User',
+  email: 'test@example.com',
+  avatarInitials: 'TU',
+  role: 'FOUNDER' as const,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  ...overrides,
+})
+
 describe('GET /api/users', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -35,7 +47,7 @@ describe('GET /api/users', () => {
   })
 
   it('returns users with correct fields when authenticated', async () => {
-    const mockUser = { id: 'user-1', name: 'Test User', email: 'test@example.com' }
+    const mockUser = createMockCurrentUser()
     vi.mocked(getCurrentUser).mockResolvedValue(mockUser)
 
     const mockUsers = [
@@ -43,7 +55,7 @@ describe('GET /api/users', () => {
       { id: 'user-2', name: 'Bob', email: 'bob@example.com' },
       { id: 'user-3', name: 'Charlie', email: 'charlie@example.com' },
     ]
-    vi.mocked(prisma.user.findMany).mockResolvedValue(mockUsers)
+    vi.mocked(prisma.user.findMany).mockResolvedValue(mockUsers as never)
 
     const response = await GET()
     const data = await response.json()
@@ -64,9 +76,9 @@ describe('GET /api/users', () => {
   })
 
   it('calls prisma with correct select and orderBy', async () => {
-    const mockUser = { id: 'user-1', name: 'Test User', email: 'test@example.com' }
+    const mockUser = createMockCurrentUser()
     vi.mocked(getCurrentUser).mockResolvedValue(mockUser)
-    vi.mocked(prisma.user.findMany).mockResolvedValue([])
+    vi.mocked(prisma.user.findMany).mockResolvedValue([] as never)
 
     await GET()
 
@@ -81,9 +93,9 @@ describe('GET /api/users', () => {
   })
 
   it('returns empty array when no users exist', async () => {
-    const mockUser = { id: 'user-1', name: 'Test User', email: 'test@example.com' }
+    const mockUser = createMockCurrentUser()
     vi.mocked(getCurrentUser).mockResolvedValue(mockUser)
-    vi.mocked(prisma.user.findMany).mockResolvedValue([])
+    vi.mocked(prisma.user.findMany).mockResolvedValue([] as never)
 
     const response = await GET()
     const data = await response.json()
