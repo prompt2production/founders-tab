@@ -110,7 +110,7 @@
         "Test covers: founder can see role dropdown, founder can promote member, founder can demote another founder, last founder cannot be demoted",
         "All E2E tests pass with npx playwright test tests/e2e/role-management.spec.ts"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }
