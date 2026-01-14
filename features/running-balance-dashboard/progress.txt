@@ -63,3 +63,9 @@ Story: RBD-011 Add Balance link to navigation
 Files changed: src/app/(app)/layout.tsx
 Notes: Added 'Balances' link with Wallet icon to navItems array. Shows in both desktop and mobile navigation with active state support.
 ---
+
+---
+Story: RBD-012 E2E test: Balance dashboard navigation and display
+Files changed: tests/e2e/balance.spec.ts
+Notes: Created 5 E2E tests covering navigation, team summary, balance cards, detail sheet, and View Expenses link. All tests pass.
+---

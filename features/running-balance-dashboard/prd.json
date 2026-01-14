@@ -161,7 +161,7 @@
         "Test verifies balance cards are visible",
         "npx playwright test balance passes"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }
