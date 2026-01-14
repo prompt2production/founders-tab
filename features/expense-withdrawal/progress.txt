@@ -27,3 +27,9 @@ Story: WDR-005 Create POST /api/expenses/[id]/approve-withdrawal endpoint
 Files changed: src/app/api/expenses/[id]/approve-withdrawal/route.ts
 Notes: Created endpoint with validation for auth, founder role, expense exists, not owner, not already approved, WITHDRAWAL_REQUESTED status.
 ---
+
+---
+Story: WDR-006 Auto-complete withdrawal when all founders approve
+Files changed: src/app/api/expenses/[id]/approve-withdrawal/route.ts
+Notes: Added logic to check if all founders (except owner) have approved. Status changes to WITHDRAWAL_APPROVED when complete. Response includes isFullyApproved boolean.
+---

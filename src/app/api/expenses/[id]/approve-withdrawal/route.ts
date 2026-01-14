@@ -80,6 +80,29 @@ export async function POST(
       },
     })
 
+    // Get all founders except the expense owner
+    const foundersExceptOwner = await prisma.user.findMany({
+      where: {
+        role: Role.FOUNDER,
+        id: { not: expense.userId },
+      },
+      select: { id: true },
+    })
+
+    // Get current withdrawal approvals count (including the one just created)
+    const approvalCount = expense.withdrawalApprovals.length + 1
+
+    // Check if all founders (except owner) have approved
+    const isFullyApproved = approvalCount >= foundersExceptOwner.length
+
+    // Update status if fully approved
+    if (isFullyApproved) {
+      await prisma.expense.update({
+        where: { id },
+        data: { status: ExpenseStatus.WITHDRAWAL_APPROVED },
+      })
+    }
+
     // Fetch updated expense with withdrawal approvals
     const updatedExpense = await prisma.expense.findUnique({
       where: { id },
@@ -113,7 +136,7 @@ export async function POST(
       },
     })
 
-    return NextResponse.json(updatedExpense)
+    return NextResponse.json({ ...updatedExpense, isFullyApproved })
   } catch (error) {
     console.error('Error approving withdrawal:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

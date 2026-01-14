@@ -80,7 +80,7 @@
         "If all founders (except owner) have approved, update status to WITHDRAWAL_APPROVED",
         "Response indicates if withdrawal is now fully approved"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "WDR-007",
