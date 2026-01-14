@@ -105,3 +105,9 @@ Story: TXA-018 Add pending approval count to navigation
 Files changed: src/hooks/usePendingApprovalCount.ts, src/app/(app)/layout.tsx
 Notes: Created usePendingApprovalCount hook that fetches pending expenses and counts those current user can approve. Added badge to both desktop and mobile navigation on Expenses link.
 ---
+
+---
+Story: TXA-019 Update useExpenses hook for status and approvals
+Files changed: src/hooks/useExpenses.ts
+Notes: Added status parameter to UseExpensesParams. Updated Expense interface to include status, approvals array, approvalsNeeded, isFullyApproved, and canCurrentUserApprove fields.
+---

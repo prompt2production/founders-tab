@@ -7,24 +7,38 @@ export interface ExpenseUser {
   name: string
 }
 
+export interface Approval {
+  id: string
+  expenseId: string
+  userId: string
+  createdAt: string
+  user: ExpenseUser
+}
+
 export interface Expense {
   id: string
   date: string
   amount: string
   description: string
   category: string
+  status: 'PENDING_APPROVAL' | 'APPROVED'
   receiptUrl: string | null
   notes: string | null
   createdAt: string
   updatedAt: string
   userId: string
   user?: ExpenseUser
+  approvals: Approval[]
+  approvalsNeeded: number
+  isFullyApproved: boolean
+  canCurrentUserApprove: boolean
 }
 
 interface UseExpensesParams {
   page?: number
   limit?: number
   category?: string
+  status?: string
   userId?: string
   startDate?: Date
   endDate?: Date
@@ -64,6 +78,9 @@ export function useExpenses(params: UseExpensesParams = {}): UseExpensesResult {
       if (params.category) {
         searchParams.set('category', params.category)
       }
+      if (params.status) {
+        searchParams.set('status', params.status)
+      }
       if (params.userId) {
         searchParams.set('userId', params.userId)
       }
@@ -94,7 +111,7 @@ export function useExpenses(params: UseExpensesParams = {}): UseExpensesResult {
     } finally {
       setIsLoading(false)
     }
-  }, [params.page, params.limit, params.category, params.userId, params.startDate, params.endDate])
+  }, [params.page, params.limit, params.category, params.status, params.userId, params.startDate, params.endDate])
 
   useEffect(() => {
     fetchExpenses()

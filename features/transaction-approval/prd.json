@@ -236,7 +236,7 @@
         "Returns approval info for each expense",
         "Expense type includes status and approval fields"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "TXA-020",
