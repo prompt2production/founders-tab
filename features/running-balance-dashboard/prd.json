@@ -1,0 +1,167 @@
+{
+  "feature": "Running Balance Dashboard",
+  "stories": [
+    {
+      "id": "RBD-001",
+      "title": "Create GET /api/balances endpoint",
+      "description": "API endpoint to get running balances for all team members",
+      "acceptance_criteria": [
+        "src/app/api/balances/route.ts exists with GET handler",
+        "Returns 401 if not authenticated",
+        "Returns teamTotal (sum of all expenses)",
+        "Returns balances array with user info, total, expenseCount, percentage",
+        "Balances ordered by total descending (highest spender first)",
+        "Percentage calculated as (user total / team total) * 100"
+      ],
+      "passes": false
+    },
+    {
+      "id": "RBD-002",
+      "title": "Create GET /api/balances/[userId] endpoint",
+      "description": "API endpoint to get detailed balance for a specific user",
+      "acceptance_criteria": [
+        "src/app/api/balances/[userId]/route.ts exists with GET handler",
+        "Returns 401 if not authenticated",
+        "Returns 404 if user not found",
+        "Returns user info, total, expenseCount",
+        "Returns byCategory array with category, total, count",
+        "Returns byMonth array with month (YYYY-MM), total",
+        "byMonth covers last 12 months"
+      ],
+      "passes": false
+    },
+    {
+      "id": "RBD-003",
+      "title": "Create unit tests for balances API",
+      "description": "Write unit tests for the balances endpoints",
+      "acceptance_criteria": [
+        "tests/unit/api/balances.test.ts exists",
+        "Tests verify 401 returned when not authenticated",
+        "Tests verify correct response structure for team balances",
+        "Tests verify correct response structure for user balance",
+        "npm run test passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "RBD-004",
+      "title": "Create useBalances hook",
+      "description": "Hook for fetching team balances",
+      "acceptance_criteria": [
+        "src/hooks/useBalances.ts exists",
+        "Fetches from /api/balances on mount",
+        "Returns teamTotal, balances array, isLoading, error",
+        "Provides refetch function"
+      ],
+      "passes": false
+    },
+    {
+      "id": "RBD-005",
+      "title": "Create useBalance hook",
+      "description": "Hook for fetching individual user balance details",
+      "acceptance_criteria": [
+        "src/hooks/useBalance.ts exists",
+        "Accepts userId parameter",
+        "Fetches from /api/balances/[userId]",
+        "Returns user, total, expenseCount, byCategory, byMonth",
+        "Returns isLoading, error states"
+      ],
+      "passes": false
+    },
+    {
+      "id": "RBD-006",
+      "title": "Create BalanceCard component",
+      "description": "Card component showing a founder's running balance",
+      "acceptance_criteria": [
+        "src/components/balance/balance-card.tsx exists",
+        "Shows user avatar and name",
+        "Shows total amount with large tabular-nums styling",
+        "Shows expense count",
+        "Shows percentage of team total",
+        "Optional highlight state for current user",
+        "Clickable to view details",
+        "Follows DESIGN_SYSTEM.md patterns"
+      ],
+      "passes": false
+    },
+    {
+      "id": "RBD-007",
+      "title": "Create BalanceSummary component",
+      "description": "Summary component showing team totals",
+      "acceptance_criteria": [
+        "src/components/balance/balance-summary.tsx exists",
+        "Shows total team expenses",
+        "Shows number of team members",
+        "Shows average per founder",
+        "Uses gradient card styling per DESIGN_SYSTEM.md"
+      ],
+      "passes": false
+    },
+    {
+      "id": "RBD-008",
+      "title": "Create BalanceBreakdown component",
+      "description": "Component showing expense breakdown by category and month",
+      "acceptance_criteria": [
+        "src/components/balance/balance-breakdown.tsx exists",
+        "Shows category breakdown with bars/progress indicators",
+        "Shows monthly trend (last 6-12 months)",
+        "Uses DESIGN_SYSTEM.md chart colors",
+        "Accepts balance detail data as prop"
+      ],
+      "passes": false
+    },
+    {
+      "id": "RBD-009",
+      "title": "Create balance page route",
+      "description": "Create the main balance dashboard page",
+      "acceptance_criteria": [
+        "src/app/(app)/balance/page.tsx exists",
+        "Page title: 'Running Balances'",
+        "Contains BalanceSummary at top",
+        "Shows grid of BalanceCard components for each founder",
+        "Current user's card is visually highlighted",
+        "Responsive grid (1 col mobile, 2-3 cols desktop)",
+        "Shows loading skeletons while fetching"
+      ],
+      "passes": false
+    },
+    {
+      "id": "RBD-010",
+      "title": "Create balance detail sheet/modal",
+      "description": "Detail view when clicking a founder's balance card",
+      "acceptance_criteria": [
+        "Clicking BalanceCard opens detail view (Sheet or Dialog)",
+        "Shows BalanceBreakdown with category and monthly data",
+        "Shows 'View Expenses' link to /expenses?userId=xxx",
+        "Can close and return to dashboard"
+      ],
+      "passes": false
+    },
+    {
+      "id": "RBD-011",
+      "title": "Add Balance link to navigation",
+      "description": "Add navigation link to the balance dashboard",
+      "acceptance_criteria": [
+        "Balance/Running Balance link appears in main navigation",
+        "Link navigates to /balance",
+        "Link shows active state when on balance page",
+        "Uses Wallet or DollarSign icon from lucide-react"
+      ],
+      "passes": false
+    },
+    {
+      "id": "RBD-012",
+      "title": "E2E test: Balance dashboard navigation and display",
+      "description": "Test balance dashboard works correctly",
+      "acceptance_criteria": [
+        "tests/e2e/balance.spec.ts exists",
+        "Test logs in as user",
+        "Test navigates to /balance page",
+        "Test verifies team summary is displayed",
+        "Test verifies balance cards are visible",
+        "npx playwright test balance passes"
+      ],
+      "passes": false
+    }
+  ]
+}
