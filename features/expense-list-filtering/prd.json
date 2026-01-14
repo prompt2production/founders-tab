@@ -67,7 +67,7 @@
         "Clear button resets to no date filter",
         "Uses Popover and Calendar components from shadcn/ui"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ELF-006",
