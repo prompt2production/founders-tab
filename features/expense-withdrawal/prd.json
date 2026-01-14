@@ -182,7 +182,7 @@
         "Expense interface includes withdrawalApprovalsNeeded number",
         "Expense interface includes canCurrentUserApproveWithdrawal boolean"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "WDR-015",

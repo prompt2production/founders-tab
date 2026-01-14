@@ -15,13 +15,21 @@ export interface Approval {
   user: ExpenseUser
 }
 
+export interface WithdrawalApproval {
+  id: string
+  expenseId: string
+  userId: string
+  createdAt: string
+  user: ExpenseUser
+}
+
 export interface Expense {
   id: string
   date: string
   amount: string
   description: string
   category: string
-  status: 'PENDING_APPROVAL' | 'APPROVED'
+  status: 'PENDING_APPROVAL' | 'APPROVED' | 'WITHDRAWAL_REQUESTED' | 'WITHDRAWAL_APPROVED' | 'RECEIVED'
   receiptUrl: string | null
   notes: string | null
   createdAt: string
@@ -32,6 +40,9 @@ export interface Expense {
   approvalsNeeded: number
   isFullyApproved: boolean
   canCurrentUserApprove: boolean
+  withdrawalApprovals: WithdrawalApproval[]
+  withdrawalApprovalsNeeded: number
+  canCurrentUserApproveWithdrawal: boolean
 }
 
 interface UseExpensesParams {

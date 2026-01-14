@@ -75,3 +75,9 @@ Story: WDR-013 Create useConfirmReceipt hook
 Files changed: src/hooks/useConfirmReceipt.ts
 Notes: Created hook for confirming receipt of funds.
 ---
+
+---
+Story: WDR-014 Update useExpenses hook for withdrawal fields
+Files changed: src/hooks/useExpenses.ts
+Notes: Added WithdrawalApproval interface, added withdrawal statuses to Expense status type, added withdrawalApprovals, withdrawalApprovalsNeeded, and canCurrentUserApproveWithdrawal fields.
+---
