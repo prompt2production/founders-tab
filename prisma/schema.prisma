@@ -122,6 +122,9 @@ enum Category {
 enum ExpenseStatus {
   PENDING_APPROVAL
   APPROVED
+  WITHDRAWAL_REQUESTED
+  WITHDRAWAL_APPROVED
+  RECEIVED
 }
 
 model Expense {

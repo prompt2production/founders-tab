@@ -1,0 +1,315 @@
+{
+  "feature": "Expense Withdrawal",
+  "stories": [
+    {
+      "id": "WDR-001",
+      "title": "Add withdrawal status values to ExpenseStatus enum",
+      "description": "Extend the ExpenseStatus enum with withdrawal-related statuses",
+      "acceptance_criteria": [
+        "prisma/schema.prisma ExpenseStatus enum includes WITHDRAWAL_REQUESTED",
+        "prisma/schema.prisma ExpenseStatus enum includes WITHDRAWAL_APPROVED",
+        "prisma/schema.prisma ExpenseStatus enum includes RECEIVED",
+        "npx prisma migrate dev succeeds",
+        "npx prisma generate succeeds"
+      ],
+      "passes": true
+    },
+    {
+      "id": "WDR-002",
+      "title": "Add WithdrawalApproval model to schema",
+      "description": "Create model to track which founders have approved each withdrawal request",
+      "acceptance_criteria": [
+        "prisma/schema.prisma has WithdrawalApproval model with id, expenseId, userId, createdAt",
+        "WithdrawalApproval has relation to Expense and User",
+        "Unique constraint on [expenseId, userId] prevents duplicate approvals",
+        "User model has withdrawalApprovals relation",
+        "Expense model has withdrawalApprovals relation",
+        "npx prisma migrate dev succeeds"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-003",
+      "title": "Create POST /api/expenses/[id]/request-withdrawal endpoint",
+      "description": "API endpoint for expense owners to request withdrawal",
+      "acceptance_criteria": [
+        "src/app/api/expenses/[id]/request-withdrawal/route.ts exists with POST handler",
+        "Returns 401 if not authenticated",
+        "Returns 404 if expense not found",
+        "Returns 400 if user is not the expense owner",
+        "Returns 400 if expense status is not APPROVED",
+        "Updates expense status to WITHDRAWAL_REQUESTED on success",
+        "Returns updated expense"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-004",
+      "title": "Auto-approve withdrawal for single founder teams",
+      "description": "When only one founder exists, withdrawal should auto-approve",
+      "acceptance_criteria": [
+        "POST /api/expenses/[id]/request-withdrawal checks founder count",
+        "If no other founders exist, status is set to WITHDRAWAL_APPROVED instead of WITHDRAWAL_REQUESTED",
+        "Response indicates if withdrawal was auto-approved"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-005",
+      "title": "Create POST /api/expenses/[id]/approve-withdrawal endpoint",
+      "description": "API endpoint for founders to approve withdrawal requests",
+      "acceptance_criteria": [
+        "src/app/api/expenses/[id]/approve-withdrawal/route.ts exists with POST handler",
+        "Returns 401 if not authenticated",
+        "Returns 404 if expense not found",
+        "Returns 400 if user is the expense owner",
+        "Returns 400 if user already approved this withdrawal",
+        "Returns 400 if user role is not FOUNDER",
+        "Returns 400 if expense status is not WITHDRAWAL_REQUESTED",
+        "Creates WithdrawalApproval record on success",
+        "Returns updated expense with withdrawal approvals"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-006",
+      "title": "Auto-complete withdrawal when all founders approve",
+      "description": "Automatically change status to WITHDRAWAL_APPROVED when all required approvals received",
+      "acceptance_criteria": [
+        "After withdrawal approval, check if all other founders have approved",
+        "If all founders (except owner) have approved, update status to WITHDRAWAL_APPROVED",
+        "Response indicates if withdrawal is now fully approved"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-007",
+      "title": "Create POST /api/expenses/[id]/confirm-receipt endpoint",
+      "description": "API endpoint for expense owner to confirm receipt of funds",
+      "acceptance_criteria": [
+        "src/app/api/expenses/[id]/confirm-receipt/route.ts exists with POST handler",
+        "Returns 401 if not authenticated",
+        "Returns 404 if expense not found",
+        "Returns 400 if user is not the expense owner",
+        "Returns 400 if expense status is not WITHDRAWAL_APPROVED",
+        "Updates expense status to RECEIVED on success",
+        "Returns updated expense"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-008",
+      "title": "Update GET /api/expenses to include withdrawal info",
+      "description": "Include withdrawal approval details in expense list response",
+      "acceptance_criteria": [
+        "Each expense includes withdrawalApprovals array with user info",
+        "Each expense includes withdrawalApprovalsNeeded count",
+        "Each expense includes canCurrentUserApproveWithdrawal boolean",
+        "Status filter accepts new withdrawal status values"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-009",
+      "title": "Update src/lib/validations/expense.ts for withdrawal statuses",
+      "description": "Add new status values to validation schema",
+      "acceptance_criteria": [
+        "ExpenseStatus enum in validations includes WITHDRAWAL_REQUESTED",
+        "ExpenseStatus enum in validations includes WITHDRAWAL_APPROVED",
+        "ExpenseStatus enum in validations includes RECEIVED"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-010",
+      "title": "Create unit tests for withdrawal API endpoints",
+      "description": "Write unit tests for the withdrawal endpoints",
+      "acceptance_criteria": [
+        "tests/unit/api/withdrawal.test.ts exists",
+        "Tests verify request-withdrawal endpoint validation",
+        "Tests verify approve-withdrawal endpoint validation",
+        "Tests verify confirm-receipt endpoint validation",
+        "Tests verify auto-approval for single founder",
+        "npm run test passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-011",
+      "title": "Create useRequestWithdrawal hook",
+      "description": "Hook for requesting withdrawal from the UI",
+      "acceptance_criteria": [
+        "src/hooks/useRequestWithdrawal.ts exists",
+        "Hook calls POST /api/expenses/[id]/request-withdrawal",
+        "Returns requestWithdrawal function, isLoading, error states",
+        "Returns success state after request",
+        "Shows toast notification on success/error"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-012",
+      "title": "Create useApproveWithdrawal hook",
+      "description": "Hook for approving withdrawal requests from the UI",
+      "acceptance_criteria": [
+        "src/hooks/useApproveWithdrawal.ts exists",
+        "Hook calls POST /api/expenses/[id]/approve-withdrawal",
+        "Returns approveWithdrawal function, isLoading, error states",
+        "Returns success state after approval",
+        "Shows toast notification on success/error"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-013",
+      "title": "Create useConfirmReceipt hook",
+      "description": "Hook for confirming receipt from the UI",
+      "acceptance_criteria": [
+        "src/hooks/useConfirmReceipt.ts exists",
+        "Hook calls POST /api/expenses/[id]/confirm-receipt",
+        "Returns confirmReceipt function, isLoading, error states",
+        "Returns success state after confirmation",
+        "Shows toast notification on success/error"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-014",
+      "title": "Update useExpenses hook for withdrawal fields",
+      "description": "Update hook to handle withdrawal data",
+      "acceptance_criteria": [
+        "Expense interface includes withdrawalApprovals array",
+        "Expense interface includes withdrawalApprovalsNeeded number",
+        "Expense interface includes canCurrentUserApproveWithdrawal boolean"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-015",
+      "title": "Create WithdrawalStatusBadge component",
+      "description": "Badge component showing withdrawal status",
+      "acceptance_criteria": [
+        "src/components/expenses/withdrawal-status-badge.tsx exists",
+        "Shows 'Withdrawal Requested' badge for WITHDRAWAL_REQUESTED status",
+        "Shows 'Ready for Receipt' badge for WITHDRAWAL_APPROVED status",
+        "Shows 'Received' badge for RECEIVED status",
+        "Shows withdrawal approval progress for WITHDRAWAL_REQUESTED",
+        "Uses appropriate colors per DESIGN_SYSTEM.md"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-016",
+      "title": "Create RequestWithdrawalButton component",
+      "description": "Button component for requesting withdrawal",
+      "acceptance_criteria": [
+        "src/components/expenses/request-withdrawal-button.tsx exists",
+        "Shows 'Request Withdrawal' button when user owns approved expense",
+        "Hidden when user is not expense owner",
+        "Hidden when expense is not in APPROVED status",
+        "Shows loading state during request",
+        "Shows confirmation dialog before request"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-017",
+      "title": "Create ApproveWithdrawalButton component",
+      "description": "Button component for approving withdrawal requests",
+      "acceptance_criteria": [
+        "src/components/expenses/approve-withdrawal-button.tsx exists",
+        "Shows 'Approve Withdrawal' button when user can approve",
+        "Hidden when user is expense owner",
+        "Disabled when user already approved",
+        "Hidden when expense is not in WITHDRAWAL_REQUESTED status",
+        "Shows loading state during approval"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-018",
+      "title": "Create ConfirmReceiptButton component",
+      "description": "Button component for confirming receipt of funds",
+      "acceptance_criteria": [
+        "src/components/expenses/confirm-receipt-button.tsx exists",
+        "Shows 'Confirm Receipt' button when user owns expense in WITHDRAWAL_APPROVED status",
+        "Hidden when user is not expense owner",
+        "Hidden when expense is not in WITHDRAWAL_APPROVED status",
+        "Shows loading state during confirmation",
+        "Shows confirmation dialog before confirming"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-019",
+      "title": "Update ApprovalStatusBadge for withdrawal states",
+      "description": "Extend existing badge to handle withdrawal statuses",
+      "acceptance_criteria": [
+        "ApprovalStatusBadge handles WITHDRAWAL_REQUESTED status",
+        "ApprovalStatusBadge handles WITHDRAWAL_APPROVED status",
+        "ApprovalStatusBadge handles RECEIVED status",
+        "Uses distinct visual styling for each withdrawal state"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-020",
+      "title": "Update StatusFilter for withdrawal statuses",
+      "description": "Add withdrawal status options to filter dropdown",
+      "acceptance_criteria": [
+        "StatusFilter includes 'Withdrawal Requested' option",
+        "StatusFilter includes 'Ready for Receipt' option",
+        "StatusFilter includes 'Received' option",
+        "Filter values map to correct ExpenseStatus enum values"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-021",
+      "title": "Update ExpenseListItem for withdrawal states",
+      "description": "Show withdrawal status and actions in list items",
+      "acceptance_criteria": [
+        "ExpenseListItem shows withdrawal status badge when applicable",
+        "Visual distinction between withdrawal states",
+        "Shows 'Received' indicator for completed withdrawals"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-022",
+      "title": "Update EditExpenseSheet for withdrawal flow",
+      "description": "Show withdrawal status and actions in expense detail view",
+      "acceptance_criteria": [
+        "EditExpenseSheet shows withdrawal status section when applicable",
+        "Shows list of who has approved withdrawal",
+        "Shows RequestWithdrawalButton for approved expenses owned by user",
+        "Shows ApproveWithdrawalButton for withdrawal requests not owned by user",
+        "Shows ConfirmReceiptButton for owner when withdrawal approved",
+        "Disables editing for expenses in withdrawal flow"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-023",
+      "title": "Update usePendingApprovalCount for withdrawals",
+      "description": "Include withdrawal requests in pending approval count",
+      "acceptance_criteria": [
+        "Hook counts expenses in WITHDRAWAL_REQUESTED status that user can approve",
+        "Badge in navigation reflects combined pending approvals and withdrawal requests"
+      ],
+      "passes": false
+    },
+    {
+      "id": "WDR-024",
+      "title": "E2E test: Withdrawal request flow",
+      "description": "Test withdrawal request and status filter",
+      "acceptance_criteria": [
+        "tests/e2e/expense-withdrawal.spec.ts exists",
+        "Test verifies withdrawal status filter options exist",
+        "Test verifies filter by withdrawal statuses works",
+        "npx playwright test expense-withdrawal passes"
+      ],
+      "passes": false
+    }
+  ]
+}
