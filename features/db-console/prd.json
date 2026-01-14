@@ -134,7 +134,7 @@
         "Handles errors gracefully without crashing",
         "Disconnects Prisma client on exit"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "DBC-011",

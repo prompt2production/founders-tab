@@ -51,3 +51,9 @@ Story: DBC-009 Implement seed data command
 Files changed: tools/db-console/src/commands/seed-data.ts
 Notes: Created seedData function that blocks production, creates users/expenses/approvals/withdrawal-approvals in correct order. Shows summary on completion.
 ---
+
+---
+Story: DBC-010 Create application entry point
+Files changed: tools/db-console/src/index.ts
+Notes: Created main function with dotenv loading, environment selection, Prisma client creation, main menu loop, error handling, and cleanup on exit.
+---
