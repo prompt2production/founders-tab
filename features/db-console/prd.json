@@ -91,7 +91,7 @@
         "Displays progress messages during deletion",
         "Shows completion message with record counts"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "DBC-008",

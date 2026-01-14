@@ -33,3 +33,9 @@ Story: DBC-006 Create main menu display
 Files changed: tools/db-console/src/commands/main-menu.ts
 Notes: Created showMainMenu function that displays environment name and three options. Uses selectOption for input validation.
 ---
+
+---
+Story: DBC-007 Implement clear data command
+Files changed: tools/db-console/src/commands/clear-data.ts
+Notes: Created clearData function with confirmation, extra production safety (type DELETE PRODUCTION DATA), and proper deletion order respecting foreign keys.
+---
