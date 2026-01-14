@@ -45,3 +45,9 @@ Story: TXA-008 Update GET /api/balances to only count approved expenses
 Files changed: src/app/api/balances/route.ts
 Notes: Updated Prisma query to filter expenses by status=APPROVED. Only approved expenses are now counted in teamTotal, user totals, and expenseCount.
 ---
+
+---
+Story: TXA-009 Update GET /api/balances/[userId] to only count approved expenses
+Files changed: src/app/api/balances/[userId]/route.ts
+Notes: Added where clause to filter expenses by status=APPROVED. User total, byCategory, byMonth, and expenseCount now only include approved expenses.
+---

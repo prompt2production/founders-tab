@@ -113,7 +113,7 @@
         "byMonth only includes APPROVED expenses",
         "expenseCount only counts APPROVED expenses"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "TXA-010",

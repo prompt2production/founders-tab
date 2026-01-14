@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
+import { ExpenseStatus } from '@prisma/client'
 
 interface RouteParams {
   params: Promise<{ userId: string }>
@@ -16,7 +17,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     const { userId } = await params
 
-    // Get user with expenses
+    // Get user with APPROVED expenses only
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -24,6 +25,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         name: true,
         email: true,
         expenses: {
+          where: {
+            status: ExpenseStatus.APPROVED,
+          },
           select: {
             amount: true,
             category: true,
