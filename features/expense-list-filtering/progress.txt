@@ -63,3 +63,8 @@ Story: ELF-013 Update View All link on home page
 Files changed: src/app/(app)/page.tsx
 Notes: Updated View All button to use Next.js Link component with href="/expenses" for client-side navigation.
 ---
+---
+Story: ELF-014 Add filter summary display
+Files changed: src/components/expenses/expense-list-paginated.tsx
+Notes: Enhanced summary to show active filters as badges (category name, date range). Shows "Showing X of Y expenses" count and "Total: $X,XXX.XX". Updates when filters change.
+---

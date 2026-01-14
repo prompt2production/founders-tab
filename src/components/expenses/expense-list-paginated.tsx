@@ -1,11 +1,14 @@
 'use client'
 
 import { useMemo } from 'react'
+import { format } from 'date-fns'
 import { Receipt, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ExpenseListItem } from './expense-list-item'
 import { useExpenses, Expense } from '@/hooks/useExpenses'
+import { getCategoryLabel } from '@/lib/constants/categories'
 
 interface ExpenseFilters {
   userId?: string
@@ -98,16 +101,42 @@ export function ExpenseListPaginated({
     )
   }
 
+  // Build active filter descriptions
+  const activeFilters: string[] = []
+  if (filters.category) {
+    activeFilters.push(getCategoryLabel(filters.category))
+  }
+  if (filters.startDate && filters.endDate) {
+    activeFilters.push(`${format(filters.startDate, 'MMM d')} - ${format(filters.endDate, 'MMM d')}`)
+  } else if (filters.startDate) {
+    activeFilters.push(`From ${format(filters.startDate, 'MMM d')}`)
+  } else if (filters.endDate) {
+    activeFilters.push(`Until ${format(filters.endDate, 'MMM d')}`)
+  }
+  // Note: userId filter not shown as text since we don't have user names loaded here
+
   return (
     <div className="space-y-4">
       {/* Summary */}
-      <div className="flex justify-between items-center text-sm">
-        <span className="text-muted-foreground">
-          Showing {expenses.length} of {total} expense{total !== 1 ? 's' : ''}
-        </span>
-        <span className="font-semibold tabular-nums">
-          Total: ${totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-        </span>
+      <div className="space-y-2">
+        <div className="flex justify-between items-center text-sm">
+          <span className="text-muted-foreground">
+            Showing {expenses.length} of {total} expense{total !== 1 ? 's' : ''}
+          </span>
+          <span className="font-semibold tabular-nums">
+            Total: ${totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </span>
+        </div>
+        {activeFilters.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            <span className="text-xs text-muted-foreground">Filtered by:</span>
+            {activeFilters.map((filter, i) => (
+              <Badge key={i} variant="secondary" className="text-xs">
+                {filter}
+              </Badge>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Expense list */}

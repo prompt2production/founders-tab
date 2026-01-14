@@ -190,7 +190,7 @@
         "When filters active, show which filters are applied",
         "Summary updates when filters change"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ELF-015",
