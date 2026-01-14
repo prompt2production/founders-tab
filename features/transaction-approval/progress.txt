@@ -51,3 +51,9 @@ Story: TXA-009 Update GET /api/balances/[userId] to only count approved expenses
 Files changed: src/app/api/balances/[userId]/route.ts
 Notes: Added where clause to filter expenses by status=APPROVED. User total, byCategory, byMonth, and expenseCount now only include approved expenses.
 ---
+
+---
+Story: TXA-010 Create unit tests for approval API
+Files changed: tests/unit/api/approval.test.ts
+Notes: Created 9 tests covering: 401 unauthorized, 404 not found, 400 own expense, 400 already approved, 400 non-founder, approval creation, response structure, auto-approve when all founders approved, no update when more approvals needed.
+---
