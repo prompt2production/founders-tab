@@ -128,7 +128,7 @@
         "Shows loading skeleton while fetching",
         "Shows appropriate empty state message"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ELF-010",

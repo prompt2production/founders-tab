@@ -38,3 +38,8 @@ Story: ELF-008 Create useExpenseFilters hook
 Files changed: src/hooks/useExpenseFilters.ts
 Notes: Created hook that syncs filter state with URL search params. Reads/writes userId, category, startDate, endDate from URL. Provides setFilters, clearFilters functions and activeFilterCount.
 ---
+---
+Story: ELF-009 Create ExpenseListPaginated component
+Files changed: src/components/expenses/expense-list-paginated.tsx, src/hooks/useExpenses.ts
+Notes: Created paginated expense list with filters support. Updated useExpenses hook to support userId filter and return totalPages/page. Shows loading skeletons, empty states for no expenses and no filter matches, pagination controls, and total amount.
+---

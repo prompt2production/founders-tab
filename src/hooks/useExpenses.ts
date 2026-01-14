@@ -2,7 +2,12 @@
 
 import { useState, useEffect, useCallback } from 'react'
 
-interface Expense {
+export interface ExpenseUser {
+  id: string
+  name: string
+}
+
+export interface Expense {
   id: string
   date: string
   amount: string
@@ -12,12 +17,15 @@ interface Expense {
   notes: string | null
   createdAt: string
   updatedAt: string
+  userId: string
+  user?: ExpenseUser
 }
 
 interface UseExpensesParams {
   page?: number
   limit?: number
   category?: string
+  userId?: string
   startDate?: Date
   endDate?: Date
 }
@@ -25,6 +33,8 @@ interface UseExpensesParams {
 interface UseExpensesResult {
   expenses: Expense[]
   total: number
+  totalPages: number
+  page: number
   isLoading: boolean
   error: string | null
   refetch: () => Promise<void>
@@ -33,6 +43,8 @@ interface UseExpensesResult {
 export function useExpenses(params: UseExpensesParams = {}): UseExpensesResult {
   const [expenses, setExpenses] = useState<Expense[]>([])
   const [total, setTotal] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
+  const [page, setPage] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -51,6 +63,9 @@ export function useExpenses(params: UseExpensesParams = {}): UseExpensesResult {
       }
       if (params.category) {
         searchParams.set('category', params.category)
+      }
+      if (params.userId) {
+        searchParams.set('userId', params.userId)
       }
       if (params.startDate) {
         searchParams.set('startDate', params.startDate.toISOString())
@@ -72,12 +87,14 @@ export function useExpenses(params: UseExpensesParams = {}): UseExpensesResult {
       const data = await response.json()
       setExpenses(data.expenses)
       setTotal(data.total)
+      setTotalPages(data.totalPages || 1)
+      setPage(data.page || 1)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setIsLoading(false)
     }
-  }, [params.page, params.limit, params.category, params.startDate, params.endDate])
+  }, [params.page, params.limit, params.category, params.userId, params.startDate, params.endDate])
 
   useEffect(() => {
     fetchExpenses()
@@ -86,6 +103,8 @@ export function useExpenses(params: UseExpensesParams = {}): UseExpensesResult {
   return {
     expenses,
     total,
+    totalPages,
+    page,
     isLoading,
     error,
     refetch: fetchExpenses,
