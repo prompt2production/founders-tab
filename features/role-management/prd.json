@@ -72,7 +72,7 @@
         "File exists at src/components/ui/alert-dialog.tsx",
         "Component can be imported without errors"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ROLE-007",

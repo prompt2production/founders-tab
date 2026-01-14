@@ -23,3 +23,8 @@ Story: ROLE-005 Create RoleBadge component with dropdown
 Files changed: src/components/team/role-badge.tsx
 Notes: Created RoleBadge component with dropdown for founders. Shows static badge for non-founders. Includes checkmark on current role, disabled state for last founder demotion.
 ---
+---
+Story: ROLE-006 Install alert-dialog shadcn component
+Files changed: none
+Notes: Component already exists at src/components/ui/alert-dialog.tsx. No action needed.
+---
