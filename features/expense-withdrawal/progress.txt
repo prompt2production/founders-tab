@@ -51,3 +51,9 @@ Story: WDR-009 Update src/lib/validations/expense.ts for withdrawal statuses
 Files changed: src/lib/validations/expense.ts
 Notes: Added WITHDRAWAL_REQUESTED, WITHDRAWAL_APPROVED, and RECEIVED to ExpenseStatus enum.
 ---
+
+---
+Story: WDR-010 Create unit tests for withdrawal API endpoints
+Files changed: tests/unit/api/withdrawal.test.ts
+Notes: Created 18 tests covering request-withdrawal, approve-withdrawal, and confirm-receipt endpoints. All 89 tests pass.
+---

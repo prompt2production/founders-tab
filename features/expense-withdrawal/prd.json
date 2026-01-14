@@ -132,7 +132,7 @@
         "Tests verify auto-approval for single founder",
         "npm run test passes"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "WDR-011",
