@@ -119,7 +119,7 @@
         "Creates withdrawal approvals for expenses in withdrawal flow",
         "Displays progress and completion messages"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "DBC-010",
