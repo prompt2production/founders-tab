@@ -63,3 +63,9 @@ Story: WDR-011 Create useRequestWithdrawal hook
 Files changed: src/hooks/useRequestWithdrawal.ts
 Notes: Created hook following same pattern as useApproveExpense. Includes auto-approval handling in toast messages.
 ---
+
+---
+Story: WDR-012 Create useApproveWithdrawal hook
+Files changed: src/hooks/useApproveWithdrawal.ts
+Notes: Created hook with isFullyApproved handling in toast messages.
+---

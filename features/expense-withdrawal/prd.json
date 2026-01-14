@@ -158,7 +158,7 @@
         "Returns success state after approval",
         "Shows toast notification on success/error"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "WDR-013",
