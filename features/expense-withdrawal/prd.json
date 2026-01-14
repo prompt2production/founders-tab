@@ -52,7 +52,7 @@
         "If no other founders exist, status is set to WITHDRAWAL_APPROVED instead of WITHDRAWAL_REQUESTED",
         "Response indicates if withdrawal was auto-approved"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "WDR-005",

@@ -15,3 +15,9 @@ Story: WDR-003 Create POST /api/expenses/[id]/request-withdrawal endpoint
 Files changed: src/app/api/expenses/[id]/request-withdrawal/route.ts
 Notes: Created endpoint with validation for auth, expense exists, owner check, and APPROVED status check.
 ---
+
+---
+Story: WDR-004 Auto-approve withdrawal for single founder teams
+Files changed: src/app/api/expenses/[id]/request-withdrawal/route.ts
+Notes: Added founder count check. If no other founders, status goes directly to WITHDRAWAL_APPROVED. Response includes autoApproved boolean.
+---

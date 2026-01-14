@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
-import { ExpenseStatus } from '@prisma/client'
+import { ExpenseStatus, Role } from '@prisma/client'
 
 export async function POST(
   request: NextRequest,
@@ -49,10 +49,25 @@ export async function POST(
       )
     }
 
-    // Update expense status to WITHDRAWAL_REQUESTED
+    // Get all founders except the expense owner
+    const foundersExceptOwner = await prisma.user.findMany({
+      where: {
+        role: Role.FOUNDER,
+        id: { not: expense.userId },
+      },
+      select: { id: true },
+    })
+
+    // Determine the new status - auto-approve if no other founders exist
+    const autoApproved = foundersExceptOwner.length === 0
+    const newStatus = autoApproved
+      ? ExpenseStatus.WITHDRAWAL_APPROVED
+      : ExpenseStatus.WITHDRAWAL_REQUESTED
+
+    // Update expense status
     const updatedExpense = await prisma.expense.update({
       where: { id },
-      data: { status: ExpenseStatus.WITHDRAWAL_REQUESTED },
+      data: { status: newStatus },
       include: {
         user: {
           select: {
@@ -83,7 +98,7 @@ export async function POST(
       },
     })
 
-    return NextResponse.json(updatedExpense)
+    return NextResponse.json({ ...updatedExpense, autoApproved })
   } catch (error) {
     console.error('Error requesting withdrawal:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
