@@ -251,7 +251,7 @@
         "Test verifies status changes appropriately",
         "npx playwright test expense-approval passes"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "TXA-021",

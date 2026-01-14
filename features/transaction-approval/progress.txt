@@ -111,3 +111,9 @@ Story: TXA-019 Update useExpenses hook for status and approvals
 Files changed: src/hooks/useExpenses.ts
 Notes: Added status parameter to UseExpensesParams. Updated Expense interface to include status, approvals array, approvalsNeeded, isFullyApproved, and canCurrentUserApprove fields.
 ---
+
+---
+Story: TXA-020 E2E test: Expense approval workflow
+Files changed: tests/e2e/expense-approval.spec.ts
+Notes: Created 6 E2E tests covering status filter visibility, filter options, filtering by pending/approved status, approval notice in add sheet, and filter state persistence in URL.
+---
