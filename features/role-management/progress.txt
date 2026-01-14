@@ -3,3 +3,8 @@ Story: ROLE-001 Create role update validation schema
 Files changed: src/lib/validations/role.ts, tests/unit/validations/role.test.ts
 Notes: Created Zod schema with enum validation for FOUNDER/MEMBER roles. All 7 unit tests pass.
 ---
+---
+Story: ROLE-002 Create PATCH /api/users/[id]/role endpoint
+Files changed: src/app/api/users/[id]/role/route.ts
+Notes: Created PATCH endpoint with auth check, FOUNDER-only access, user not found handling, and last-founder protection.
+---

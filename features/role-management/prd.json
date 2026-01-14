@@ -27,7 +27,7 @@
         "Returns 200 with updated user data on success",
         "Role is actually updated in database"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ROLE-003",
