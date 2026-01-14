@@ -1,36 +1,29 @@
 ---
 active: true
 iteration: 1
-max_iterations: 25
+max_iterations: 50
 completion_promise: "COMPLETE"
-started_at: "2026-01-13T22:48:22Z"
+started_at: "2026-01-14T00:40:15Z"
 ---
 
 You are working on this project.
 
-BEFORE EACH ITERATION:
-1. Read CLAUDE.md for project context
-2. Read DESIGN_SYSTEM.md for UI patterns
-3. Read features/[expense-submission]/prd.json and find the first story with passes: false
+  BEFORE EACH ITERATION:
+  1. Read CLAUDE.md for project context
+  2. Read DESIGN_SYSTEM.md for UI patterns
+  3. Read features/expense-list-filtering/prd.json and find the first story with passes: false
 
-YOUR TASK:
-1. Implement the story following all acceptance criteria
-2. Run tests to verify:
-   - npm run test (for unit tests)
-   - npx playwright test (only for e2e stories)
-3. Fix any failures before proceeding
+  YOUR TASK:
+  1. Implement the story following all acceptance criteria
+  2. Run tests to verify:
+     - npm run test (for unit tests)
+     - npx playwright test (only for e2e stories)
+  3. Fix any failures before proceeding
 
-WHEN STORY COMPLETE:
-1. Update features/[feature-name]/prd.json - set passes: true
-2. Append to features/[feature-name]/progress.txt with format:
-   ---
-   Story: [ID] [Title]
-   Files changed: [list]
-   Notes: [any learnings or issues]
-   ---
-3. Commit: git add -A && git commit -m 'feat([ID]): [title]'
+  WHEN STORY COMPLETE:
+  1. Update features/expense-list-filtering/prd.json - set passes: true
+  2. Append to features/expense-list-filtering/progress.txt
+  3. Commit: git add -A && git commit -m 'feat([ID]): [title]'
 
-WHEN ALL STORIES COMPLETE:
-Output <promise>COMPLETE</promise>
-
-If stuck after 3 attempts, document blockers and move to next story.
+  WHEN ALL STORIES COMPLETE:
+  Output <promise>COMPLETE</promise>

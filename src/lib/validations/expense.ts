@@ -131,6 +131,7 @@ export const listExpensesQuerySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(100).default(20),
   category: z.enum(categoryValues).optional(),
+  userId: z.string().optional(),
   startDate: z
     .string()
     .transform((val) => new Date(val))

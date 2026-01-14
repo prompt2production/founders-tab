@@ -19,13 +19,17 @@ export async function GET(request: NextRequest) {
       page: searchParams.get('page') || undefined,
       limit: searchParams.get('limit') || undefined,
       category: searchParams.get('category') || undefined,
+      userId: searchParams.get('userId') || undefined,
       startDate: searchParams.get('startDate') || undefined,
       endDate: searchParams.get('endDate') || undefined,
     })
 
     // Build where clause
-    const where: Prisma.ExpenseWhereInput = {
-      userId: user.id,
+    // If userId is provided, filter by that user; otherwise show all users (team view)
+    const where: Prisma.ExpenseWhereInput = {}
+
+    if (query.userId) {
+      where.userId = query.userId
     }
 
     if (query.category) {
@@ -42,7 +46,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Get total count and expenses
+    // Get total count and expenses with user info
     const [total, expenses] = await Promise.all([
       prisma.expense.count({ where }),
       prisma.expense.findMany({
@@ -50,6 +54,14 @@ export async function GET(request: NextRequest) {
         orderBy: { date: 'desc' },
         skip: (query.page - 1) * query.limit,
         take: query.limit,
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
       }),
     ])
 

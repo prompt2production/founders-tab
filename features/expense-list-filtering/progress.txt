@@ -1,0 +1,5 @@
+---
+Story: ELF-001 Add userId filter to GET /api/expenses
+Files changed: src/app/api/expenses/route.ts, src/lib/validations/expense.ts
+Notes: Added optional userId query parameter to expenses API. When provided, filters by that user; otherwise returns all users (team view). Added user include to return id and name with each expense.
+---

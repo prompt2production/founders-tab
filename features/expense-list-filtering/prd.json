@@ -12,7 +12,7 @@
         "Existing category, startDate, endDate filters continue to work",
         "Returns user info (id, name) with each expense"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ELF-002",
