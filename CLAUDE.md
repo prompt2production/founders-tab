@@ -468,11 +468,12 @@ A feature is complete when:
 - `features/expense-list-filtering` - Expense List & Filtering (17 stories) ✓
 - `features/running-balance-dashboard` - Running Balance Dashboard (12 stories) ✓
 - `features/transaction-approval` - Transaction Approval (21 stories) ✓
+- `features/expense-withdrawal` - Expense Withdrawal (24 stories) ✓
 
-**Current Feature:** `features/expense-withdrawal` - Expense Withdrawal (24 stories)
+**Current Feature:** `features/db-console` - Database Console Application (11 stories)
 
 ### Next Step
-Review the generated files in `features/expense-withdrawal/` and run Ralph:
+Review the generated files in `features/db-console/` and run Ralph:
 
 ```bash
 claude --dangerously-skip-permissions
@@ -480,19 +481,16 @@ claude --dangerously-skip-permissions
 
 BEFORE EACH ITERATION:
 1. Read CLAUDE.md for project context
-2. Read DESIGN_SYSTEM.md for UI patterns
-3. Read features/expense-withdrawal/prd.json and find the first story with passes: false
+2. Read features/db-console/prd.json and find the first story with passes: false
 
 YOUR TASK:
 1. Implement the story following all acceptance criteria
-2. Run tests to verify:
-   - npm run test (for unit tests)
-   - npx playwright test (only for e2e stories)
-3. Fix any failures before proceeding
+2. This is a console application - no unit tests or e2e tests required
+3. Verify the code compiles and runs
 
 WHEN STORY COMPLETE:
-1. Update features/expense-withdrawal/prd.json - set passes: true
-2. Append to features/expense-withdrawal/progress.txt with format:
+1. Update features/db-console/prd.json - set passes: true
+2. Append to features/db-console/progress.txt with format:
    ---
    Story: [ID] [Title]
    Files changed: [list]
@@ -503,5 +501,5 @@ WHEN STORY COMPLETE:
 WHEN ALL STORIES COMPLETE:
 Output <promise>COMPLETE</promise>
 
-If stuck after 3 attempts, document blockers and move to next story." --max-iterations 50 --completion-promise COMPLETE
+If stuck after 3 attempts, document blockers and move to next story." --max-iterations 25 --completion-promise COMPLETE
 ```

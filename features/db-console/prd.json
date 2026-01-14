@@ -1,0 +1,151 @@
+{
+  "feature": "Database Console Application",
+  "stories": [
+    {
+      "id": "DBC-001",
+      "title": "Create project structure and dependencies",
+      "description": "Set up the console application folder with package.json and tsconfig.json",
+      "acceptance_criteria": [
+        "tools/db-console folder exists",
+        "tools/db-console/package.json exists with name 'db-console'",
+        "package.json includes dependencies: @prisma/client, dotenv",
+        "package.json includes devDependencies: typescript, tsx, @types/node",
+        "tools/db-console/tsconfig.json exists with ES2020+ target",
+        "npm install succeeds in tools/db-console folder"
+      ],
+      "passes": false
+    },
+    {
+      "id": "DBC-002",
+      "title": "Create environment configuration",
+      "description": "Set up .env.example and config module for multi-environment support",
+      "acceptance_criteria": [
+        "tools/db-console/.env.example exists with DATABASE_URL_DEV, DATABASE_URL_TEST, DATABASE_URL_PROD",
+        "tools/db-console/src/config.ts exists",
+        "config.ts exports Environment type with 'development' | 'test' | 'production'",
+        "config.ts exports getConnectionString function that returns correct URL for each environment",
+        "config.ts exports environment display names mapping"
+      ],
+      "passes": false
+    },
+    {
+      "id": "DBC-003",
+      "title": "Create Prisma client with dynamic connection",
+      "description": "Set up Prisma client that can connect to different databases",
+      "acceptance_criteria": [
+        "tools/db-console/src/prisma.ts exists",
+        "Exports createPrismaClient function that accepts environment parameter",
+        "Function returns configured PrismaClient instance",
+        "Uses connection string from config based on environment"
+      ],
+      "passes": false
+    },
+    {
+      "id": "DBC-004",
+      "title": "Create readline-based prompt utilities",
+      "description": "Create reusable prompt functions using Node.js readline",
+      "acceptance_criteria": [
+        "tools/db-console/src/prompts.ts exists",
+        "Exports askQuestion function for single-line input",
+        "Exports selectOption function for numbered menu selection",
+        "Exports confirm function for yes/no prompts",
+        "All functions use readline interface"
+      ],
+      "passes": false
+    },
+    {
+      "id": "DBC-005",
+      "title": "Create environment selection flow",
+      "description": "Implement the environment selection prompt on startup",
+      "acceptance_criteria": [
+        "tools/db-console/src/commands/select-environment.ts exists",
+        "Displays welcome message and environment options",
+        "Returns selected environment",
+        "Shows warning message when Production is selected",
+        "Requires confirmation to proceed with Production"
+      ],
+      "passes": false
+    },
+    {
+      "id": "DBC-006",
+      "title": "Create main menu display",
+      "description": "Implement the main menu with all options",
+      "acceptance_criteria": [
+        "tools/db-console/src/commands/main-menu.ts exists",
+        "Displays current environment name",
+        "Shows numbered options: Clear all data, Seed test data, Exit",
+        "Returns selected option",
+        "Handles invalid input gracefully"
+      ],
+      "passes": false
+    },
+    {
+      "id": "DBC-007",
+      "title": "Implement clear data command",
+      "description": "Create command to delete all data from database",
+      "acceptance_criteria": [
+        "tools/db-console/src/commands/clear-data.ts exists",
+        "Requires confirmation before proceeding",
+        "Requires typing 'DELETE PRODUCTION DATA' for production environment",
+        "Deletes data in correct order: WithdrawalApproval, Approval, Expense, User",
+        "Displays progress messages during deletion",
+        "Shows completion message with record counts"
+      ],
+      "passes": false
+    },
+    {
+      "id": "DBC-008",
+      "title": "Create test data definitions",
+      "description": "Define test users, expenses, and approvals data",
+      "acceptance_criteria": [
+        "tools/db-console/src/seed-data/test-data.ts exists",
+        "Exports testUsers array with 3 founder users",
+        "Exports function to generate test expenses (10-15 items)",
+        "Expenses span all statuses: PENDING_APPROVAL, APPROVED, WITHDRAWAL_REQUESTED, WITHDRAWAL_APPROVED, RECEIVED",
+        "Expenses use various categories and realistic amounts"
+      ],
+      "passes": false
+    },
+    {
+      "id": "DBC-009",
+      "title": "Implement seed data command",
+      "description": "Create command to seed database with test data",
+      "acceptance_criteria": [
+        "tools/db-console/src/commands/seed-data.ts exists",
+        "Blocks execution if environment is production",
+        "Requires confirmation before proceeding",
+        "Creates users first, then expenses with correct userId references",
+        "Creates appropriate approvals for APPROVED and PENDING_APPROVAL expenses",
+        "Creates withdrawal approvals for expenses in withdrawal flow",
+        "Displays progress and completion messages"
+      ],
+      "passes": false
+    },
+    {
+      "id": "DBC-010",
+      "title": "Create application entry point",
+      "description": "Implement main index.ts that orchestrates the application flow",
+      "acceptance_criteria": [
+        "tools/db-console/src/index.ts exists",
+        "Loads environment variables on startup",
+        "Runs environment selection first",
+        "Creates Prisma client with selected environment",
+        "Loops main menu until Exit is selected",
+        "Handles errors gracefully without crashing",
+        "Disconnects Prisma client on exit"
+      ],
+      "passes": false
+    },
+    {
+      "id": "DBC-011",
+      "title": "Add npm scripts and verify application runs",
+      "description": "Add run scripts and verify the application starts correctly",
+      "acceptance_criteria": [
+        "package.json has 'start' script that runs src/index.ts with tsx",
+        "Running 'npm start' in tools/db-console displays environment selection",
+        "Application does not crash on startup"
+      ],
+      "passes": false
+    }
+  ]
+}
