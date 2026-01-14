@@ -3,7 +3,7 @@ active: true
 iteration: 1
 max_iterations: 50
 completion_promise: "COMPLETE"
-started_at: "2026-01-14T00:40:15Z"
+started_at: "2026-01-14T07:08:15Z"
 ---
 
 You are working on this project.
@@ -11,7 +11,7 @@ You are working on this project.
   BEFORE EACH ITERATION:
   1. Read CLAUDE.md for project context
   2. Read DESIGN_SYSTEM.md for UI patterns
-  3. Read features/expense-list-filtering/prd.json and find the first story with passes: false
+  3. Read features/running-balance-dashboard/prd.json and find the first story with passes: false
 
   YOUR TASK:
   1. Implement the story following all acceptance criteria
@@ -21,8 +21,8 @@ You are working on this project.
   3. Fix any failures before proceeding
 
   WHEN STORY COMPLETE:
-  1. Update features/expense-list-filtering/prd.json - set passes: true
-  2. Append to features/expense-list-filtering/progress.txt
+  1. Update features/running-balance-dashboard/prd.json - set passes: true
+  2. Append to features/running-balance-dashboard/progress.txt
   3. Commit: git add -A && git commit -m 'feat([ID]): [title]'
 
   WHEN ALL STORIES COMPLETE:

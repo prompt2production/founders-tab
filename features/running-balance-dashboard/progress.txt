@@ -1,0 +1,5 @@
+---
+Story: RBD-001 Create GET /api/balances endpoint
+Files changed: src/app/api/balances/route.ts
+Notes: Created balances API that returns teamTotal and balances array with user info, total, expenseCount, percentage. Sorted by total descending.
+---

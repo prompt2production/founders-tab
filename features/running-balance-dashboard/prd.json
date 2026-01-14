@@ -13,7 +13,7 @@
         "Balances ordered by total descending (highest spender first)",
         "Percentage calculated as (user total / team total) * 100"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "RBD-002",
