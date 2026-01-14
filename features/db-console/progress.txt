@@ -15,3 +15,9 @@ Story: DBC-003 Create Prisma client with dynamic connection
 Files changed: tools/db-console/src/prisma.ts
 Notes: Created createPrismaClient function that accepts environment parameter and returns PrismaClient with dynamic datasource URL.
 ---
+
+---
+Story: DBC-004 Create readline-based prompt utilities
+Files changed: tools/db-console/src/prompts.ts
+Notes: Created askQuestion, selectOption, confirm functions using Node.js readline. Also added closeReadline for cleanup.
+---

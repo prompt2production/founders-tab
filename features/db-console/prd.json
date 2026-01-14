@@ -51,7 +51,7 @@
         "Exports confirm function for yes/no prompts",
         "All functions use readline interface"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "DBC-005",
