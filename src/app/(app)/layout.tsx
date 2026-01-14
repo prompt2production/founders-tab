@@ -15,12 +15,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Home, Users, User, LogOut, Settings } from 'lucide-react'
+import { Home, Receipt, Users, User, LogOut, Settings } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 
 const navItems = [
   { href: '/', icon: Home, label: 'Home' },
+  { href: '/expenses', icon: Receipt, label: 'Expenses' },
   { href: '/team', icon: Users, label: 'Team' },
   { href: '/profile', icon: User, label: 'Profile' },
 ]

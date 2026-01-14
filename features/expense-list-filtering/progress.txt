@@ -53,3 +53,8 @@ Story: ELF-011 Create expenses page route
 Files changed: src/app/(app)/expenses/page.tsx
 Notes: Created expenses page with ExpenseFilters and ExpenseListPaginated. Connected via useExpenseFilters hook. Includes Add Expense button and Edit/Delete via sheets. Responsive layout with centered container.
 ---
+---
+Story: ELF-012 Add Expenses link to navigation
+Files changed: src/app/(app)/layout.tsx
+Notes: Added Expenses link to navItems array with Receipt icon. Shows in both desktop header and mobile bottom nav with active state styling.
+---

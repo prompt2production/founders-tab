@@ -167,7 +167,7 @@
         "Link shows active state when on expenses page",
         "Uses Receipt or List icon from lucide-react"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ELF-013",
