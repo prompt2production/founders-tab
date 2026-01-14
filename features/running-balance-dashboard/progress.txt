@@ -27,3 +27,9 @@ Story: RBD-005 Create useBalance hook
 Files changed: src/hooks/useBalance.ts
 Notes: Created hook that accepts userId parameter. Fetches from /api/balances/[userId] and returns user, total, expenseCount, byCategory, byMonth, isLoading, error.
 ---
+
+---
+Story: RBD-006 Create BalanceCard component
+Files changed: src/components/balance/balance-card.tsx
+Notes: Created card with avatar (initials), name, total amount (large tabular-nums), expense count, percentage. Supports highlight state with gradient background. Clickable with keyboard support.
+---

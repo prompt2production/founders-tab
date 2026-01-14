@@ -82,7 +82,7 @@
         "Clickable to view details",
         "Follows DESIGN_SYSTEM.md patterns"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "RBD-007",
