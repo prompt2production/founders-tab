@@ -96,7 +96,7 @@
         "Accepts filters object and onFiltersChange callback",
         "Follows DESIGN_SYSTEM.md patterns"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ELF-008",

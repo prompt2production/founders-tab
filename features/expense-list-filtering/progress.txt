@@ -28,3 +28,8 @@ Story: ELF-006 Create CategoryFilter component
 Files changed: src/components/expenses/filters/category-filter.tsx
 Notes: Created category dropdown using shadcn Select. Shows "All Categories" as default with category icons and labels for each option. Uses CATEGORIES constant.
 ---
+---
+Story: ELF-007 Create ExpenseFilters bar component
+Files changed: src/components/expenses/expense-filters.tsx
+Notes: Created container component combining PersonFilter, DateRangeFilter, CategoryFilter. Horizontal on desktop (lg:flex-row), stacked on mobile. Shows active filter count badge and Clear All button when filters active.
+---
