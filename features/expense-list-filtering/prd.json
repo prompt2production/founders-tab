@@ -25,7 +25,7 @@
         "Orders users alphabetically by name",
         "Does not expose sensitive user data (password hash, etc.)"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ELF-003",
