@@ -21,3 +21,9 @@ Story: RBD-004 Create useBalances hook
 Files changed: src/hooks/useBalances.ts
 Notes: Created hook following existing patterns. Fetches from /api/balances on mount, returns teamTotal, balances, isLoading, error, and refetch function.
 ---
+
+---
+Story: RBD-005 Create useBalance hook
+Files changed: src/hooks/useBalance.ts
+Notes: Created hook that accepts userId parameter. Fetches from /api/balances/[userId] and returns user, total, expenseCount, byCategory, byMonth, isLoading, error.
+---
