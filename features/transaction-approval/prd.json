@@ -167,7 +167,7 @@
         "Shows loading state during approval",
         "Shows success state after approval"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "TXA-014",

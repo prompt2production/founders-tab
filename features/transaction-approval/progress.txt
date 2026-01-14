@@ -69,3 +69,9 @@ Story: TXA-012 Create ApprovalStatusBadge component
 Files changed: src/components/expenses/approval-status-badge.tsx
 Notes: Created badge component using semantic colors from DESIGN_SYSTEM.md. Shows pending with clock icon (warning colors), approved with check icon (success colors). Displays approval progress when approvalsNeeded > 0.
 ---
+
+---
+Story: TXA-013 Create ApproveButton component
+Files changed: src/components/expenses/approve-button.tsx
+Notes: Created button using useApproveExpense hook. Hidden for creators, shows "Approved" disabled state when already approved, loading spinner during approval, success state after.
+---
