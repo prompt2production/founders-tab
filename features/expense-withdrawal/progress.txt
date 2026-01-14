@@ -81,3 +81,9 @@ Story: WDR-014 Update useExpenses hook for withdrawal fields
 Files changed: src/hooks/useExpenses.ts
 Notes: Added WithdrawalApproval interface, added withdrawal statuses to Expense status type, added withdrawalApprovals, withdrawalApprovalsNeeded, and canCurrentUserApproveWithdrawal fields.
 ---
+
+---
+Story: WDR-015 Create WithdrawalStatusBadge component
+Files changed: src/components/expenses/withdrawal-status-badge.tsx
+Notes: Created badge with warning colors for requested, info colors for ready for receipt, success colors for received. Shows approval progress.
+---

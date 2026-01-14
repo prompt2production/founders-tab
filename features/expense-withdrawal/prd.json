@@ -196,7 +196,7 @@
         "Shows withdrawal approval progress for WITHDRAWAL_REQUESTED",
         "Uses appropriate colors per DESIGN_SYSTEM.md"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "WDR-016",
