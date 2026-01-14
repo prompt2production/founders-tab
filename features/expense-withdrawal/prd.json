@@ -95,7 +95,7 @@
         "Updates expense status to RECEIVED on success",
         "Returns updated expense"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "WDR-008",
