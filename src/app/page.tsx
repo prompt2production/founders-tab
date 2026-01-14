@@ -47,7 +47,7 @@ function HomePageContent() {
 
         {/* Tagline */}
         <p className="text-lg text-muted-foreground">
-          Track expenses before incorporation
+          Keep tabs on shared business spending
         </p>
 
         {/* Value Proposition */}
@@ -78,7 +78,7 @@ function HomePageContent() {
 
         {/* Supporting Text */}
         <p className="text-xs text-muted-foreground pt-4">
-          Built for small founding teams who aren&apos;t incorporated yet
+          Simple tracking until proper accounting takes over
         </p>
       </div>
     </div>
