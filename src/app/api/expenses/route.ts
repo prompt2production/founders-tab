@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
       limit: searchParams.get('limit') || undefined,
       category: searchParams.get('category') || undefined,
       userId: searchParams.get('userId') || undefined,
+      status: searchParams.get('status') || undefined,
       startDate: searchParams.get('startDate') || undefined,
       endDate: searchParams.get('endDate') || undefined,
     })
@@ -34,6 +35,10 @@ export async function GET(request: NextRequest) {
 
     if (query.category) {
       where.category = query.category as Category
+    }
+
+    if (query.status) {
+      where.status = query.status as ExpenseStatus
     }
 
     if (query.startDate || query.endDate) {

@@ -1,5 +1,15 @@
 import { z } from 'zod'
 
+// ExpenseStatus enum matching Prisma schema
+export const ExpenseStatus = {
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  APPROVED: 'APPROVED',
+} as const
+
+export type ExpenseStatusType = (typeof ExpenseStatus)[keyof typeof ExpenseStatus]
+
+const expenseStatusValues = Object.values(ExpenseStatus) as [string, ...string[]]
+
 // Category enum matching Prisma schema
 export const Category = {
   FOOD: 'FOOD',
@@ -132,6 +142,7 @@ export const listExpensesQuerySchema = z.object({
   limit: z.coerce.number().int().positive().max(100).default(20),
   category: z.enum(categoryValues).optional(),
   userId: z.string().optional(),
+  status: z.enum(expenseStatusValues).optional(),
   startDate: z
     .string()
     .transform((val) => new Date(val))

@@ -77,7 +77,7 @@
         "No status parameter returns all expenses",
         "Response includes status field for each expense"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "TXA-007",

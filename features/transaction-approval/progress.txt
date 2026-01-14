@@ -27,3 +27,9 @@ Story: TXA-005 Auto-approve when all founders have approved
 Files changed: src/app/api/expenses/[id]/approve/route.ts, src/app/api/expenses/route.ts
 Notes: Updated approve endpoint to check if all founders (except creator) have approved and update status to APPROVED. Updated expense creation to auto-approve when no other founders exist.
 ---
+
+---
+Story: TXA-006 Update GET /api/expenses to include status filter
+Files changed: src/lib/validations/expense.ts, src/app/api/expenses/route.ts
+Notes: Added ExpenseStatus enum to validation schema. Added status filter parameter to listExpensesQuerySchema. Updated GET endpoint to filter by status.
+---
