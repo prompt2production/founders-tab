@@ -62,7 +62,7 @@
         "When isLastFounder is true and role is FOUNDER, the MEMBER option is disabled",
         "Calls onRoleChange callback with userId and newRole when selection changes"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "ROLE-006",
