@@ -57,3 +57,9 @@ Story: WDR-010 Create unit tests for withdrawal API endpoints
 Files changed: tests/unit/api/withdrawal.test.ts
 Notes: Created 18 tests covering request-withdrawal, approve-withdrawal, and confirm-receipt endpoints. All 89 tests pass.
 ---
+
+---
+Story: WDR-011 Create useRequestWithdrawal hook
+Files changed: src/hooks/useRequestWithdrawal.ts
+Notes: Created hook following same pattern as useApproveExpense. Includes auto-approval handling in toast messages.
+---
