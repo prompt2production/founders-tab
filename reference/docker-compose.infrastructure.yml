@@ -1,33 +1,33 @@
 # docker-compose.infrastructure.yml
-# Founders Tab Infrastructure Setup
+# PerkStation Infrastructure Setup
 # Run once for initial setup, rarely needs updates
 # Usage: docker-compose -f docker-compose.infrastructure.yml up -d
 
 services:
   db:
     image: postgres:15-alpine
-    container_name: founderstab-db
+    container_name: perkstation-db
     restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=founderstab
+      - POSTGRES_USER=perkstation
       - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=founderstab
+      - POSTGRES_DB=perkstation
     ports:
-      - "5467:5432"
+      - "5464:5432"
     networks:
-      - founderstab-network
+      - perkstation-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U founderstab -d founderstab"]
+      test: ["CMD-SHELL", "pg_isready -U perkstation -d perkstation"]
       interval: 10s
       timeout: 5s
       retries: 5
 
 volumes:
   postgres_data:
-    name: founderstab-postgres-data
+    name: perkstation-postgres-data
 
 networks:
-  founderstab-network:
+  perkstation-network:
     external: true

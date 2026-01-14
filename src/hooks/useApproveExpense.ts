@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { triggerApprovalCountRefresh } from './usePendingApprovalCount'
 
 interface UseApproveExpenseResult {
   approve: (expenseId: string) => Promise<void>
@@ -41,6 +42,9 @@ export function useApproveExpense(options: UseApproveExpenseOptions = {}): UseAp
       toast.success('Expense approved', {
         description: 'Your approval has been recorded',
       })
+
+      // Trigger refresh of pending approval count in nav
+      triggerApprovalCountRefresh()
 
       options.onSuccess?.()
     } catch (err) {

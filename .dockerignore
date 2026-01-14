@@ -1,0 +1,41 @@
+# Dependencies
+node_modules
+npm-debug.log*
+
+# Next.js build output
+.next
+out
+
+# Testing
+coverage
+tests
+*.test.ts
+*.test.tsx
+*.spec.ts
+
+# Development files
+.env.local
+.env.development
+.env.test
+
+# IDE
+.vscode
+.idea
+
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+!README.md
+
+# Feature planning (not needed in production)
+features
+
+# Reference files
+reference
+
+# Misc
+.DS_Store
+*.log

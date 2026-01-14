@@ -2,6 +2,14 @@
 
 import { useState, useEffect, useCallback } from 'react'
 
+// Custom event name for triggering approval count refresh
+export const APPROVAL_COUNT_REFRESH_EVENT = 'approval-count-refresh'
+
+// Helper function to trigger a refresh of all pending approval counts
+export function triggerApprovalCountRefresh() {
+  window.dispatchEvent(new CustomEvent(APPROVAL_COUNT_REFRESH_EVENT))
+}
+
 interface UsePendingApprovalCountResult {
   count: number
   isLoading: boolean
@@ -52,6 +60,18 @@ export function usePendingApprovalCount(): UsePendingApprovalCountResult {
 
   useEffect(() => {
     fetchCount()
+  }, [fetchCount])
+
+  // Listen for refresh events
+  useEffect(() => {
+    const handleRefresh = () => {
+      fetchCount()
+    }
+
+    window.addEventListener(APPROVAL_COUNT_REFRESH_EVENT, handleRefresh)
+    return () => {
+      window.removeEventListener(APPROVAL_COUNT_REFRESH_EVENT, handleRefresh)
+    }
   }, [fetchCount])
 
   return {

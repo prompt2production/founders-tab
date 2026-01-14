@@ -1,0 +1,73 @@
+{
+  "feature": "Home Page",
+  "stories": [
+    {
+      "id": "HOME-001",
+      "title": "Create basic home page component",
+      "description": "Create the root home page at src/app/page.tsx with the marketing content structure",
+      "acceptance_criteria": [
+        "File exists at src/app/page.tsx",
+        "Page displays 'Founders Tab' as the main heading with gradient text styling",
+        "Page displays a one-line tagline describing the product",
+        "Page displays 3 value proposition bullet points",
+        "Page displays a brief supporting text about target audience",
+        "Page is styled according to DESIGN_SYSTEM.md (dark mode, proper spacing, typography)"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HOME-002",
+      "title": "Add CTA buttons linking to auth pages",
+      "description": "Add Get Started and Log In buttons that navigate to signup and login pages",
+      "acceptance_criteria": [
+        "Primary 'Get Started' button is present and links to /signup",
+        "Secondary 'Log In' button is present and links to /login",
+        "Buttons are styled per DESIGN_SYSTEM.md (primary and outline/secondary variants)",
+        "Buttons stack vertically on mobile (below lg breakpoint)",
+        "Buttons display side-by-side on desktop (lg breakpoint and above)",
+        "Buttons are keyboard accessible"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HOME-003",
+      "title": "Add authenticated user redirect",
+      "description": "Authenticated users visiting the home page should be redirected to the main app",
+      "acceptance_criteria": [
+        "Home page uses the useAuth hook to check authentication status",
+        "Authenticated users are automatically redirected to /expenses",
+        "Loading state shows a spinner while checking auth status",
+        "Unauthenticated users see the marketing content without delay"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HOME-004",
+      "title": "Responsive layout and centering",
+      "description": "Ensure the home page is properly centered and responsive across all viewports",
+      "acceptance_criteria": [
+        "Content is vertically and horizontally centered on all screen sizes",
+        "Generous vertical spacing between elements (following DESIGN_SYSTEM.md spacing scale)",
+        "Page looks good on mobile (375px width)",
+        "Page looks good on tablet (768px width)",
+        "Page looks good on desktop (1024px+ width)",
+        "No horizontal scrolling on any viewport"
+      ],
+      "passes": false
+    },
+    {
+      "id": "HOME-005",
+      "title": "Add E2E tests for home page",
+      "description": "Create Playwright tests to verify home page functionality",
+      "acceptance_criteria": [
+        "Test file exists at tests/e2e/home-page.spec.ts",
+        "Test verifies the home page loads with expected content",
+        "Test verifies 'Get Started' button navigates to /signup",
+        "Test verifies 'Log In' button navigates to /login",
+        "Test verifies authenticated users are redirected away from home page",
+        "All tests pass when running npx playwright test tests/e2e/home-page.spec.ts"
+      ],
+      "passes": false
+    }
+  ]
+}

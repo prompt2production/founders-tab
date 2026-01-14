@@ -147,37 +147,7 @@ export function EditExpenseSheet({ expense, currentUserId, open, onOpenChange, o
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="rounded-t-2xl max-h-[90vh] overflow-y-auto">
         <SheetHeader>
-          <div className="flex items-center justify-between">
-            <SheetTitle>Edit Expense</SheetTitle>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
-                  {isDeleting ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Trash2 className="h-4 w-4" />
-                  )}
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Delete expense?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This will permanently delete this expense. This action cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={handleDelete}
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                  >
-                    Delete
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
+          <SheetTitle>Edit Expense</SheetTitle>
         </SheetHeader>
         <div className="px-4 pb-4 space-y-4">
           {/* Approval Status Section */}
@@ -250,7 +220,10 @@ export function EditExpenseSheet({ expense, currentUserId, open, onOpenChange, o
                 canApprove={expense.canCurrentUserApprove || false}
                 isCreator={isCreator}
                 hasApproved={hasApproved}
-                onSuccess={onSuccess}
+                onSuccess={() => {
+                  onOpenChange(false)
+                  onSuccess?.()
+                }}
                 className="w-full"
               />
 
@@ -296,6 +269,43 @@ export function EditExpenseSheet({ expense, currentUserId, open, onOpenChange, o
               submitLabel="Update Expense"
             />
           )}
+
+          {/* Delete section - separated from main actions */}
+          <div className="pt-4 border-t border-border">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-4 w-4 mr-2" />
+                  )}
+                  Delete Expense
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete expense?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete this expense. This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDelete}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
       </SheetContent>
     </Sheet>

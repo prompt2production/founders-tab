@@ -3,6 +3,7 @@ import { randomBytes } from 'crypto'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { createInvitationSchema } from '@/lib/validations/invitation'
+import { sendInvitationEmail } from '@/lib/email'
 import { z } from 'zod'
 
 const INVITATION_EXPIRY_DAYS = 7
@@ -120,6 +121,18 @@ export async function POST(request: NextRequest) {
         createdAt: true,
       },
     })
+
+    // Send invitation email
+    const emailSent = await sendInvitationEmail({
+      to: validated.email,
+      inviterName: user.name,
+      token,
+      message: validated.message,
+    })
+
+    if (!emailSent) {
+      console.warn(`Invitation created but email failed to send to ${validated.email}`)
+    }
 
     return NextResponse.json(invitation, { status: 201 })
   } catch (error) {

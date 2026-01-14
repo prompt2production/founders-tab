@@ -1,0 +1,92 @@
+# docker-compose.app.yml
+# PerkStation Web Application - Production
+#
+# Prerequisites:
+#   1. Infrastructure running: docker-compose -f docker-compose.infrastructure.yml up -d
+#   2. nginx-proxy network exists on the server
+#
+# Usage:
+#   Initial install: docker-compose -f docker-compose.app.yml up -d --build
+#   Updates: docker-compose -f docker-compose.app.yml up -d --build --force-recreate
+#   Migrations: docker-compose -f docker-compose.app.yml exec app npx prisma migrate deploy
+
+services:
+  app:
+    build:
+      context: ./src
+      dockerfile: ../Dockerfile
+      args:
+        NEXT_PUBLIC_DOMAIN: ${NEXT_PUBLIC_DOMAIN:-perkstation.co.uk}
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-https://perkstation.co.uk}
+        NEXT_PUBLIC_SHOW_TEST_BANNER: ${NEXT_PUBLIC_SHOW_TEST_BANNER:-false}
+    container_name: perkstation-app
+    hostname: perkstation-app
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+      - DATABASE_URL=postgresql://perkstation:${DB_PASSWORD}@perkstation-db:5432/perkstation
+      - JWT_SECRET=${JWT_SECRET}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - SENDGRID_FROM_EMAIL=${SENDGRID_FROM_EMAIL}
+      - SYSTEM_NOTIFICATION_EMAIL=${SYSTEM_NOTIFICATION_EMAIL:-hello@perkstation.co.uk}
+      - NEXT_PUBLIC_DOMAIN=${NEXT_PUBLIC_DOMAIN:-perkstation.co.uk}
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-https://perkstation.co.uk}
+      - COOKIE_DOMAIN=${COOKIE_DOMAIN:-.perkstation.co.uk}
+      - NEXT_TELEMETRY_DISABLED=1
+      # AI Image Generation
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - LOGO_DEV_TOKEN=${LOGO_DEV_TOKEN}
+      # Nginx-proxy environment variables
+      # Support wildcard subdomains for multi-tenancy
+      - VIRTUAL_HOST=${PROD_DOMAIN:-perkstation.co.uk,*.perkstation.co.uk}
+      - LETSENCRYPT_HOST=${LETSENCRYPT_DOMAIN:-perkstation.co.uk}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL:-admin@perkstation.co.uk}
+      - HTTPS_METHOD=redirect
+      - VIRTUAL_PORT=3000
+    networks:
+      - perkstation-network
+      - nginx-proxy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:3000/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    volumes:
+      # Persist uploaded images (logos, offers, benefits) across container restarts
+      - uploads-logos:/app/public/logos
+      - uploads-offers:/app/public/offers
+      - uploads-benefits:/app/public/benefits
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  uploads-logos:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/docker/perk-station/uploads/logos
+  uploads-offers:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/docker/perk-station/uploads/offers
+  uploads-benefits:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/docker/perk-station/uploads/benefits
+
+networks:
+  perkstation-network:
+    external: true
+  nginx-proxy:
+    external: true

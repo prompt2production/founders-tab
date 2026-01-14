@@ -1,0 +1,74 @@
+# docker-compose.app.yml
+# Founders Tab Web Application - Production
+#
+# Prerequisites:
+#   1. Infrastructure running: docker-compose -f docker-compose.infrastructure.yml up -d
+#   2. nginx-proxy network exists on the server
+#
+# Usage:
+#   Initial install: docker-compose -f docker-compose.app.yml up -d --build
+#   Updates: docker-compose -f docker-compose.app.yml up -d --build --force-recreate
+#   Migrations: docker-compose -f docker-compose.app.yml exec app npx prisma migrate deploy
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_DOMAIN: ${NEXT_PUBLIC_DOMAIN:-founderstab.com}
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-https://founderstab.com}
+        NEXT_PUBLIC_SHOW_TEST_BANNER: ${NEXT_PUBLIC_SHOW_TEST_BANNER:-false}
+    container_name: founderstab-app
+    hostname: founderstab-app
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+      - DATABASE_URL=postgresql://founderstab:${DB_PASSWORD}@founderstab-db:5432/founderstab
+      - JWT_SECRET=${JWT_SECRET}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+      - SENDGRID_FROM_EMAIL=${SENDGRID_FROM_EMAIL}
+      - SYSTEM_NOTIFICATION_EMAIL=${SYSTEM_NOTIFICATION_EMAIL:-hello@founderstab.com}
+      - NEXT_PUBLIC_DOMAIN=${NEXT_PUBLIC_DOMAIN:-founderstab.com}
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-https://founderstab.com}
+      - COOKIE_DOMAIN=${COOKIE_DOMAIN:-.founderstab.com}
+      - NEXT_TELEMETRY_DISABLED=1
+      # Nginx-proxy environment variables
+      - VIRTUAL_HOST=${PROD_DOMAIN:-founderstab.com}
+      - LETSENCRYPT_HOST=${LETSENCRYPT_DOMAIN:-founderstab.com}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL:-admin@founderstab.com}
+      - HTTPS_METHOD=redirect
+      - VIRTUAL_PORT=3000
+    networks:
+      - founderstab-network
+      - nginx-proxy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:3000/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    volumes:
+      # Persist uploaded receipts across container restarts
+      - uploads-receipts:/app/public/uploads/receipts
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  uploads-receipts:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/docker/founders-tab/uploads/receipts
+
+networks:
+  founderstab-network:
+    external: true
+  nginx-proxy:
+    external: true
