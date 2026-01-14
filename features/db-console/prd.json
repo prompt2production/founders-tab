@@ -77,7 +77,7 @@
         "Returns selected option",
         "Handles invalid input gracefully"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "DBC-007",
