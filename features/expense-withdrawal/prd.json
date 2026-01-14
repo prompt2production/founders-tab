@@ -69,7 +69,7 @@
         "Creates WithdrawalApproval record on success",
         "Returns updated expense with withdrawal approvals"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "WDR-006",
