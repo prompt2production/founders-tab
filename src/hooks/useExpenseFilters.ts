@@ -6,6 +6,7 @@ import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 export interface ExpenseFilters {
   userId?: string
   category?: string
+  status?: string
   startDate?: Date
   endDate?: Date
 }
@@ -26,12 +27,14 @@ export function useExpenseFilters(): UseExpenseFiltersResult {
   const filters = useMemo<ExpenseFilters>(() => {
     const userId = searchParams.get('userId') || undefined
     const category = searchParams.get('category') || undefined
+    const status = searchParams.get('status') || undefined
     const startDateStr = searchParams.get('startDate')
     const endDateStr = searchParams.get('endDate')
 
     return {
       userId,
       category,
+      status,
       startDate: startDateStr ? new Date(startDateStr) : undefined,
       endDate: endDateStr ? new Date(endDateStr) : undefined,
     }
@@ -42,6 +45,7 @@ export function useExpenseFilters(): UseExpenseFiltersResult {
     return [
       filters.userId,
       filters.category,
+      filters.status,
       filters.startDate || filters.endDate,
     ].filter(Boolean).length
   }, [filters])
@@ -66,6 +70,15 @@ export function useExpenseFilters(): UseExpenseFiltersResult {
           params.set('category', updates.category)
         } else {
           params.delete('category')
+        }
+      }
+
+      // Update status
+      if ('status' in updates) {
+        if (updates.status) {
+          params.set('status', updates.status)
+        } else {
+          params.delete('status')
         }
       }
 

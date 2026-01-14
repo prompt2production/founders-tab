@@ -6,10 +6,12 @@ import { Badge } from '@/components/ui/badge'
 import { PersonFilter } from './filters/person-filter'
 import { DateRangeFilter } from './filters/date-range-filter'
 import { CategoryFilter } from './filters/category-filter'
+import { StatusFilter } from './filters/status-filter'
 
 export interface ExpenseFiltersState {
   userId?: string
   category?: string
+  status?: string
   startDate?: Date
   endDate?: Date
 }
@@ -23,6 +25,7 @@ export function ExpenseFilters({ filters, onFiltersChange }: ExpenseFiltersProps
   const activeFilterCount = [
     filters.userId,
     filters.category,
+    filters.status,
     filters.startDate || filters.endDate,
   ].filter(Boolean).length
 
@@ -30,6 +33,7 @@ export function ExpenseFilters({ filters, onFiltersChange }: ExpenseFiltersProps
     onFiltersChange({
       userId: undefined,
       category: undefined,
+      status: undefined,
       startDate: undefined,
       endDate: undefined,
     })
@@ -58,6 +62,11 @@ export function ExpenseFilters({ filters, onFiltersChange }: ExpenseFiltersProps
         <CategoryFilter
           value={filters.category}
           onChange={(category) => onFiltersChange({ ...filters, category })}
+        />
+
+        <StatusFilter
+          value={filters.status}
+          onChange={(status) => onFiltersChange({ ...filters, status })}
         />
 
         {/* Clear All and Active Filter Count */}

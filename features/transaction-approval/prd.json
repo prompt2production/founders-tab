@@ -179,7 +179,7 @@
         "Filter syncs with URL params",
         "Filter works with other filters"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "TXA-015",

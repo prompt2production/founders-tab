@@ -75,3 +75,9 @@ Story: TXA-013 Create ApproveButton component
 Files changed: src/components/expenses/approve-button.tsx
 Notes: Created button using useApproveExpense hook. Hidden for creators, shows "Approved" disabled state when already approved, loading spinner during approval, success state after.
 ---
+
+---
+Story: TXA-014 Add status filter to ExpenseFilters component
+Files changed: src/components/expenses/filters/status-filter.tsx, src/components/expenses/expense-filters.tsx, src/hooks/useExpenseFilters.ts
+Notes: Created StatusFilter component with All/Pending/Approved options. Updated ExpenseFilters and useExpenseFilters to include status in state and URL params.
+---
