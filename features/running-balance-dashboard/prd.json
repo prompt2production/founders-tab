@@ -95,7 +95,7 @@
         "Shows average per founder",
         "Uses gradient card styling per DESIGN_SYSTEM.md"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "RBD-008",

@@ -33,3 +33,9 @@ Story: RBD-006 Create BalanceCard component
 Files changed: src/components/balance/balance-card.tsx
 Notes: Created card with avatar (initials), name, total amount (large tabular-nums), expense count, percentage. Supports highlight state with gradient background. Clickable with keyboard support.
 ---
+
+---
+Story: RBD-007 Create BalanceSummary component
+Files changed: src/components/balance/balance-summary.tsx
+Notes: Created gradient summary card showing total team expenses, member count, and average per founder. Uses design system gradient styling.
+---
