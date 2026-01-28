@@ -1,0 +1,254 @@
+{
+  "feature": "Email Notifications & Rejection Workflow",
+  "stories": [
+    {
+      "id": "NOTIF-001",
+      "title": "Add rejection statuses to database schema",
+      "description": "Add REJECTED and WITHDRAWAL_REJECTED to the ExpenseStatus enum, and add rejection tracking fields (rejectedById, rejectedAt, rejectionReason) to the Expense model with a relation to User.",
+      "acceptance_criteria": [
+        "ExpenseStatus enum in prisma/schema.prisma includes REJECTED and WITHDRAWAL_REJECTED values",
+        "Expense model has optional fields: rejectedById (String?), rejectedAt (DateTime?), rejectionReason (String?)",
+        "Expense model has relation: rejectedBy User? @relation('RejectedExpenses', fields: [rejectedById], references: [id])",
+        "User model has reverse relation: rejectedExpenses Expense[] @relation('RejectedExpenses')",
+        "Migration runs successfully with npx prisma migrate dev",
+        "Prisma client generates without errors"
+      ],
+      "passes": true
+    },
+    {
+      "id": "NOTIF-002",
+      "title": "Create rejection validation schemas",
+      "description": "Add Zod validation schemas for expense rejection and withdrawal rejection requests in the validations directory.",
+      "acceptance_criteria": [
+        "File src/lib/validations/expense.ts exports rejectExpenseSchema with required reason field (string, 1-500 chars, trimmed)",
+        "ExpenseStatus constant object in validations includes REJECTED and WITHDRAWAL_REJECTED values",
+        "Unit test in tests/unit/validations/expense-rejection.test.ts validates: reason required, reason too short, reason too long, valid reason accepted",
+        "npm run test passes for the new validation tests"
+      ],
+      "passes": false
+    },
+    {
+      "id": "NOTIF-003",
+      "title": "Create expense rejection API route",
+      "description": "Create POST /api/expenses/[id]/reject endpoint that allows a founder to reject a pending expense with a reason.",
+      "acceptance_criteria": [
+        "File exists at src/app/api/expenses/[id]/reject/route.ts",
+        "Only authenticated users with FOUNDER role can reject",
+        "Cannot reject own expense (returns 403)",
+        "Expense must be in PENDING_APPROVAL status (returns 400 otherwise)",
+        "Request body validated with rejectExpenseSchema",
+        "On success: expense status set to REJECTED, rejectedById/rejectedAt/rejectionReason populated",
+        "Returns updated expense with rejectedBy user details (id, name)",
+        "Returns 404 for non-existent expense",
+        "Unit test in tests/unit/api/reject-expense.test.ts covers success and error cases",
+        "npm run test passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "NOTIF-004",
+      "title": "Create withdrawal rejection API route",
+      "description": "Create POST /api/expenses/[id]/reject-withdrawal endpoint that allows a founder to reject a pending withdrawal request with a reason.",
+      "acceptance_criteria": [
+        "File exists at src/app/api/expenses/[id]/reject-withdrawal/route.ts",
+        "Only authenticated users with FOUNDER role can reject",
+        "Cannot reject own withdrawal (returns 403)",
+        "Expense must be in WITHDRAWAL_REQUESTED status (returns 400 otherwise)",
+        "Request body validated with rejectExpenseSchema (same schema as expense rejection)",
+        "On success: expense status set to WITHDRAWAL_REJECTED, rejectedById/rejectedAt/rejectionReason populated",
+        "Returns updated expense with rejectedBy user details (id, name)",
+        "Returns 404 for non-existent expense",
+        "Unit test in tests/unit/api/reject-withdrawal.test.ts covers success and error cases",
+        "npm run test passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "NOTIF-005",
+      "title": "Create shared email notification layout helper",
+      "description": "Create a reusable HTML email layout function in src/lib/email.ts that generates branded notification emails with an expense details card. All notification emails share the same dark theme with orange/red gradient header.",
+      "acceptance_criteria": [
+        "src/lib/email.ts exports a buildNotificationEmail function that accepts: title, bodyHtml, ctaText, ctaUrl, and returns { html, text }",
+        "Generated HTML matches existing brand: dark background (#1a1a1a), orange-to-red gradient header, white text",
+        "src/lib/email.ts exports a formatExpenseDetailsHtml function that accepts expense data (description, amount, category, date, submitterName) and returns an HTML card snippet",
+        "Both functions generate matching plain text fallback content",
+        "Unit test in tests/unit/lib/email-templates.test.ts verifies the layout includes key elements (header, CTA link, expense details)",
+        "npm run test passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "NOTIF-006",
+      "title": "Send notification on new expense submission",
+      "description": "When a new expense is created with PENDING_APPROVAL status, send an email to all other founders notifying them that a new expense needs their approval.",
+      "acceptance_criteria": [
+        "src/lib/email.ts exports sendExpenseAwaitingApprovalEmail function",
+        "Function accepts: expense details (description, amount, category, date), submitter name, recipient email",
+        "Subject line: 'New expense from {submitterName} needs your approval'",
+        "Email body includes expense details card and 'Review Expense' CTA button linking to /expenses",
+        "In src/app/api/expenses/route.ts POST handler: after creating expense with PENDING_APPROVAL status, fetch all other founders and send notification to each",
+        "Email sending is fire-and-forget (does not block API response or cause failure on email error)",
+        "Unit test verifies email function generates correct subject and includes expense details",
+        "npm run test passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "NOTIF-007",
+      "title": "Send notification on expense approval",
+      "description": "When an expense becomes fully approved (all founders approved), send an email to the expense submitter.",
+      "acceptance_criteria": [
+        "src/lib/email.ts exports sendExpenseApprovedEmail function",
+        "Function accepts: expense details, submitter email, submitter name",
+        "Subject line: 'Your expense has been approved'",
+        "Email body includes expense details card, approval confirmation message, and 'View Expense' CTA button linking to /expenses",
+        "In src/app/api/expenses/[id]/approve/route.ts: after expense status changes to APPROVED (isFullyApproved), send notification to expense creator",
+        "Email sending is fire-and-forget",
+        "Unit test verifies email function generates correct subject and content",
+        "npm run test passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "NOTIF-008",
+      "title": "Send notification on expense rejection",
+      "description": "When a founder rejects an expense, send an email to the expense submitter with the rejection reason.",
+      "acceptance_criteria": [
+        "src/lib/email.ts exports sendExpenseRejectedEmail function",
+        "Function accepts: expense details, submitter email, submitter name, rejector name, rejection reason",
+        "Subject line: 'Your expense has been rejected'",
+        "Email body includes expense details card, rejection reason in a highlighted block, rejector name, and 'View Expense' CTA button",
+        "In src/app/api/expenses/[id]/reject/route.ts: after rejecting, send notification to expense creator",
+        "Email sending is fire-and-forget",
+        "Unit test verifies email function includes rejection reason in output",
+        "npm run test passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "NOTIF-009",
+      "title": "Send notification on withdrawal approval",
+      "description": "When a withdrawal request becomes fully approved, send an email to the expense owner.",
+      "acceptance_criteria": [
+        "src/lib/email.ts exports sendWithdrawalApprovedEmail function",
+        "Function accepts: expense details, owner email, owner name",
+        "Subject line: 'Your withdrawal request has been approved'",
+        "Email body includes expense details card, withdrawal approval confirmation, and 'Confirm Receipt' CTA button linking to /expenses",
+        "In src/app/api/expenses/[id]/approve-withdrawal/route.ts: after status changes to WITHDRAWAL_APPROVED (isFullyApproved), send notification to expense owner",
+        "Email sending is fire-and-forget",
+        "Unit test verifies email function generates correct subject and content",
+        "npm run test passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "NOTIF-010",
+      "title": "Send notification on withdrawal rejection",
+      "description": "When a founder rejects a withdrawal request, send an email to the expense owner with the rejection reason.",
+      "acceptance_criteria": [
+        "src/lib/email.ts exports sendWithdrawalRejectedEmail function",
+        "Function accepts: expense details, owner email, owner name, rejector name, rejection reason",
+        "Subject line: 'Your withdrawal request has been rejected'",
+        "Email body includes expense details card, rejection reason in highlighted block, rejector name, and 'View Expense' CTA button",
+        "In src/app/api/expenses/[id]/reject-withdrawal/route.ts: after rejecting, send notification to expense owner",
+        "Email sending is fire-and-forget",
+        "Unit test verifies email function includes rejection reason in output",
+        "npm run test passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "NOTIF-011",
+      "title": "Update ApprovalStatusBadge for rejected statuses",
+      "description": "Update the ApprovalStatusBadge component to display rejected states with appropriate styling.",
+      "acceptance_criteria": [
+        "src/components/expenses/approval-status-badge.tsx handles REJECTED status: red/destructive badge with XCircle icon, text 'Rejected'",
+        "src/components/expenses/approval-status-badge.tsx handles WITHDRAWAL_REJECTED status: red/destructive badge with XCircle icon, text 'Withdrawal Rejected'",
+        "Badge styling follows DESIGN_SYSTEM.md patterns for destructive/error states",
+        "Existing status badges are unchanged",
+        "npm run test passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "NOTIF-012",
+      "title": "Create RejectExpenseButton component",
+      "description": "Create a reject button component that opens an AlertDialog with a required reason textarea, then calls the reject API endpoint. Add it to the EditExpenseSheet next to the approve button.",
+      "acceptance_criteria": [
+        "File exists at src/components/expenses/reject-expense-button.tsx",
+        "Component renders a destructive-variant button with XCircle icon and text 'Reject'",
+        "Button is hidden if: user is expense creator, user is not a founder, or expense is not PENDING_APPROVAL",
+        "Clicking opens an AlertDialog with: title 'Reject Expense', description, required textarea for reason (placeholder text), Cancel and Reject buttons",
+        "Reject button in dialog is disabled until reason has at least 1 character",
+        "On confirm: calls POST /api/expenses/{id}/reject with reason, shows success toast, triggers refresh",
+        "On error: shows error toast with message",
+        "Loading state shows spinner on the Reject button",
+        "Component added to EditExpenseSheet alongside ApproveButton for PENDING_APPROVAL expenses",
+        "npm run test passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "NOTIF-013",
+      "title": "Create RejectWithdrawalButton component",
+      "description": "Create a reject withdrawal button component that opens an AlertDialog with a required reason textarea, then calls the reject-withdrawal API endpoint. Add it to the EditExpenseSheet next to the approve withdrawal button.",
+      "acceptance_criteria": [
+        "File exists at src/components/expenses/reject-withdrawal-button.tsx",
+        "Component renders a destructive-variant button with XCircle icon and text 'Reject Withdrawal'",
+        "Button is hidden if: user is expense owner, user is not a founder, or expense is not WITHDRAWAL_REQUESTED",
+        "Clicking opens an AlertDialog with: title 'Reject Withdrawal', description, required textarea for reason, Cancel and Reject buttons",
+        "Reject button in dialog is disabled until reason has at least 1 character",
+        "On confirm: calls POST /api/expenses/{id}/reject-withdrawal with reason, shows success toast, triggers refresh",
+        "On error: shows error toast with message",
+        "Loading state shows spinner on the Reject button",
+        "Component added to EditExpenseSheet alongside ApproveWithdrawalButton for WITHDRAWAL_REQUESTED expenses",
+        "npm run test passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "NOTIF-014",
+      "title": "Show rejection details in EditExpenseSheet",
+      "description": "When viewing a rejected expense or rejected withdrawal, display the rejection reason, who rejected it, and when.",
+      "acceptance_criteria": [
+        "EditExpenseSheet fetches rejectedBy (id, name), rejectedAt, and rejectionReason from the expense API",
+        "For REJECTED or WITHDRAWAL_REJECTED expenses: displays a rejection info section with red/destructive styling",
+        "Rejection section shows: 'Rejected by {name}' with relative date, and the rejection reason in a styled block",
+        "GET /api/expenses/[id] route includes rejectedBy, rejectedAt, rejectionReason in response when present",
+        "Styling follows DESIGN_SYSTEM.md patterns (uses destructive colors, proper spacing)",
+        "npm run test passes"
+      ],
+      "passes": false
+    },
+    {
+      "id": "NOTIF-015",
+      "title": "Unit tests for email notification functions",
+      "description": "Comprehensive unit tests for all email notification template functions.",
+      "acceptance_criteria": [
+        "Test file at tests/unit/lib/email-notifications.test.ts",
+        "Tests cover all 5 notification email functions: sendExpenseAwaitingApprovalEmail, sendExpenseApprovedEmail, sendExpenseRejectedEmail, sendWithdrawalApprovedEmail, sendWithdrawalRejectedEmail",
+        "Each test verifies: correct subject line, HTML contains expense details, HTML contains appropriate CTA text, plain text fallback is generated",
+        "Rejection email tests verify: rejection reason appears in output, rejector name appears in output",
+        "Tests mock the sendEmail function to capture arguments without calling SendGrid",
+        "npm run test passes with all new tests green"
+      ],
+      "passes": false
+    },
+    {
+      "id": "NOTIF-016",
+      "title": "E2E tests for rejection and notification workflows",
+      "description": "End-to-end Playwright tests covering the expense rejection and withdrawal rejection UI flows.",
+      "acceptance_criteria": [
+        "Test file at tests/e2e/expense-rejection.spec.ts",
+        "Test: Founder can reject a pending expense with a reason via the UI",
+        "Test: Rejected expense shows rejection details (reason, rejector name) in the expense sheet",
+        "Test: Founder can reject a withdrawal request with a reason via the UI",
+        "Test: Rejected withdrawal shows rejection details in the expense sheet",
+        "Test: Expense creator cannot see reject button on their own expense",
+        "Test: ApprovalStatusBadge shows 'Rejected' or 'Withdrawal Rejected' for rejected expenses",
+        "npx playwright test expense-rejection passes"
+      ],
+      "passes": false
+    }
+  ]
+}

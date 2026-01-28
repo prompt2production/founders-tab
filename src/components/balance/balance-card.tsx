@@ -1,6 +1,8 @@
 'use client'
 
 import { cn } from '@/lib/utils'
+import { useCompanySettings } from '@/hooks/useCompanySettings'
+import { formatCurrency } from '@/lib/format-currency'
 
 interface BalanceUser {
   id: string
@@ -34,7 +36,8 @@ export function BalanceCard({
   highlight = false,
   onClick,
 }: BalanceCardProps) {
-  const formattedTotal = `$${total.toFixed(2)}`
+  const { currencySymbol, currency } = useCompanySettings()
+  const formattedTotal = formatCurrency(total, currencySymbol, currency)
   const formattedPercentage = `${percentage.toFixed(1)}%`
   const initials = getInitials(user.name)
 

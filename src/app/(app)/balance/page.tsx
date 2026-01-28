@@ -5,6 +5,8 @@ import { Loader2 } from 'lucide-react'
 import { useAuthContext } from '@/components/auth/auth-provider'
 import { useBalances, Balance, BalanceFilter } from '@/hooks/useBalances'
 import { useBalance } from '@/hooks/useBalance'
+import { useCompanySettings } from '@/hooks/useCompanySettings'
+import { formatCurrency } from '@/lib/format-currency'
 import { BalanceSummary } from '@/components/balance/balance-summary'
 import { BalanceCard } from '@/components/balance/balance-card'
 import { BalanceBreakdown } from '@/components/balance/balance-breakdown'
@@ -87,6 +89,7 @@ function BalanceDetailSheet({
   onClose: () => void
 }) {
   const { user, total, expenseCount, byCategory, byMonth, isLoading } = useBalance(userId, filter)
+  const { currencySymbol, currency } = useCompanySettings()
 
   return (
     <ResponsiveDrawer open={!!userId} onOpenChange={(open) => !open && onClose()}>
@@ -105,7 +108,7 @@ function BalanceDetailSheet({
             <div className="flex items-center gap-6">
               <div>
                 <p className="text-xs text-muted-foreground">Total Expenses</p>
-                <p className="text-2xl font-bold tabular-nums">${total.toFixed(2)}</p>
+                <p className="text-2xl font-bold tabular-nums">{formatCurrency(total, currencySymbol, currency)}</p>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground">Expense Count</p>
@@ -133,6 +136,7 @@ function BalanceDetailSheet({
 
 export default function BalancePage() {
   const { user: currentUser } = useAuthContext()
+  const { currencySymbol: pageSymbol } = useCompanySettings()
   const [filter, setFilter] = useState<BalanceFilter>('owed')
   const { teamTotal, balances, isLoading, error } = useBalances(filter)
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
@@ -202,7 +206,7 @@ export default function BalancePage() {
           {!isLoading && !error && balances.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <div className="h-16 w-16 rounded-full bg-secondary flex items-center justify-center mb-4">
-                <span className="text-2xl">$</span>
+                <span className="text-2xl">{pageSymbol}</span>
               </div>
               <h3 className="font-semibold mb-1">No balances yet</h3>
               <p className="text-sm text-muted-foreground">

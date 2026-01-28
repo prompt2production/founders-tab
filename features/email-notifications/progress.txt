@@ -1,0 +1,5 @@
+---
+Story: NOTIF-001 Add rejection statuses to database schema
+Files changed: prisma/schema.prisma, prisma/migrations/20260128185536_add_rejection_statuses/migration.sql
+Notes: Added REJECTED and WITHDRAWAL_REJECTED to ExpenseStatus enum. Added rejectedById, rejectedAt, rejectionReason fields to Expense model with User relation. Had to kill dev server (port 3000) to unlock prisma client DLL for generation.
+---

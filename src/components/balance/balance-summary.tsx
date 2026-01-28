@@ -1,14 +1,18 @@
 'use client'
 
+import { useCompanySettings } from '@/hooks/useCompanySettings'
+import { formatCurrency } from '@/lib/format-currency'
+
 interface BalanceSummaryProps {
   teamTotal: number
   memberCount: number
 }
 
 export function BalanceSummary({ teamTotal, memberCount }: BalanceSummaryProps) {
-  const formattedTotal = `$${teamTotal.toFixed(2)}`
+  const { currencySymbol, currency } = useCompanySettings()
+  const formattedTotal = formatCurrency(teamTotal, currencySymbol, currency)
   const average = memberCount > 0 ? teamTotal / memberCount : 0
-  const formattedAverage = `$${average.toFixed(2)}`
+  const formattedAverage = formatCurrency(average, currencySymbol, currency)
 
   return (
     <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary to-red-600 p-5">

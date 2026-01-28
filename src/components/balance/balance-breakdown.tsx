@@ -1,6 +1,8 @@
 'use client'
 
 import { getCategoryLabel } from '@/lib/constants/categories'
+import { useCompanySettings } from '@/hooks/useCompanySettings'
+import { formatCurrency } from '@/lib/format-currency'
 
 interface CategoryBreakdown {
   category: string
@@ -25,6 +27,7 @@ function formatMonth(monthKey: string): string {
 }
 
 export function BalanceBreakdown({ byCategory, byMonth }: BalanceBreakdownProps) {
+  const { currencySymbol, currency } = useCompanySettings()
   const maxCategoryTotal = Math.max(...byCategory.map((c) => c.total), 1)
   const recentMonths = byMonth.slice(-6)
   const maxMonthTotal = Math.max(...recentMonths.map((m) => m.total), 1)
@@ -43,7 +46,7 @@ export function BalanceBreakdown({ byCategory, byMonth }: BalanceBreakdownProps)
                 <div className="flex justify-between text-sm">
                   <span className="text-foreground">{getCategoryLabel(category.category)}</span>
                   <span className="tabular-nums text-muted-foreground">
-                    ${category.total.toFixed(2)}
+                    {formatCurrency(category.total, currencySymbol, currency)}
                   </span>
                 </div>
                 <div className="h-2 bg-secondary rounded-full overflow-hidden">
@@ -82,10 +85,7 @@ export function BalanceBreakdown({ byCategory, byMonth }: BalanceBreakdownProps)
         </div>
         <div className="mt-2 flex justify-between text-xs text-muted-foreground">
           <span>
-            $
-            {recentMonths
-              .reduce((sum, m) => sum + m.total, 0)
-              .toFixed(2)}{' '}
+            {formatCurrency(recentMonths.reduce((sum, m) => sum + m.total, 0), currencySymbol, currency)}{' '}
             total (last 6 months)
           </span>
         </div>

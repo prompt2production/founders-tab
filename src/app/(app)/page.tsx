@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
 import { useExpenses } from '@/hooks/useExpenses'
+import { useCompanySettings } from '@/hooks/useCompanySettings'
+import { formatCurrency } from '@/lib/format-currency'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { UserAvatar } from '@/components/auth/user-avatar'
@@ -31,6 +33,7 @@ interface Expense {
 
 export default function HomePage() {
   const { user } = useAuth()
+  const { currencySymbol, currency } = useCompanySettings()
   const [summary, setSummary] = useState<ExpenseSummary | null>(null)
   const [isSummaryLoading, setIsSummaryLoading] = useState(true)
   const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false)
@@ -109,7 +112,7 @@ export default function HomePage() {
             ) : (
               <>
                 <p className="text-2xl font-bold tabular-nums">
-                  ${(summary?.userTotal || 0).toFixed(2)}
+                  {formatCurrency(summary?.userTotal || 0, currencySymbol, currency)}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">This month</p>
               </>
@@ -133,7 +136,7 @@ export default function HomePage() {
             ) : (
               <>
                 <p className="text-2xl font-bold tabular-nums">
-                  ${(summary?.teamTotal || 0).toFixed(2)}
+                  {formatCurrency(summary?.teamTotal || 0, currencySymbol, currency)}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">This month</p>
               </>

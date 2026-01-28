@@ -12,6 +12,8 @@ import {
 import { ExpenseForm } from './expense-form'
 import { CreateExpenseInput } from '@/lib/validations/expense'
 import { Info } from 'lucide-react'
+import { useCompanySettings } from '@/hooks/useCompanySettings'
+import { formatCurrency } from '@/lib/format-currency'
 
 interface AddExpenseSheetProps {
   open: boolean
@@ -20,6 +22,8 @@ interface AddExpenseSheetProps {
 }
 
 export function AddExpenseSheet({ open, onOpenChange, onSuccess }: AddExpenseSheetProps) {
+  const { currencySymbol, currency } = useCompanySettings()
+
   async function handleSubmit(data: CreateExpenseInput) {
     const response = await fetch('/api/expenses', {
       method: 'POST',
@@ -44,8 +48,8 @@ export function AddExpenseSheet({ open, onOpenChange, onSuccess }: AddExpenseShe
 
     toast.success('Expense added', {
       description: isPending
-        ? `$${data.amount.toFixed(2)} logged. Pending approval from other founders.`
-        : `$${data.amount.toFixed(2)} logged and auto-approved.`,
+        ? `${formatCurrency(data.amount, currencySymbol, currency)} logged. Pending approval from other founders.`
+        : `${formatCurrency(data.amount, currencySymbol, currency)} logged and auto-approved.`,
     })
 
     onOpenChange(false)

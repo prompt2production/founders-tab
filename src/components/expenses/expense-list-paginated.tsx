@@ -9,6 +9,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { ExpenseListItem } from './expense-list-item'
 import { useExpenses, Expense } from '@/hooks/useExpenses'
 import { getCategoryLabel } from '@/lib/constants/categories'
+import { useCompanySettings } from '@/hooks/useCompanySettings'
+import { formatCurrency } from '@/lib/format-currency'
 
 interface ExpenseFilters {
   userId?: string
@@ -30,6 +32,7 @@ export function ExpenseListPaginated({
   onPageChange,
   onExpenseClick,
 }: ExpenseListPaginatedProps) {
+  const { currencySymbol, currency } = useCompanySettings()
   const { expenses, total, totalPages, isLoading, error } = useExpenses({
     page,
     limit: 20,
@@ -124,7 +127,7 @@ export function ExpenseListPaginated({
             Showing {expenses.length} of {total} expense{total !== 1 ? 's' : ''}
           </span>
           <span className="font-semibold tabular-nums">
-            Total: ${totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            Total: {formatCurrency(totalAmount, currencySymbol, currency)}
           </span>
         </div>
         {activeFilters.length > 0 && (

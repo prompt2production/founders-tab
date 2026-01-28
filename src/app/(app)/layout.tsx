@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { AuthProvider } from '@/components/auth/auth-provider'
 import { AuthGuard } from '@/components/auth/auth-guard'
+import { CompanySettingsProvider } from '@/components/company/company-settings-provider'
 import { useAuth } from '@/hooks/useAuth'
 import { UserAvatar } from '@/components/auth/user-avatar'
 import { Button } from '@/components/ui/button'
@@ -180,9 +181,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <AuthProvider>
       <AuthGuard>
-        <div className="min-h-screen bg-background pb-20 lg:pb-0">
-          <AppContent>{children}</AppContent>
-        </div>
+        <CompanySettingsProvider>
+          <div className="min-h-screen bg-background pb-20 lg:pb-0">
+            <AppContent>{children}</AppContent>
+          </div>
+        </CompanySettingsProvider>
       </AuthGuard>
     </AuthProvider>
   )

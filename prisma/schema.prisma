@@ -53,6 +53,7 @@ model User {
   expenses            Expense[]
   approvals           Approval[]
   withdrawalApprovals WithdrawalApproval[]
+  rejectedExpenses    Expense[]            @relation("RejectedExpenses")
 }
 
 enum Role {
@@ -123,8 +124,10 @@ enum Category {
 enum ExpenseStatus {
   PENDING_APPROVAL
   APPROVED
+  REJECTED
   WITHDRAWAL_REQUESTED
   WITHDRAWAL_APPROVED
+  WITHDRAWAL_REJECTED
   RECEIVED
 }
 
@@ -141,7 +144,12 @@ model Expense {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
+  rejectedById    String?
+  rejectedAt      DateTime?
+  rejectionReason String?
+
   user                User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rejectedBy          User?                @relation("RejectedExpenses", fields: [rejectedById], references: [id])
   approvals           Approval[]
   withdrawalApprovals WithdrawalApproval[]
 }

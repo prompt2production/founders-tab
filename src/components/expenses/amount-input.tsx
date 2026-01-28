@@ -3,6 +3,7 @@
 import { forwardRef, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
+import { useCompanySettings } from '@/hooks/useCompanySettings'
 
 interface AmountInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   value?: number | string
@@ -12,6 +13,7 @@ interface AmountInputProps extends Omit<React.InputHTMLAttributes<HTMLInputEleme
 
 export const AmountInput = forwardRef<HTMLInputElement, AmountInputProps>(
   ({ value, onChange, className, onBlur, ...props }, ref) => {
+    const { currencySymbol } = useCompanySettings()
     // Track display value separately for formatting
     const [displayValue, setDisplayValue] = useState(() => {
       if (value === undefined || value === '') return ''
@@ -59,7 +61,7 @@ export const AmountInput = forwardRef<HTMLInputElement, AmountInputProps>(
     return (
       <div className="relative">
         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-2xl font-bold">
-          $
+          {currencySymbol}
         </span>
         <Input
           ref={ref}

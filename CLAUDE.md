@@ -473,11 +473,12 @@ A feature is complete when:
 - `features/dev-quick-login` - Dev Quick Login (2 stories) ✓
 - `features/role-management` - Role Management (9 stories) ✓
 - `features/home-page` - Marketing Home Page (5 stories) ✓
+- `features/company-settings` - Company Settings (8 stories) ✓
 
-**Current Feature:** `features/company-settings` - Company Settings (8 stories)
+**Current Feature:** `features/email-notifications` - Email Notifications & Rejection Workflow (16 stories)
 
 ### Next Step
-Review the generated files in `features/company-settings/` and run Ralph:
+Review the generated files in `features/email-notifications/` and run Ralph:
 
 ```bash
 claude --dangerously-skip-permissions
@@ -486,7 +487,7 @@ claude --dangerously-skip-permissions
 BEFORE EACH ITERATION:
 1. Read CLAUDE.md for project context
 2. Read DESIGN_SYSTEM.md for UI patterns
-3. Read features/company-settings/prd.json and find the first story with passes: false
+3. Read features/email-notifications/prd.json and find the first story with passes: false
 
 YOUR TASK:
 1. Implement the story following all acceptance criteria
@@ -496,8 +497,8 @@ YOUR TASK:
 3. Fix any failures before proceeding
 
 WHEN STORY COMPLETE:
-1. Update features/company-settings/prd.json - set passes: true
-2. Append to features/company-settings/progress.txt with format:
+1. Update features/email-notifications/prd.json - set passes: true
+2. Append to features/email-notifications/progress.txt with format:
    ---
    Story: [ID] [Title]
    Files changed: [list]

@@ -5,6 +5,8 @@ import { CategoryIcon } from './category-icon'
 import { ApprovalStatusBadge } from './approval-status-badge'
 import { getCategoryLabel } from '@/lib/constants/categories'
 import { cn } from '@/lib/utils'
+import { useCompanySettings } from '@/hooks/useCompanySettings'
+import { formatCurrency } from '@/lib/format-currency'
 
 interface ExpenseUser {
   id: string
@@ -44,9 +46,10 @@ interface ExpenseListItemProps {
 }
 
 export function ExpenseListItem({ expense, onClick, showUser = false }: ExpenseListItemProps) {
+  const { currencySymbol, currency } = useCompanySettings()
   const date = expense.date instanceof Date ? expense.date : new Date(expense.date)
   const amount = typeof expense.amount === 'string' ? parseFloat(expense.amount) : expense.amount
-  const formattedAmount = `$${amount.toFixed(2)}`
+  const formattedAmount = formatCurrency(amount, currencySymbol, currency)
   const categoryLabel = getCategoryLabel(expense.category)
   const userName = expense.user?.name
   const isPending = expense.status === 'PENDING_APPROVAL'

@@ -54,4 +54,4 @@ next-env.d.ts
 tmpclaude-*
 
 # Server-side uploads directory (Docker volume bind mount target)
-/uploads/
+/uploads/nul
