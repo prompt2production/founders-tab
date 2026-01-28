@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { Role, ExpenseStatus } from '@prisma/client'
+import { sendExpenseApprovedEmail } from '@/lib/email'
 
 export async function POST(
   request: NextRequest,
@@ -111,10 +112,30 @@ export async function POST(
           select: {
             id: true,
             name: true,
+            email: true,
           },
         },
       },
     })
+
+    // Fire-and-forget: notify expense creator when fully approved
+    if (isFullyApproved && updatedExpense?.user) {
+      const expenseDetails = {
+        description: expense.description,
+        amount: `$${Number(expense.amount).toFixed(2)}`,
+        category: expense.category,
+        date: new Date(expense.date).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        }),
+        submitterName: updatedExpense.user.name,
+      }
+      sendExpenseApprovedEmail({
+        to: updatedExpense.user.email,
+        expense: expenseDetails,
+      }).catch((err) => console.error('[Email] Failed to send expense approved email:', err))
+    }
 
     return NextResponse.json(updatedExpense)
   } catch (error) {

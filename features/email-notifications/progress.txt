@@ -28,3 +28,8 @@ Story: NOTIF-006 Send notification on new expense submission
 Files changed: src/lib/email.ts, src/app/api/expenses/route.ts
 Notes: Added sendExpenseAwaitingApprovalEmail function plus all 5 notification email functions (006-010) in email.ts. Integrated fire-and-forget email sending in POST /api/expenses when status is PENDING_APPROVAL. All 165 tests passing.
 ---
+---
+Story: NOTIF-007 Send notification on expense approval
+Files changed: src/app/api/expenses/[id]/approve/route.ts
+Notes: Integrated sendExpenseApprovedEmail in approve route. Fires when isFullyApproved is true. Added email to user select. All 165 tests passing.
+---
