@@ -3,3 +3,7 @@ Story: SETTINGS-001 Add CompanySettings model to Prisma schema
 Files changed: prisma/schema.prisma, prisma/migrations/20260128174450_add_company_settings/migration.sql
 Notes: Added CompanySettings model with id, name (default ""), currency (default "USD"), createdAt, updatedAt. Migration applied successfully.
 ---
+Story: SETTINGS-002 Create validation schema and currency constants
+Files changed: src/lib/validations/company-settings.ts, tests/unit/validations/company-settings.test.ts
+Notes: Created SUPPORTED_CURRENCIES, CURRENCY_OPTIONS, and updateCompanySettingsSchema. All 14 unit tests pass.
+---

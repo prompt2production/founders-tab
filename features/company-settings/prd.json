@@ -22,7 +22,7 @@
         "File exports updateCompanySettingsSchema with optional name (max 100, trimmed) and optional currency (enum of supported codes)",
         "Unit test in tests/unit/validations/company-settings.test.ts passes verifying valid and invalid inputs"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "SETTINGS-003",
