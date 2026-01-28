@@ -13,3 +13,8 @@ Story: NOTIF-003 Create expense rejection API route
 Files changed: src/app/api/expenses/[id]/reject/route.ts, tests/unit/api/reject-expense.test.ts
 Notes: Created POST /api/expenses/[id]/reject route following same patterns as approve route. 7 unit tests covering auth, role, not-found, own-expense, wrong-status, missing-reason, and success cases. All 145 tests passing.
 ---
+---
+Story: NOTIF-004 Create withdrawal rejection API route
+Files changed: src/app/api/expenses/[id]/reject-withdrawal/route.ts, tests/unit/api/reject-withdrawal.test.ts
+Notes: Created POST /api/expenses/[id]/reject-withdrawal route. Uses WITHDRAWAL_REJECTED status. 7 unit tests. All 152 tests passing.
+---

@@ -61,7 +61,7 @@
         "Unit test in tests/unit/api/reject-withdrawal.test.ts covers success and error cases",
         "npm run test passes"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "NOTIF-005",
