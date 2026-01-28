@@ -19,6 +19,7 @@ import {
   sendExpenseRejectedEmail,
   sendWithdrawalApprovedEmail,
   sendWithdrawalRejectedEmail,
+  sendPromotedToFounderEmail,
 } from '@/lib/email'
 import sgMail from '@sendgrid/mail'
 
@@ -332,6 +333,79 @@ describe('sendWithdrawalRejectedEmail', () => {
       expense: sampleExpense,
       rejectorName: 'Alice Founder',
       rejectionReason: 'Need receipts first',
+    })
+
+    const call = vi.mocked(sgMail.send).mock.calls[0][0] as { text: string }
+    expect(call.text).toBeTruthy()
+    expect(call.text).not.toContain('<p>')
+  })
+})
+
+describe('sendPromotedToFounderEmail', () => {
+  beforeEach(() => {
+    vi.mocked(sgMail.send).mockClear()
+  })
+
+  it('sends email with correct subject', async () => {
+    await sendPromotedToFounderEmail({
+      to: 'member@example.com',
+      userName: 'John Smith',
+    })
+
+    expect(sgMail.send).toHaveBeenCalledWith(
+      expect.objectContaining({
+        subject: "You've been made a founder",
+      })
+    )
+  })
+
+  it('sends email to correct recipient', async () => {
+    await sendPromotedToFounderEmail({
+      to: 'member@example.com',
+      userName: 'John Smith',
+    })
+
+    expect(sgMail.send).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: 'member@example.com',
+      })
+    )
+  })
+
+  it('includes user name in HTML body', async () => {
+    await sendPromotedToFounderEmail({
+      to: 'member@example.com',
+      userName: 'John Smith',
+    })
+
+    const call = vi.mocked(sgMail.send).mock.calls[0][0] as { html: string }
+    expect(call.html).toContain('John Smith')
+  })
+
+  it('includes founder responsibilities in HTML body', async () => {
+    await sendPromotedToFounderEmail({
+      to: 'member@example.com',
+      userName: 'John Smith',
+    })
+
+    const call = vi.mocked(sgMail.send).mock.calls[0][0] as { html: string }
+    expect(call.html).toContain('approve any expenses')
+  })
+
+  it('includes View Expenses CTA', async () => {
+    await sendPromotedToFounderEmail({
+      to: 'member@example.com',
+      userName: 'John Smith',
+    })
+
+    const call = vi.mocked(sgMail.send).mock.calls[0][0] as { html: string }
+    expect(call.html).toContain('View Expenses')
+  })
+
+  it('generates plain text fallback', async () => {
+    await sendPromotedToFounderEmail({
+      to: 'member@example.com',
+      userName: 'John Smith',
     })
 
     const call = vi.mocked(sgMail.send).mock.calls[0][0] as { text: string }

@@ -348,3 +348,30 @@ export async function sendWithdrawalRejectedEmail({
 
   return sendEmail({ to, subject, text, html })
 }
+
+// ============================================
+// Role Change Notification Emails
+// ============================================
+
+interface PromotedToFounderParams {
+  to: string
+  userName: string
+}
+
+export async function sendPromotedToFounderEmail({
+  to,
+  userName,
+}: PromotedToFounderParams): Promise<boolean> {
+  const subject = "You've been made a founder"
+  const bodyHtml = `<p>Hi <strong>${userName}</strong>,</p>
+    <p>You have been promoted to a <strong>Founder</strong> on Founders Tab.</p>
+    <p>As a founder, you will now need to approve any expenses logged by other members before they can be processed. You can review pending expenses from the Expenses page.</p>`
+  const { html, text } = buildNotificationEmail({
+    title: "You're Now a Founder",
+    bodyHtml,
+    ctaText: 'View Expenses',
+    ctaUrl: `${appUrl}/expenses`,
+  })
+
+  return sendEmail({ to, subject, text, html })
+}

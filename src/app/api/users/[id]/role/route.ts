@@ -4,6 +4,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { updateRoleSchema } from '@/lib/validations/role'
 import { Role } from '@prisma/client'
 import { z } from 'zod'
+import { sendPromotedToFounderEmail } from '@/lib/email'
 
 export async function PATCH(
   request: NextRequest,
@@ -70,6 +71,14 @@ export async function PATCH(
         role: true,
       },
     })
+
+    // Send notification email when a member is promoted to founder
+    if (targetUser.role === Role.MEMBER && validated.role === 'FOUNDER') {
+      sendPromotedToFounderEmail({
+        to: updatedUser.email!,
+        userName: updatedUser.name || 'there',
+      }).catch((err) => console.error('Error sending promoted-to-founder email:', err))
+    }
 
     return NextResponse.json(updatedUser)
   } catch (error) {
