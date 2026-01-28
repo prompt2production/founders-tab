@@ -10,11 +10,12 @@ import { BalanceCard } from '@/components/balance/balance-card'
 import { BalanceBreakdown } from '@/components/balance/balance-breakdown'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
+  ResponsiveDrawer,
+  ResponsiveDrawerContent,
+  ResponsiveDrawerHeader,
+  ResponsiveDrawerTitle,
+  ResponsiveDrawerBody,
+} from '@/components/ui/responsive-drawer'
 import {
   Select,
   SelectContent,
@@ -88,18 +89,18 @@ function BalanceDetailSheet({
   const { user, total, expenseCount, byCategory, byMonth, isLoading } = useBalance(userId, filter)
 
   return (
-    <Sheet open={!!userId} onOpenChange={(open) => !open && onClose()}>
-      <SheetContent side="bottom" className="rounded-t-2xl h-[85vh] overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle>{user?.name || 'Loading...'}</SheetTitle>
-        </SheetHeader>
+    <ResponsiveDrawer open={!!userId} onOpenChange={(open) => !open && onClose()}>
+      <ResponsiveDrawerContent className="h-[85vh]">
+        <ResponsiveDrawerHeader>
+          <ResponsiveDrawerTitle>{user?.name || 'Loading...'}</ResponsiveDrawerTitle>
+        </ResponsiveDrawerHeader>
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         ) : (
-          <div className="space-y-6 py-4">
+          <ResponsiveDrawerBody className="space-y-6">
             {/* Summary stats */}
             <div className="flex items-center gap-6">
               <div>
@@ -123,10 +124,10 @@ function BalanceDetailSheet({
                 </Button>
               </Link>
             </div>
-          </div>
+          </ResponsiveDrawerBody>
         )}
-      </SheetContent>
-    </Sheet>
+      </ResponsiveDrawerContent>
+    </ResponsiveDrawer>
   )
 }
 

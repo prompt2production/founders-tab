@@ -18,13 +18,13 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet'
+  ResponsiveDrawer,
+  ResponsiveDrawerContent,
+  ResponsiveDrawerDescription,
+  ResponsiveDrawerHeader,
+  ResponsiveDrawerTitle,
+  ResponsiveDrawerBody,
+} from '@/components/ui/responsive-drawer'
 import { createInvitationSchema, CreateInvitationInput } from '@/lib/validations/invitation'
 import { Loader2, UserPlus, X, Mail, Clock } from 'lucide-react'
 import { toast } from 'sonner'
@@ -248,30 +248,30 @@ export default function TeamPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Team</h1>
         {isFounder && (
-          <Sheet open={inviteSheetOpen} onOpenChange={setInviteSheetOpen}>
-            <SheetTrigger asChild>
-              <Button size="sm">
-                <UserPlus className="h-4 w-4 mr-2" />
-                Invite
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="bottom" className="rounded-t-2xl">
-              <SheetHeader>
-                <SheetTitle>Invite Team Member</SheetTitle>
-                <SheetDescription>
-                  Send an invitation to join your team on Founders Tab.
-                </SheetDescription>
-              </SheetHeader>
-              <div className="px-4 py-4">
-                <InviteMemberForm
-                  onSuccess={() => {
-                    setInviteSheetOpen(false)
-                    fetchData()
-                  }}
-                />
-              </div>
-            </SheetContent>
-          </Sheet>
+          <>
+            <Button size="sm" onClick={() => setInviteSheetOpen(true)}>
+              <UserPlus className="h-4 w-4 mr-2" />
+              Invite
+            </Button>
+            <ResponsiveDrawer open={inviteSheetOpen} onOpenChange={setInviteSheetOpen}>
+              <ResponsiveDrawerContent>
+                <ResponsiveDrawerHeader>
+                  <ResponsiveDrawerTitle>Invite Team Member</ResponsiveDrawerTitle>
+                  <ResponsiveDrawerDescription>
+                    Send an invitation to join your team on Founders Tab.
+                  </ResponsiveDrawerDescription>
+                </ResponsiveDrawerHeader>
+                <ResponsiveDrawerBody>
+                  <InviteMemberForm
+                    onSuccess={() => {
+                      setInviteSheetOpen(false)
+                      fetchData()
+                    }}
+                  />
+                </ResponsiveDrawerBody>
+              </ResponsiveDrawerContent>
+            </ResponsiveDrawer>
+          </>
         )}
       </div>
 

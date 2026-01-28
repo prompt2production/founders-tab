@@ -2,12 +2,13 @@
 
 import { toast } from 'sonner'
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from '@/components/ui/sheet'
+  ResponsiveDrawer,
+  ResponsiveDrawerContent,
+  ResponsiveDrawerHeader,
+  ResponsiveDrawerTitle,
+  ResponsiveDrawerDescription,
+  ResponsiveDrawerBody,
+} from '@/components/ui/responsive-drawer'
 import { ExpenseForm } from './expense-form'
 import { CreateExpenseInput } from '@/lib/validations/expense'
 import { Info } from 'lucide-react'
@@ -52,15 +53,15 @@ export function AddExpenseSheet({ open, onOpenChange, onSuccess }: AddExpenseShe
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="rounded-t-2xl max-h-[90vh] overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle>Add Expense</SheetTitle>
-          <SheetDescription className="sr-only">
+    <ResponsiveDrawer open={open} onOpenChange={onOpenChange}>
+      <ResponsiveDrawerContent>
+        <ResponsiveDrawerHeader>
+          <ResponsiveDrawerTitle>Add Expense</ResponsiveDrawerTitle>
+          <ResponsiveDrawerDescription className="sr-only">
             Add a new expense that will require approval from other founders
-          </SheetDescription>
-        </SheetHeader>
-        <div className="px-4 pb-4 space-y-4">
+          </ResponsiveDrawerDescription>
+        </ResponsiveDrawerHeader>
+        <ResponsiveDrawerBody>
           {/* Approval notice */}
           <div className="flex items-start gap-3 rounded-lg bg-[#0C1929] border border-[#1E40AF] p-3">
             <Info className="h-5 w-5 text-[#60A5FA] shrink-0 mt-0.5" />
@@ -70,8 +71,8 @@ export function AddExpenseSheet({ open, onOpenChange, onSuccess }: AddExpenseShe
           </div>
 
           <ExpenseForm onSubmit={handleSubmit} />
-        </div>
-      </SheetContent>
-    </Sheet>
+        </ResponsiveDrawerBody>
+      </ResponsiveDrawerContent>
+    </ResponsiveDrawer>
   )
 }

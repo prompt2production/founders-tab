@@ -3,11 +3,12 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
+  ResponsiveDrawer,
+  ResponsiveDrawerContent,
+  ResponsiveDrawerHeader,
+  ResponsiveDrawerTitle,
+  ResponsiveDrawerBody,
+} from '@/components/ui/responsive-drawer'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -144,12 +145,12 @@ export function EditExpenseSheet({ expense, currentUserId, open, onOpenChange, o
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom" className="rounded-t-2xl max-h-[90vh] overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle>Edit Expense</SheetTitle>
-        </SheetHeader>
-        <div className="px-4 pb-4 space-y-4">
+    <ResponsiveDrawer open={open} onOpenChange={onOpenChange}>
+      <ResponsiveDrawerContent>
+        <ResponsiveDrawerHeader>
+          <ResponsiveDrawerTitle>Edit Expense</ResponsiveDrawerTitle>
+        </ResponsiveDrawerHeader>
+        <ResponsiveDrawerBody>
           {/* Approval Status Section */}
           {expense.status && (
             <div className="rounded-lg bg-card-elevated p-4 space-y-3">
@@ -306,8 +307,8 @@ export function EditExpenseSheet({ expense, currentUserId, open, onOpenChange, o
               </AlertDialogContent>
             </AlertDialog>
           </div>
-        </div>
-      </SheetContent>
-    </Sheet>
+        </ResponsiveDrawerBody>
+      </ResponsiveDrawerContent>
+    </ResponsiveDrawer>
   )
 }

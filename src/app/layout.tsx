@@ -17,6 +17,10 @@ export const metadata: Metadata = {
   title: 'Founders Tab',
   description: 'Track shared business expenses for co-founders before incorporation',
   manifest: '/manifest.json',
+  icons: {
+    icon: '/favicon.png',
+    apple: '/favicon.png',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',

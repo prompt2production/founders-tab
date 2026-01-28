@@ -18,12 +18,12 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet'
+  ResponsiveDrawer,
+  ResponsiveDrawerContent,
+  ResponsiveDrawerHeader,
+  ResponsiveDrawerTitle,
+  ResponsiveDrawerBody,
+} from '@/components/ui/responsive-drawer'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -270,22 +270,20 @@ export default function ProfilePage() {
       </Form>
 
       {/* Change Password */}
-      <Sheet open={passwordSheetOpen} onOpenChange={setPasswordSheetOpen}>
-        <SheetTrigger asChild>
-          <Button variant="secondary" className="w-full lg:w-auto h-12">
-            <KeyRound className="mr-2 h-4 w-4" />
-            Change Password
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="bottom" className="rounded-t-2xl">
-          <SheetHeader>
-            <SheetTitle>Change Password</SheetTitle>
-          </SheetHeader>
-          <div className="py-4">
+      <Button variant="secondary" className="w-full lg:w-auto h-12" onClick={() => setPasswordSheetOpen(true)}>
+        <KeyRound className="mr-2 h-4 w-4" />
+        Change Password
+      </Button>
+      <ResponsiveDrawer open={passwordSheetOpen} onOpenChange={setPasswordSheetOpen}>
+        <ResponsiveDrawerContent>
+          <ResponsiveDrawerHeader>
+            <ResponsiveDrawerTitle>Change Password</ResponsiveDrawerTitle>
+          </ResponsiveDrawerHeader>
+          <ResponsiveDrawerBody>
             <ChangePasswordForm onSuccess={() => setPasswordSheetOpen(false)} />
-          </div>
-        </SheetContent>
-      </Sheet>
+          </ResponsiveDrawerBody>
+        </ResponsiveDrawerContent>
+      </ResponsiveDrawer>
 
       {/* Logout */}
       <AlertDialog>

@@ -11,7 +11,7 @@ test.describe('Home Page', () => {
 
     // Verify tagline
     await expect(
-      page.locator('text=Track expenses before incorporation')
+      page.locator('text=Keep tabs on shared business spending')
     ).toBeVisible()
 
     // Verify value proposition bullet points
@@ -27,7 +27,7 @@ test.describe('Home Page', () => {
 
     // Verify supporting text
     await expect(
-      page.locator("text=Built for small founding teams who aren't incorporated yet")
+      page.locator('text=Simple tracking until proper accounting takes over')
     ).toBeVisible()
   })
 
