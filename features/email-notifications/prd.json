@@ -168,7 +168,7 @@
         "Existing status badges are unchanged",
         "npm run test passes"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "NOTIF-012",

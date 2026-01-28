@@ -48,3 +48,8 @@ Story: NOTIF-010 Send notification on withdrawal rejection
 Files changed: src/app/api/expenses/[id]/reject-withdrawal/route.ts, tests/unit/api/reject-withdrawal.test.ts
 Notes: Integrated sendWithdrawalRejectedEmail in reject-withdrawal route. All 165 tests passing.
 ---
+---
+Story: NOTIF-011 Update ApprovalStatusBadge for rejected statuses
+Files changed: src/components/expenses/approval-status-badge.tsx
+Notes: Added REJECTED and WITHDRAWAL_REJECTED status handling with red destructive badge styling using XCircle icon. Uses danger semantic colors from DESIGN_SYSTEM.md.
+---

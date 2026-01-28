@@ -2,10 +2,10 @@
 
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-import { Clock, CheckCircle, ArrowUpRight } from 'lucide-react'
+import { Clock, CheckCircle, ArrowUpRight, XCircle } from 'lucide-react'
 
 interface ApprovalStatusBadgeProps {
-  status: 'PENDING_APPROVAL' | 'APPROVED' | 'WITHDRAWAL_REQUESTED' | 'WITHDRAWAL_APPROVED' | 'RECEIVED'
+  status: 'PENDING_APPROVAL' | 'APPROVED' | 'REJECTED' | 'WITHDRAWAL_REQUESTED' | 'WITHDRAWAL_APPROVED' | 'WITHDRAWAL_REJECTED' | 'RECEIVED'
   approvalsReceived?: number
   approvalsNeeded?: number
   withdrawalApprovalsReceived?: number
@@ -85,6 +85,36 @@ export function ApprovalStatusBadge({
       >
         <CheckCircle className="h-3 w-3" />
         <span>Received</span>
+      </Badge>
+    )
+  }
+
+  // Rejected status
+  if (status === 'REJECTED') {
+    return (
+      <Badge
+        className={cn(
+          'bg-[#450A0A] text-[#F87171] border-[#991B1B]',
+          className
+        )}
+      >
+        <XCircle className="h-3 w-3" />
+        <span>Rejected</span>
+      </Badge>
+    )
+  }
+
+  // Withdrawal rejected status
+  if (status === 'WITHDRAWAL_REJECTED') {
+    return (
+      <Badge
+        className={cn(
+          'bg-[#450A0A] text-[#F87171] border-[#991B1B]',
+          className
+        )}
+      >
+        <XCircle className="h-3 w-3" />
+        <span>Withdrawal Rejected</span>
       </Badge>
     )
   }
