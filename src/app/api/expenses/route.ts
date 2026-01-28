@@ -4,6 +4,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { createExpenseSchema, listExpensesQuerySchema } from '@/lib/validations/expense'
 import { z } from 'zod'
 import { Prisma, Category, ExpenseStatus, Role } from '@prisma/client'
+import { sendExpenseAwaitingApprovalEmail } from '@/lib/email'
 
 export async function GET(request: NextRequest) {
   try {
@@ -178,6 +179,38 @@ export async function POST(request: NextRequest) {
         notes: validated.notes || null,
       },
     })
+
+    // Fire-and-forget: send email notifications to other founders
+    if (initialStatus === ExpenseStatus.PENDING_APPROVAL) {
+      prisma.user
+        .findMany({
+          where: {
+            role: Role.FOUNDER,
+            id: { not: user.id },
+          },
+          select: { email: true },
+        })
+        .then((founders) => {
+          const expenseDetails = {
+            description: expense.description,
+            amount: `$${Number(expense.amount).toFixed(2)}`,
+            category: expense.category,
+            date: new Date(expense.date).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+            }),
+            submitterName: user.name,
+          }
+          founders.forEach((founder) => {
+            sendExpenseAwaitingApprovalEmail({
+              to: founder.email,
+              expense: expenseDetails,
+            }).catch((err) => console.error('[Email] Failed to send awaiting approval email:', err))
+          })
+        })
+        .catch((err) => console.error('[Email] Failed to fetch founders for notification:', err))
+    }
 
     return NextResponse.json(expense, { status: 201 })
   } catch (error) {

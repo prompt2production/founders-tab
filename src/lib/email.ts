@@ -243,3 +243,108 @@ If you didn't expect this invitation, you can safely ignore this email.
   console.log('[Email] Invitation email result:', { to, success: result })
   return result
 }
+
+// ============================================
+// Expense Notification Emails
+// ============================================
+
+interface ExpenseNotificationParams {
+  to: string
+  expense: ExpenseDetails
+}
+
+export async function sendExpenseAwaitingApprovalEmail({
+  to,
+  expense,
+}: ExpenseNotificationParams): Promise<boolean> {
+  const subject = `New expense from ${expense.submitterName} needs your approval`
+  const expenseCard = formatExpenseDetailsHtml(expense)
+  const bodyHtml = `<p><strong>${expense.submitterName}</strong> submitted a new expense that needs your approval.</p>${expenseCard}`
+  const { html, text } = buildNotificationEmail({
+    title: 'New Expense Awaiting Approval',
+    bodyHtml,
+    ctaText: 'Review Expense',
+    ctaUrl: `${appUrl}/expenses`,
+  })
+
+  return sendEmail({ to, subject, text, html })
+}
+
+export async function sendExpenseApprovedEmail({
+  to,
+  expense,
+}: ExpenseNotificationParams): Promise<boolean> {
+  const subject = 'Your expense has been approved'
+  const expenseCard = formatExpenseDetailsHtml(expense)
+  const bodyHtml = `<p>Your expense has been approved by all founders. You can now request a withdrawal when ready.</p>${expenseCard}`
+  const { html, text } = buildNotificationEmail({
+    title: 'Expense Approved',
+    bodyHtml,
+    ctaText: 'View Expense',
+    ctaUrl: `${appUrl}/expenses`,
+  })
+
+  return sendEmail({ to, subject, text, html })
+}
+
+interface RejectionNotificationParams extends ExpenseNotificationParams {
+  rejectorName: string
+  rejectionReason: string
+}
+
+export async function sendExpenseRejectedEmail({
+  to,
+  expense,
+  rejectorName,
+  rejectionReason,
+}: RejectionNotificationParams): Promise<boolean> {
+  const subject = 'Your expense has been rejected'
+  const expenseCard = formatExpenseDetailsHtml(expense)
+  const reasonBlock = `<div style="background: #450a0a; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f87171;"><p style="margin: 0 0 8px 0; color: #f87171; font-weight: 600;">Rejected by ${rejectorName}</p><p style="margin: 0; color: #e5e5e5;">${rejectionReason}</p></div>`
+  const bodyHtml = `<p>Your expense has been rejected.</p>${expenseCard}${reasonBlock}`
+  const { html, text } = buildNotificationEmail({
+    title: 'Expense Rejected',
+    bodyHtml,
+    ctaText: 'View Expense',
+    ctaUrl: `${appUrl}/expenses`,
+  })
+
+  return sendEmail({ to, subject, text, html })
+}
+
+export async function sendWithdrawalApprovedEmail({
+  to,
+  expense,
+}: ExpenseNotificationParams): Promise<boolean> {
+  const subject = 'Your withdrawal request has been approved'
+  const expenseCard = formatExpenseDetailsHtml(expense)
+  const bodyHtml = `<p>Your withdrawal request has been approved by all founders. Please confirm receipt once you have received the funds.</p>${expenseCard}`
+  const { html, text } = buildNotificationEmail({
+    title: 'Withdrawal Approved',
+    bodyHtml,
+    ctaText: 'Confirm Receipt',
+    ctaUrl: `${appUrl}/expenses`,
+  })
+
+  return sendEmail({ to, subject, text, html })
+}
+
+export async function sendWithdrawalRejectedEmail({
+  to,
+  expense,
+  rejectorName,
+  rejectionReason,
+}: RejectionNotificationParams): Promise<boolean> {
+  const subject = 'Your withdrawal request has been rejected'
+  const expenseCard = formatExpenseDetailsHtml(expense)
+  const reasonBlock = `<div style="background: #450a0a; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f87171;"><p style="margin: 0 0 8px 0; color: #f87171; font-weight: 600;">Rejected by ${rejectorName}</p><p style="margin: 0; color: #e5e5e5;">${rejectionReason}</p></div>`
+  const bodyHtml = `<p>Your withdrawal request has been rejected.</p>${expenseCard}${reasonBlock}`
+  const { html, text } = buildNotificationEmail({
+    title: 'Withdrawal Rejected',
+    bodyHtml,
+    ctaText: 'View Expense',
+    ctaUrl: `${appUrl}/expenses`,
+  })
+
+  return sendEmail({ to, subject, text, html })
+}
