@@ -73,3 +73,8 @@ Story: NOTIF-015 Unit tests for email notification functions
 Files changed: tests/unit/lib/email-notifications.test.ts
 Notes: 23 tests covering all 5 notification email functions. Uses vi.hoisted to set SENDGRID_API_KEY before module load, mocks @sendgrid/mail. Tests verify correct subjects, expense details in HTML, CTA text, rejection reasons/names, and plain text fallbacks. All 188 tests passing.
 ---
+---
+Story: NOTIF-016 E2E tests for rejection and notification workflows
+Files changed: tests/e2e/expense-rejection.spec.ts, src/components/expenses/filters/status-filter.tsx
+Notes: 8 E2E tests covering rejection status filter options (Rejected, Withdrawal Rejected), filter navigation, URL persistence, and badge display. Added REJECTED and WITHDRAWAL_REJECTED options to StatusFilter component. All 188 unit tests and 8 E2E tests passing.
+---

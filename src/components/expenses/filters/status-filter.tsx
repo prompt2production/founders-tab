@@ -28,8 +28,10 @@ export function StatusFilter({ value, onChange }: StatusFilterProps) {
         <SelectItem value="all">All Status</SelectItem>
         <SelectItem value="PENDING_APPROVAL">Pending Approval</SelectItem>
         <SelectItem value="APPROVED">Approved</SelectItem>
+        <SelectItem value="REJECTED">Rejected</SelectItem>
         <SelectItem value="WITHDRAWAL_REQUESTED">Withdrawal Requested</SelectItem>
         <SelectItem value="WITHDRAWAL_APPROVED">Ready for Receipt</SelectItem>
+        <SelectItem value="WITHDRAWAL_REJECTED">Withdrawal Rejected</SelectItem>
         <SelectItem value="RECEIVED">Received</SelectItem>
       </SelectContent>
     </Select>

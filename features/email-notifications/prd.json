@@ -248,7 +248,7 @@
         "Test: ApprovalStatusBadge shows 'Rejected' or 'Withdrawal Rejected' for rejected expenses",
         "npx playwright test expense-rejection passes"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }
