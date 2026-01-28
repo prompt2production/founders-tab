@@ -123,7 +123,7 @@
         "Unit test verifies email function includes rejection reason in output",
         "npm run test passes"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "NOTIF-009",
@@ -139,7 +139,7 @@
         "Unit test verifies email function generates correct subject and content",
         "npm run test passes"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "NOTIF-010",
@@ -155,7 +155,7 @@
         "Unit test verifies email function includes rejection reason in output",
         "npm run test passes"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "NOTIF-011",

@@ -4,6 +4,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { Role, ExpenseStatus } from '@prisma/client'
 import { rejectExpenseSchema } from '@/lib/validations/expense'
 import { z } from 'zod'
+import { sendExpenseRejectedEmail } from '@/lib/email'
 
 export async function POST(
   request: NextRequest,
@@ -59,13 +60,34 @@ export async function POST(
       },
       include: {
         user: {
-          select: { id: true, name: true },
+          select: { id: true, name: true, email: true },
         },
         rejectedBy: {
           select: { id: true, name: true },
         },
       },
     })
+
+    // Fire-and-forget: notify expense creator of rejection
+    if (updatedExpense.user) {
+      const expenseDetails = {
+        description: expense.description,
+        amount: `$${Number(expense.amount).toFixed(2)}`,
+        category: expense.category,
+        date: new Date(expense.date).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        }),
+        submitterName: updatedExpense.user.name,
+      }
+      sendExpenseRejectedEmail({
+        to: updatedExpense.user.email,
+        expense: expenseDetails,
+        rejectorName: user.name,
+        rejectionReason: validated.reason,
+      }).catch((err) => console.error('[Email] Failed to send expense rejected email:', err))
+    }
 
     return NextResponse.json(updatedExpense)
   } catch (error) {

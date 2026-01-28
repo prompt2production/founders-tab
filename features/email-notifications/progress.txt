@@ -33,3 +33,18 @@ Story: NOTIF-007 Send notification on expense approval
 Files changed: src/app/api/expenses/[id]/approve/route.ts
 Notes: Integrated sendExpenseApprovedEmail in approve route. Fires when isFullyApproved is true. Added email to user select. All 165 tests passing.
 ---
+---
+Story: NOTIF-008 Send notification on expense rejection
+Files changed: src/app/api/expenses/[id]/reject/route.ts, tests/unit/api/reject-expense.test.ts
+Notes: Integrated sendExpenseRejectedEmail in reject route. Added email to user select.
+---
+---
+Story: NOTIF-009 Send notification on withdrawal approval
+Files changed: src/app/api/expenses/[id]/approve-withdrawal/route.ts
+Notes: Integrated sendWithdrawalApprovedEmail in approve-withdrawal route. Fires when isFullyApproved.
+---
+---
+Story: NOTIF-010 Send notification on withdrawal rejection
+Files changed: src/app/api/expenses/[id]/reject-withdrawal/route.ts, tests/unit/api/reject-withdrawal.test.ts
+Notes: Integrated sendWithdrawalRejectedEmail in reject-withdrawal route. All 165 tests passing.
+---

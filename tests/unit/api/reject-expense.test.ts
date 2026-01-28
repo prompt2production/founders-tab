@@ -168,7 +168,7 @@ describe('POST /api/expenses/[id]/reject', () => {
         rejectionReason: 'Not a business expense',
       },
       include: {
-        user: { select: { id: true, name: true } },
+        user: { select: { id: true, name: true, email: true } },
         rejectedBy: { select: { id: true, name: true } },
       },
     })

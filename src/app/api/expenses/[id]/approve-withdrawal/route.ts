@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { Role, ExpenseStatus } from '@prisma/client'
+import { sendWithdrawalApprovedEmail } from '@/lib/email'
 
 export async function POST(
   request: NextRequest,
@@ -111,6 +112,7 @@ export async function POST(
           select: {
             id: true,
             name: true,
+            email: true,
           },
         },
         approvals: {
@@ -135,6 +137,25 @@ export async function POST(
         },
       },
     })
+
+    // Fire-and-forget: notify expense owner when withdrawal is fully approved
+    if (isFullyApproved && updatedExpense?.user) {
+      const expenseDetails = {
+        description: expense.description,
+        amount: `$${Number(expense.amount).toFixed(2)}`,
+        category: expense.category,
+        date: new Date(expense.date).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        }),
+        submitterName: updatedExpense.user.name,
+      }
+      sendWithdrawalApprovedEmail({
+        to: updatedExpense.user.email,
+        expense: expenseDetails,
+      }).catch((err) => console.error('[Email] Failed to send withdrawal approved email:', err))
+    }
 
     return NextResponse.json({ ...updatedExpense, isFullyApproved })
   } catch (error) {
