@@ -87,6 +87,12 @@ export async function GET(request: NextRequest) {
               },
             },
           },
+          rejectedBy: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
         },
       }),
       prisma.user.count({ where: { role: Role.FOUNDER } }),

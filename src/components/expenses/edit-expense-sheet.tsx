@@ -30,7 +30,22 @@ import { RejectExpenseButton } from './reject-expense-button'
 import { RejectWithdrawalButton } from './reject-withdrawal-button'
 import { ConfirmReceiptButton } from './confirm-receipt-button'
 import { CreateExpenseInput } from '@/lib/validations/expense'
-import { Trash2, Loader2, User } from 'lucide-react'
+import { Trash2, Loader2, User, XCircle } from 'lucide-react'
+
+function formatRelativeDate(dateString: string): string {
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMins = Math.floor(diffMs / 60000)
+  const diffHours = Math.floor(diffMs / 3600000)
+  const diffDays = Math.floor(diffMs / 86400000)
+
+  if (diffMins < 1) return 'just now'
+  if (diffMins < 60) return `${diffMins}m ago`
+  if (diffHours < 24) return `${diffHours}h ago`
+  if (diffDays < 7) return `${diffDays}d ago`
+  return date.toLocaleDateString()
+}
 
 interface ApprovalUser {
   id: string
@@ -63,6 +78,9 @@ interface Expense {
   withdrawalApprovals?: WithdrawalApproval[]
   withdrawalApprovalsNeeded?: number
   canCurrentUserApproveWithdrawal?: boolean
+  rejectedBy?: ApprovalUser | null
+  rejectedAt?: string | null
+  rejectionReason?: string | null
 }
 
 interface EditExpenseSheetProps {
@@ -215,6 +233,26 @@ export function EditExpenseSheet({ expense, currentUserId, open, onOpenChange, o
                 <p className="text-xs text-muted-foreground">
                   {expense.withdrawalApprovalsNeeded - withdrawalApprovalsReceived} more withdrawal approval{expense.withdrawalApprovalsNeeded - withdrawalApprovalsReceived > 1 ? 's' : ''} needed
                 </p>
+              )}
+
+              {/* Rejection details */}
+              {(expense.status === 'REJECTED' || expense.status === 'WITHDRAWAL_REJECTED') && expense.rejectionReason && (
+                <div className="rounded-lg border border-[#991B1B] bg-[#450A0A]/50 p-3 space-y-2">
+                  <div className="flex items-center gap-2 text-[#F87171]">
+                    <XCircle className="h-4 w-4" />
+                    <span className="text-sm font-medium">
+                      Rejected by {expense.rejectedBy?.name || 'Unknown'}
+                    </span>
+                    {expense.rejectedAt && (
+                      <span className="text-xs text-muted-foreground ml-auto">
+                        {formatRelativeDate(expense.rejectedAt)}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-muted-foreground pl-6">
+                    {expense.rejectionReason}
+                  </p>
+                </div>
               )}
 
               {/* Approve button for pending approval */}

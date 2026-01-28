@@ -21,6 +21,14 @@ export async function GET(
     // Find expense
     const expense = await prisma.expense.findUnique({
       where: { id },
+      include: {
+        rejectedBy: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     })
 
     if (!expense) {

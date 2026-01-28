@@ -218,7 +218,7 @@
         "Styling follows DESIGN_SYSTEM.md patterns (uses destructive colors, proper spacing)",
         "npm run test passes"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "NOTIF-015",

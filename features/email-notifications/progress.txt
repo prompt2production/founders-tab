@@ -63,3 +63,8 @@ Story: NOTIF-013 Create RejectWithdrawalButton component
 Files changed: src/components/expenses/reject-withdrawal-button.tsx, src/components/expenses/edit-expense-sheet.tsx
 Notes: Created RejectWithdrawalButton with AlertDialog + Textarea for reason input. Calls POST /api/expenses/{id}/reject-withdrawal. Integrated into EditExpenseSheet next to ApproveWithdrawalButton. Hidden when user is owner or status is not WITHDRAWAL_REQUESTED. All 165 tests passing.
 ---
+---
+Story: NOTIF-014 Show rejection details in EditExpenseSheet
+Files changed: src/components/expenses/edit-expense-sheet.tsx, src/app/api/expenses/[id]/route.ts, src/app/api/expenses/route.ts
+Notes: Added rejectedBy include to both GET /api/expenses and GET /api/expenses/[id] routes. Added rejection fields to Expense interface. Added rejection details section with red/destructive styling showing rejector name, relative date, and rejection reason. Added formatRelativeDate helper. All 165 tests passing.
+---
