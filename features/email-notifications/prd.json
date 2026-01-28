@@ -204,7 +204,7 @@
         "Component added to EditExpenseSheet alongside ApproveWithdrawalButton for WITHDRAWAL_REQUESTED expenses",
         "npm run test passes"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "NOTIF-014",

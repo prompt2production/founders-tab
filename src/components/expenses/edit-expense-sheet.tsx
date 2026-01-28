@@ -27,6 +27,7 @@ import { ApproveButton } from './approve-button'
 import { RequestWithdrawalButton } from './request-withdrawal-button'
 import { ApproveWithdrawalButton } from './approve-withdrawal-button'
 import { RejectExpenseButton } from './reject-expense-button'
+import { RejectWithdrawalButton } from './reject-withdrawal-button'
 import { ConfirmReceiptButton } from './confirm-receipt-button'
 import { CreateExpenseInput } from '@/lib/validations/expense'
 import { Trash2, Loader2, User } from 'lucide-react'
@@ -257,6 +258,18 @@ export function EditExpenseSheet({ expense, currentUserId, open, onOpenChange, o
                 status={expense.status}
                 hasApproved={hasApprovedWithdrawal}
                 onSuccess={onSuccess}
+                className="w-full"
+              />
+
+              {/* Reject Withdrawal button */}
+              <RejectWithdrawalButton
+                expenseId={expense.id}
+                isOwner={isCreator}
+                status={expense.status}
+                onSuccess={() => {
+                  onOpenChange(false)
+                  onSuccess?.()
+                }}
                 className="w-full"
               />
 

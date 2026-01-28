@@ -58,3 +58,8 @@ Story: NOTIF-012 Create RejectExpenseButton component
 Files changed: src/components/expenses/reject-expense-button.tsx, src/components/expenses/edit-expense-sheet.tsx
 Notes: Created RejectExpenseButton with AlertDialog + Textarea for reason input. Calls POST /api/expenses/{id}/reject. Integrated into EditExpenseSheet next to ApproveButton. Updated Expense status type to include REJECTED and WITHDRAWAL_REJECTED. All 165 tests passing.
 ---
+---
+Story: NOTIF-013 Create RejectWithdrawalButton component
+Files changed: src/components/expenses/reject-withdrawal-button.tsx, src/components/expenses/edit-expense-sheet.tsx
+Notes: Created RejectWithdrawalButton with AlertDialog + Textarea for reason input. Calls POST /api/expenses/{id}/reject-withdrawal. Integrated into EditExpenseSheet next to ApproveWithdrawalButton. Hidden when user is owner or status is not WITHDRAWAL_REQUESTED. All 165 tests passing.
+---
