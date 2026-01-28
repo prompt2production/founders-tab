@@ -89,7 +89,7 @@
         "Settings link navigates to /settings",
         "Active state styling matches existing nav items when on /settings route"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "SETTINGS-008",

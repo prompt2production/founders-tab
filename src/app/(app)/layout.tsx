@@ -26,6 +26,7 @@ const navItems = [
   { href: '/expenses', icon: Receipt, label: 'Expenses' },
   { href: '/balance', icon: Wallet, label: 'Balances' },
   { href: '/team', icon: Users, label: 'Team' },
+  { href: '/settings', icon: Settings, label: 'Settings' },
   { href: '/profile', icon: User, label: 'Profile' },
 ]
 
@@ -104,7 +105,7 @@ function AppHeader() {
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link href="/profile" className="cursor-pointer">
+                <Link href="/settings" className="cursor-pointer">
                   <Settings className="mr-2 h-4 w-4" />
                   Settings
                 </Link>

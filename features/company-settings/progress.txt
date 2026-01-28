@@ -23,3 +23,7 @@ Story: SETTINGS-006 Create settings page at /settings
 Files changed: src/app/(app)/settings/page.tsx
 Notes: Page fetches settings on mount, shows skeleton loading, renders CompanySettingsForm. Founders can edit, members see read-only. Toast on success/error.
 ---
+Story: SETTINGS-007 Add Settings link to app navigation
+Files changed: src/app/(app)/layout.tsx
+Notes: Added Settings nav item (gear icon) after Team in navItems array. Updated dropdown menu Settings link to point to /settings. Both desktop header and mobile bottom nav updated.
+---
