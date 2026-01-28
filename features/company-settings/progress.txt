@@ -19,3 +19,7 @@ Story: SETTINGS-005 Create CompanySettingsForm component
 Files changed: src/components/settings/company-settings-form.tsx
 Notes: Form with Company Name input and Currency select. Uses react-hook-form + zodResolver. Supports isReadOnly mode with info banner. TypeScript compiles cleanly.
 ---
+Story: SETTINGS-006 Create settings page at /settings
+Files changed: src/app/(app)/settings/page.tsx
+Notes: Page fetches settings on mount, shows skeleton loading, renders CompanySettingsForm. Founders can edit, members see read-only. Toast on success/error.
+---

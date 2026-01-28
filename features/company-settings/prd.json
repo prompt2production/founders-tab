@@ -77,7 +77,7 @@
         "On successful save, a success toast is shown",
         "On save failure, an error toast is shown"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "SETTINGS-007",
