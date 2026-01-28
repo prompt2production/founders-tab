@@ -34,7 +34,7 @@
         "If no CompanySettings row exists, one is created with defaults (name: '', currency: 'USD') and returned",
         "Both FOUNDER and MEMBER roles can access this endpoint"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "SETTINGS-004",
@@ -47,7 +47,7 @@
         "PATCH /api/company-settings updates and returns the settings object when called by a FOUNDER with valid data",
         "Partial updates work — sending only name or only currency updates just that field"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "SETTINGS-005",
