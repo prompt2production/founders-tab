@@ -58,6 +58,114 @@ export async function sendEmail({ to, subject, text, html }: SendEmailOptions): 
   }
 }
 
+// ============================================
+// Shared Notification Layout Helpers
+// ============================================
+
+interface ExpenseDetails {
+  description: string
+  amount: string
+  category: string
+  date: string
+  submitterName: string
+}
+
+export function formatExpenseDetailsHtml(expense: ExpenseDetails): string {
+  return `<div style="background: #262626; padding: 16px; border-radius: 8px; margin: 20px 0;">
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+          <td style="padding: 4px 8px 4px 0; color: #a1a1aa; font-size: 13px;">Description</td>
+          <td style="padding: 4px 0; color: #e5e5e5; font-size: 13px;">${expense.description}</td>
+        </tr>
+        <tr>
+          <td style="padding: 4px 8px 4px 0; color: #a1a1aa; font-size: 13px;">Amount</td>
+          <td style="padding: 4px 0; color: #e5e5e5; font-size: 13px; font-weight: 600;">${expense.amount}</td>
+        </tr>
+        <tr>
+          <td style="padding: 4px 8px 4px 0; color: #a1a1aa; font-size: 13px;">Category</td>
+          <td style="padding: 4px 0; color: #e5e5e5; font-size: 13px;">${expense.category}</td>
+        </tr>
+        <tr>
+          <td style="padding: 4px 8px 4px 0; color: #a1a1aa; font-size: 13px;">Date</td>
+          <td style="padding: 4px 0; color: #e5e5e5; font-size: 13px;">${expense.date}</td>
+        </tr>
+        <tr>
+          <td style="padding: 4px 8px 4px 0; color: #a1a1aa; font-size: 13px;">Submitted by</td>
+          <td style="padding: 4px 0; color: #e5e5e5; font-size: 13px;">${expense.submitterName}</td>
+        </tr>
+      </table>
+    </div>`
+}
+
+export function formatExpenseDetailsText(expense: ExpenseDetails): string {
+  return `Description: ${expense.description}
+Amount: ${expense.amount}
+Category: ${expense.category}
+Date: ${expense.date}
+Submitted by: ${expense.submitterName}`
+}
+
+interface BuildNotificationEmailParams {
+  title: string
+  bodyHtml: string
+  ctaText: string
+  ctaUrl: string
+}
+
+export function buildNotificationEmail({
+  title,
+  bodyHtml,
+  ctaText,
+  ctaUrl,
+}: BuildNotificationEmailParams): { html: string; text: string } {
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="background: linear-gradient(135deg, #f97316 0%, #dc2626 100%); padding: 30px; border-radius: 12px 12px 0 0;">
+    <h1 style="color: white; margin: 0; font-size: 24px;">Founders Tab</h1>
+  </div>
+
+  <div style="background: #1a1a1a; padding: 30px; border-radius: 0 0 12px 12px; color: #e5e5e5;">
+    <h2 style="color: #f97316; margin-top: 0;">${title}</h2>
+
+    ${bodyHtml}
+
+    <div style="text-align: center; margin: 30px 0;">
+      <a href="${ctaUrl}" style="background: linear-gradient(135deg, #f97316 0%, #dc2626 100%); color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">${ctaText}</a>
+    </div>
+
+    <hr style="border: none; border-top: 1px solid #333; margin: 20px 0;">
+
+    <p style="color: #666; font-size: 12px;">Can't click the button? Copy and paste this link:<br>
+    <a href="${ctaUrl}" style="color: #f97316; word-break: break-all;">${ctaUrl}</a></p>
+  </div>
+</body>
+</html>`
+
+  // Strip HTML tags for plain text fallback
+  const textBody = bodyHtml
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+  const text = `${title}
+
+${textBody}
+
+${ctaText}: ${ctaUrl}`
+
+  return { html, text }
+}
+
+// ============================================
+// Invitation Email
+// ============================================
+
 interface InvitationEmailParams {
   to: string
   inviterName: string

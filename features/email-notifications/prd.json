@@ -75,7 +75,7 @@
         "Unit test in tests/unit/lib/email-templates.test.ts verifies the layout includes key elements (header, CTA link, expense details)",
         "npm run test passes"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "NOTIF-006",
