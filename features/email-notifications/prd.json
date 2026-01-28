@@ -186,7 +186,7 @@
         "Component added to EditExpenseSheet alongside ApproveButton for PENDING_APPROVAL expenses",
         "npm run test passes"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "NOTIF-013",

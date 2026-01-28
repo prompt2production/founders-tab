@@ -26,6 +26,7 @@ import { ApprovalStatusBadge } from './approval-status-badge'
 import { ApproveButton } from './approve-button'
 import { RequestWithdrawalButton } from './request-withdrawal-button'
 import { ApproveWithdrawalButton } from './approve-withdrawal-button'
+import { RejectExpenseButton } from './reject-expense-button'
 import { ConfirmReceiptButton } from './confirm-receipt-button'
 import { CreateExpenseInput } from '@/lib/validations/expense'
 import { Trash2, Loader2, User } from 'lucide-react'
@@ -51,7 +52,7 @@ interface Expense {
   amount: string
   description: string
   category: string
-  status?: 'PENDING_APPROVAL' | 'APPROVED' | 'WITHDRAWAL_REQUESTED' | 'WITHDRAWAL_APPROVED' | 'RECEIVED'
+  status?: 'PENDING_APPROVAL' | 'APPROVED' | 'REJECTED' | 'WITHDRAWAL_REQUESTED' | 'WITHDRAWAL_APPROVED' | 'WITHDRAWAL_REJECTED' | 'RECEIVED'
   receiptUrl: string | null
   notes: string | null
   userId?: string
@@ -221,6 +222,18 @@ export function EditExpenseSheet({ expense, currentUserId, open, onOpenChange, o
                 canApprove={expense.canCurrentUserApprove || false}
                 isCreator={isCreator}
                 hasApproved={hasApproved}
+                onSuccess={() => {
+                  onOpenChange(false)
+                  onSuccess?.()
+                }}
+                className="w-full"
+              />
+
+              {/* Reject button for pending approval */}
+              <RejectExpenseButton
+                expenseId={expense.id}
+                canReject={expense.canCurrentUserApprove || false}
+                isCreator={isCreator}
                 onSuccess={() => {
                   onOpenChange(false)
                   onSuccess?.()
