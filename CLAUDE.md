@@ -472,11 +472,12 @@ A feature is complete when:
 - `features/db-console` - Database Console Application (11 stories) ✓
 - `features/dev-quick-login` - Dev Quick Login (2 stories) ✓
 - `features/role-management` - Role Management (9 stories) ✓
+- `features/home-page` - Marketing Home Page (5 stories) ✓
 
-**Current Feature:** `features/home-page` - Marketing Home Page (5 stories)
+**Current Feature:** `features/company-settings` - Company Settings (8 stories)
 
 ### Next Step
-Review the generated files in `features/home-page/` and run Ralph:
+Review the generated files in `features/company-settings/` and run Ralph:
 
 ```bash
 claude --dangerously-skip-permissions
@@ -485,7 +486,7 @@ claude --dangerously-skip-permissions
 BEFORE EACH ITERATION:
 1. Read CLAUDE.md for project context
 2. Read DESIGN_SYSTEM.md for UI patterns
-3. Read features/home-page/prd.json and find the first story with passes: false
+3. Read features/company-settings/prd.json and find the first story with passes: false
 
 YOUR TASK:
 1. Implement the story following all acceptance criteria
@@ -495,8 +496,8 @@ YOUR TASK:
 3. Fix any failures before proceeding
 
 WHEN STORY COMPLETE:
-1. Update features/home-page/prd.json - set passes: true
-2. Append to features/home-page/progress.txt with format:
+1. Update features/company-settings/prd.json - set passes: true
+2. Append to features/company-settings/progress.txt with format:
    ---
    Story: [ID] [Title]
    Files changed: [list]
@@ -507,5 +508,5 @@ WHEN STORY COMPLETE:
 WHEN ALL STORIES COMPLETE:
 Output <promise>COMPLETE</promise>
 
-If stuck after 3 attempts, document blockers and move to next story." --max-iterations 15 --completion-promise COMPLETE
+If stuck after 3 attempts, document blockers and move to next story." --max-iterations 25 --completion-promise COMPLETE
 ```

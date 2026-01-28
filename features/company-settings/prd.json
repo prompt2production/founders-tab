@@ -1,0 +1,109 @@
+{
+  "feature": "Company Settings",
+  "stories": [
+    {
+      "id": "SETTINGS-001",
+      "title": "Add CompanySettings model to Prisma schema",
+      "description": "Add a CompanySettings model to the database schema with fields for company name and currency, then run the migration.",
+      "acceptance_criteria": [
+        "CompanySettings model exists in prisma/schema.prisma with fields: id (String, cuid), name (String, default empty), currency (String, default 'USD'), createdAt (DateTime), updatedAt (DateTime)",
+        "Migration runs successfully with npx prisma migrate dev",
+        "Prisma client is regenerated"
+      ],
+      "passes": true
+    },
+    {
+      "id": "SETTINGS-002",
+      "title": "Create validation schema and currency constants",
+      "description": "Create Zod validation schema for company settings updates and export supported currency constants.",
+      "acceptance_criteria": [
+        "File src/lib/validations/company-settings.ts exports SUPPORTED_CURRENCIES array with USD, GBP, EUR, CAD, AUD, NZD, JPY, CHF, SEK, NOK, INR, ZAR",
+        "File exports CURRENCY_OPTIONS array of { value, label, symbol } objects for UI display",
+        "File exports updateCompanySettingsSchema with optional name (max 100, trimmed) and optional currency (enum of supported codes)",
+        "Unit test in tests/unit/validations/company-settings.test.ts passes verifying valid and invalid inputs"
+      ],
+      "passes": false
+    },
+    {
+      "id": "SETTINGS-003",
+      "title": "Create GET /api/company-settings endpoint",
+      "description": "Create API endpoint to retrieve company settings. Auto-creates default settings row if none exists (upsert pattern).",
+      "acceptance_criteria": [
+        "GET /api/company-settings returns 401 if user is not authenticated",
+        "GET /api/company-settings returns the company settings object with id, name, currency, createdAt, updatedAt",
+        "If no CompanySettings row exists, one is created with defaults (name: '', currency: 'USD') and returned",
+        "Both FOUNDER and MEMBER roles can access this endpoint"
+      ],
+      "passes": false
+    },
+    {
+      "id": "SETTINGS-004",
+      "title": "Create PATCH /api/company-settings endpoint",
+      "description": "Create API endpoint to update company settings. Only founders can modify settings.",
+      "acceptance_criteria": [
+        "PATCH /api/company-settings returns 401 if user is not authenticated",
+        "PATCH /api/company-settings returns 403 if user role is MEMBER",
+        "PATCH /api/company-settings returns 400 if body fails validation (e.g. currency not in supported list, name too long)",
+        "PATCH /api/company-settings updates and returns the settings object when called by a FOUNDER with valid data",
+        "Partial updates work — sending only name or only currency updates just that field"
+      ],
+      "passes": false
+    },
+    {
+      "id": "SETTINGS-005",
+      "title": "Create CompanySettingsForm component",
+      "description": "Build the settings form component with company name input and currency select dropdown, following DESIGN_SYSTEM.md patterns.",
+      "acceptance_criteria": [
+        "Component at src/components/settings/company-settings-form.tsx renders a form with Company Name input and Currency select",
+        "Currency select shows all supported currencies with labels (e.g. 'USD — US Dollar')",
+        "Form uses react-hook-form with zodResolver and the updateCompanySettingsSchema",
+        "Save button is full-width on mobile (w-full lg:w-auto)",
+        "When isReadOnly prop is true, form fields are disabled and a note is shown explaining only founders can edit",
+        "Form accepts defaultValues prop to pre-populate fields",
+        "Form calls onSubmit prop with validated data on submission"
+      ],
+      "passes": false
+    },
+    {
+      "id": "SETTINGS-006",
+      "title": "Create settings page at /settings",
+      "description": "Create the settings page that fetches company settings and renders the form. Founders can edit, members see read-only view.",
+      "acceptance_criteria": [
+        "Page exists at src/app/(app)/settings/page.tsx",
+        "Page title is 'Company Settings' styled per DESIGN_SYSTEM.md (text-2xl font-semibold)",
+        "Page fetches GET /api/company-settings on load and populates the form",
+        "Shows skeleton loading state while fetching",
+        "Founders see an editable form; members see a read-only form with explanatory note",
+        "On successful save, a success toast is shown",
+        "On save failure, an error toast is shown"
+      ],
+      "passes": false
+    },
+    {
+      "id": "SETTINGS-007",
+      "title": "Add Settings link to app navigation",
+      "description": "Add a Settings navigation item (gear icon) to both the desktop header and mobile bottom navigation, positioned after Team.",
+      "acceptance_criteria": [
+        "Desktop header navigation includes a 'Settings' link with a gear icon (lucide-react Settings icon) after the Team link",
+        "Mobile bottom navigation includes a 'Settings' item with gear icon after Team",
+        "Settings link navigates to /settings",
+        "Active state styling matches existing nav items when on /settings route"
+      ],
+      "passes": false
+    },
+    {
+      "id": "SETTINGS-008",
+      "title": "E2E test for company settings",
+      "description": "Write Playwright E2E tests covering the full settings flow for founders and the read-only view for members.",
+      "acceptance_criteria": [
+        "Test file at tests/e2e/company-settings.spec.ts",
+        "Test: Founder can navigate to /settings and see the form",
+        "Test: Founder can update company name and currency, and see success toast",
+        "Test: After save, refreshing the page shows the updated values",
+        "Test: Member sees read-only form fields on /settings",
+        "All tests pass with npx playwright test tests/e2e/company-settings.spec.ts"
+      ],
+      "passes": false
+    }
+  ]
+}

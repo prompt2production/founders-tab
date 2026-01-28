@@ -1,0 +1,5 @@
+---
+Story: SETTINGS-001 Add CompanySettings model to Prisma schema
+Files changed: prisma/schema.prisma, prisma/migrations/20260128174450_add_company_settings/migration.sql
+Notes: Added CompanySettings model with id, name (default ""), currency (default "USD"), createdAt, updatedAt. Migration applied successfully.
+---

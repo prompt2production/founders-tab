@@ -6,6 +6,7 @@ import { closeReadline } from './prompts.js'
 import { selectEnvironment } from './commands/select-environment.js'
 import { showMainMenu, MenuOption } from './commands/main-menu.js'
 import { clearData } from './commands/clear-data.js'
+import { deleteUserCommand } from './commands/delete-user.js'
 import { seedUsersCommand } from './commands/seed-users.js'
 import { seedExpensesCommand } from './commands/seed-expenses.js'
 
@@ -31,6 +32,10 @@ async function main(): Promise<void> {
       switch (option) {
         case 'clear-data':
           await clearData(prisma, environment)
+          break
+
+        case 'delete-user':
+          await deleteUserCommand(prisma, environment)
           break
 
         case 'seed-users':

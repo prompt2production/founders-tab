@@ -1,7 +1,7 @@
 import { Environment, environmentDisplayNames } from '../config.js'
 import { selectOption } from '../prompts.js'
 
-export type MenuOption = 'clear-data' | 'seed-users' | 'seed-expenses' | 'exit'
+export type MenuOption = 'clear-data' | 'delete-user' | 'seed-users' | 'seed-expenses' | 'exit'
 
 export async function showMainMenu(environment: Environment): Promise<MenuOption> {
   console.log('═══════════════════════════════════════')
@@ -13,6 +13,7 @@ export async function showMainMenu(environment: Environment): Promise<MenuOption
     'What would you like to do?',
     [
       { value: 'clear-data', label: 'Clear all data' },
+      { value: 'delete-user', label: 'Delete a user' },
       { value: 'seed-users', label: 'Seed users' },
       { value: 'seed-expenses', label: 'Seed expense data' },
       { value: 'exit', label: 'Exit' },
