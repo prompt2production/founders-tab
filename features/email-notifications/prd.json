@@ -232,7 +232,7 @@
         "Tests mock the sendEmail function to capture arguments without calling SendGrid",
         "npm run test passes with all new tests green"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "NOTIF-016",
