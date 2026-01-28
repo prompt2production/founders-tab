@@ -103,7 +103,7 @@
         "Test: Member sees read-only form fields on /settings",
         "All tests pass with npx playwright test tests/e2e/company-settings.spec.ts"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }

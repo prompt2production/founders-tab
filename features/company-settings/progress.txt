@@ -27,3 +27,7 @@ Story: SETTINGS-007 Add Settings link to app navigation
 Files changed: src/app/(app)/layout.tsx
 Notes: Added Settings nav item (gear icon) after Team in navItems array. Updated dropdown menu Settings link to point to /settings. Both desktop header and mobile bottom nav updated.
 ---
+Story: SETTINGS-008 E2E test for company settings
+Files changed: tests/e2e/company-settings.spec.ts
+Notes: 4 E2E tests covering navigation, form update, persistence, and read-only member view. Role-aware: skips founder/member-specific tests based on actual role. All pass.
+---
