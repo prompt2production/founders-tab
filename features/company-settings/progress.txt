@@ -15,3 +15,7 @@ Story: SETTINGS-004 Create PATCH /api/company-settings endpoint
 Files changed: src/app/api/company-settings/route.ts, tests/unit/api/company-settings.test.ts
 Notes: PATCH endpoint with FOUNDER-only authorization. Supports partial updates. 7 unit tests pass.
 ---
+Story: SETTINGS-005 Create CompanySettingsForm component
+Files changed: src/components/settings/company-settings-form.tsx
+Notes: Form with Company Name input and Currency select. Uses react-hook-form + zodResolver. Supports isReadOnly mode with info banner. TypeScript compiles cleanly.
+---

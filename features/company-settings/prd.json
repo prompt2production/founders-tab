@@ -62,7 +62,7 @@
         "Form accepts defaultValues prop to pre-populate fields",
         "Form calls onSubmit prop with validated data on submission"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "SETTINGS-006",
