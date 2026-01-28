@@ -11,7 +11,7 @@ if (apiKey) {
 
 const fromEmail = process.env.SENDGRID_FROM_EMAIL || 'hello@founderstab.com'
 const fromName = process.env.SENDGRID_FROM_NAME || 'Founders Tab'
-const appUrl = process.env.APP_URL || 'http://localhost:3000'
+const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'http://localhost:3000'
 
 console.log('[Email] Configuration:', { fromEmail, fromName, appUrl })
 
