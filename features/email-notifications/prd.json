@@ -25,7 +25,7 @@
         "Unit test in tests/unit/validations/expense-rejection.test.ts validates: reason required, reason too short, reason too long, valid reason accepted",
         "npm run test passes for the new validation tests"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "NOTIF-003",

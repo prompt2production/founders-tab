@@ -4,8 +4,10 @@ import { z } from 'zod'
 export const ExpenseStatus = {
   PENDING_APPROVAL: 'PENDING_APPROVAL',
   APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
   WITHDRAWAL_REQUESTED: 'WITHDRAWAL_REQUESTED',
   WITHDRAWAL_APPROVED: 'WITHDRAWAL_APPROVED',
+  WITHDRAWAL_REJECTED: 'WITHDRAWAL_REJECTED',
   RECEIVED: 'RECEIVED',
 } as const
 
@@ -163,3 +165,18 @@ export const listExpensesQuerySchema = z.object({
 })
 
 export type ListExpensesQuery = z.infer<typeof listExpensesQuerySchema>
+
+// Reject expense schema
+export const rejectExpenseSchema = z.object({
+  reason: z
+    .string()
+    .transform((val) => val.trim())
+    .pipe(
+      z
+        .string()
+        .min(1, { message: 'Rejection reason is required' })
+        .max(500, { message: 'Rejection reason cannot exceed 500 characters' })
+    ),
+})
+
+export type RejectExpenseInput = z.infer<typeof rejectExpenseSchema>
