@@ -16,7 +16,7 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import { XCircle, Loader2 } from 'lucide-react'
-import { triggerApprovalCountRefresh } from '@/hooks/usePendingApprovalCount'
+import { triggerDataRefresh } from '@/lib/data-refresh'
 
 interface RejectWithdrawalButtonProps {
   expenseId: string
@@ -59,7 +59,7 @@ export function RejectWithdrawalButton({
         description: 'The withdrawal request has been rejected',
       })
 
-      triggerApprovalCountRefresh()
+      triggerDataRefresh('all')
       setOpen(false)
       setReason('')
       onSuccess?.()

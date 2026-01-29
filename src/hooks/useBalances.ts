@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { subscribeToDataRefresh } from '@/lib/data-refresh'
 
 export type BalanceFilter = 'owed' | 'approved' | 'pending' | 'active' | 'all'
 
@@ -59,6 +60,11 @@ export function useBalances(filter: BalanceFilter = 'owed'): UseBalancesResult {
 
   useEffect(() => {
     fetchBalances()
+  }, [fetchBalances])
+
+  // Subscribe to global data refresh events
+  useEffect(() => {
+    return subscribeToDataRefresh(fetchBalances, ['balances', 'expenses', 'all'])
   }, [fetchBalances])
 
   return {

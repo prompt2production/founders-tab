@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { triggerDataRefresh } from '@/lib/data-refresh'
 
 interface UseConfirmReceiptResult {
   confirmReceipt: (expenseId: string) => Promise<void>
@@ -42,6 +43,8 @@ export function useConfirmReceipt(options: UseConfirmReceiptOptions = {}): UseCo
         description: 'Withdrawal complete. Expense marked as received.',
       })
 
+      // Trigger global data refresh
+      triggerDataRefresh('all')
       options.onSuccess?.()
     } catch (err) {
       const message = err instanceof Error ? err.message : 'An error occurred'

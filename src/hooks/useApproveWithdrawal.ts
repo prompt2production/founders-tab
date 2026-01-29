@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { triggerDataRefresh } from '@/lib/data-refresh'
 
 interface UseApproveWithdrawalResult {
   approveWithdrawal: (expenseId: string) => Promise<void>
@@ -50,6 +51,8 @@ export function useApproveWithdrawal(options: UseApproveWithdrawalOptions = {}):
         })
       }
 
+      // Trigger global data refresh
+      triggerDataRefresh('all')
       options.onSuccess?.()
     } catch (err) {
       const message = err instanceof Error ? err.message : 'An error occurred'

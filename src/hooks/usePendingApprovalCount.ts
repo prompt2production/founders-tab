@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { subscribeToDataRefresh } from '@/lib/data-refresh'
 
 // Custom event name for triggering approval count refresh
 export const APPROVAL_COUNT_REFRESH_EVENT = 'approval-count-refresh'
@@ -62,7 +63,7 @@ export function usePendingApprovalCount(): UsePendingApprovalCountResult {
     fetchCount()
   }, [fetchCount])
 
-  // Listen for refresh events
+  // Listen for refresh events (legacy event)
   useEffect(() => {
     const handleRefresh = () => {
       fetchCount()
@@ -72,6 +73,11 @@ export function usePendingApprovalCount(): UsePendingApprovalCountResult {
     return () => {
       window.removeEventListener(APPROVAL_COUNT_REFRESH_EVENT, handleRefresh)
     }
+  }, [fetchCount])
+
+  // Subscribe to global data refresh events
+  useEffect(() => {
+    return subscribeToDataRefresh(fetchCount, ['approvals', 'expenses', 'all'])
   }, [fetchCount])
 
   return {

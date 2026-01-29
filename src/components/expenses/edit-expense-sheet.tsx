@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { triggerDataRefresh } from '@/lib/data-refresh'
 import {
   ResponsiveDrawer,
   ResponsiveDrawerContent,
@@ -123,6 +124,7 @@ export function EditExpenseSheet({ expense, currentUserId, open, onOpenChange, o
     })
 
     onOpenChange(false)
+    triggerDataRefresh('all')
     onSuccess?.()
   }
 
@@ -143,6 +145,7 @@ export function EditExpenseSheet({ expense, currentUserId, open, onOpenChange, o
       })
 
       onOpenChange(false)
+      triggerDataRefresh('all')
       onSuccess?.()
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to delete expense'

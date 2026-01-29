@@ -14,6 +14,7 @@ import { CreateExpenseInput } from '@/lib/validations/expense'
 import { Info } from 'lucide-react'
 import { useCompanySettings } from '@/hooks/useCompanySettings'
 import { formatCurrency } from '@/lib/format-currency'
+import { triggerDataRefresh } from '@/lib/data-refresh'
 
 interface AddExpenseSheetProps {
   open: boolean
@@ -53,6 +54,8 @@ export function AddExpenseSheet({ open, onOpenChange, onSuccess }: AddExpenseShe
     })
 
     onOpenChange(false)
+    // Trigger global data refresh so all lists, counts, and balances update
+    triggerDataRefresh('all')
     onSuccess?.()
   }
 

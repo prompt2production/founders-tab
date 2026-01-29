@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { subscribeToDataRefresh } from '@/lib/data-refresh'
 
 interface ExpenseUser {
   id: string
@@ -98,6 +99,11 @@ export function useDashboard() {
 
   useEffect(() => {
     fetchDashboard()
+  }, [fetchDashboard])
+
+  // Subscribe to global data refresh events
+  useEffect(() => {
+    return subscribeToDataRefresh(fetchDashboard, ['dashboard', 'expenses', 'all'])
   }, [fetchDashboard])
 
   return {

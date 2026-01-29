@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { subscribeToDataRefresh } from '@/lib/data-refresh'
 
 export interface ExpenseUser {
   id: string
@@ -187,6 +188,11 @@ export function useExpenses(params: UseExpensesParams = {}): UseExpensesResult {
 
   useEffect(() => {
     fetchExpenses()
+  }, [fetchExpenses])
+
+  // Subscribe to global data refresh events
+  useEffect(() => {
+    return subscribeToDataRefresh(fetchExpenses, ['expenses', 'all'])
   }, [fetchExpenses])
 
   return {
