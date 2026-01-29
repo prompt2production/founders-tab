@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { signupSchema } from '@/lib/validations/auth'
 import { hashPassword, createSession, setSessionCookie } from '@/lib/auth'
+import { DEFAULT_CATEGORIES } from '@/lib/constants/default-categories'
 import { z } from 'zod'
 
 export async function POST(request: NextRequest) {
@@ -42,6 +43,19 @@ export async function POST(request: NextRequest) {
           name: '',
           currency: 'USD',
         },
+      })
+
+      // Seed default categories for the new company
+      await tx.companyCategory.createMany({
+        data: DEFAULT_CATEGORIES.map((category, index) => ({
+          companyId: company.id,
+          value: category.value,
+          label: category.label,
+          icon: category.icon,
+          isDefault: true,
+          isActive: true,
+          sortOrder: index,
+        })),
       })
 
       // Create user as FOUNDER of the new company

@@ -1,4 +1,4 @@
-import { Category } from '@/lib/validations/expense'
+import { DEFAULT_CATEGORIES } from './default-categories'
 
 export interface CategoryInfo {
   value: string
@@ -6,24 +6,31 @@ export interface CategoryInfo {
   icon: string
 }
 
-export const CATEGORIES: CategoryInfo[] = [
-  { value: Category.FOOD, label: 'Food & Dining', icon: 'Utensils' },
-  { value: Category.TRANSPORT, label: 'Transport', icon: 'Car' },
-  { value: Category.SOFTWARE, label: 'Software', icon: 'Monitor' },
-  { value: Category.HARDWARE, label: 'Hardware', icon: 'Laptop' },
-  { value: Category.OFFICE, label: 'Office', icon: 'Building' },
-  { value: Category.TRAVEL, label: 'Travel', icon: 'Plane' },
-  { value: Category.MARKETING, label: 'Marketing', icon: 'Megaphone' },
-  { value: Category.SERVICES, label: 'Services', icon: 'Briefcase' },
-  { value: Category.OTHER, label: 'Other', icon: 'MoreHorizontal' },
-]
+// Legacy static categories for backwards compatibility
+// Note: Categories are now dynamic per company, use useCompanyCategories hook instead
+export const CATEGORIES: CategoryInfo[] = DEFAULT_CATEGORIES.map((c) => ({
+  value: c.value,
+  label: c.label,
+  icon: c.icon,
+}))
 
+// Legacy helper - uses static categories only
+// For dynamic categories, use useCompanyCategories hook
 export function getCategoryIcon(category: string): string {
   const found = CATEGORIES.find((c) => c.value === category)
-  return found?.icon || 'MoreHorizontal'
+  return found?.icon || 'Tag'
 }
 
+// Legacy helper - uses static categories only
+// For dynamic categories, use useCompanyCategories hook
 export function getCategoryLabel(category: string): string {
   const found = CATEGORIES.find((c) => c.value === category)
-  return found?.label || 'Other'
+  // For custom categories, convert value to readable label
+  if (!found) {
+    return category
+      .split('_')
+      .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
+      .join(' ')
+  }
+  return found.label
 }

@@ -26,6 +26,7 @@ export function StatusFilter({ value, onChange }: StatusFilterProps) {
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="all">All Status</SelectItem>
+        <SelectItem value="NEEDS_ACTION">Needs My Action</SelectItem>
         <SelectItem value="PENDING_APPROVAL">Pending Approval</SelectItem>
         <SelectItem value="APPROVED">Approved</SelectItem>
         <SelectItem value="REJECTED">Rejected</SelectItem>

@@ -15,6 +15,7 @@ import { formatCurrency } from '@/lib/format-currency'
 interface ExpenseFilters {
   userId?: string
   category?: string
+  status?: string
   startDate?: Date
   endDate?: Date
 }
@@ -85,7 +86,8 @@ export function ExpenseListPaginated({
   }
 
   if (expenses.length === 0) {
-    const hasFilters = filters.userId || filters.category || filters.startDate || filters.endDate
+    const hasFilters = filters.userId || filters.category || filters.status || filters.startDate || filters.endDate
+    const isNeedsActionFilter = filters.status === 'NEEDS_ACTION'
 
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -93,12 +95,18 @@ export function ExpenseListPaginated({
           <Receipt className="h-8 w-8 text-muted-foreground" />
         </div>
         <h3 className="font-semibold mb-1">
-          {hasFilters ? 'No expenses match your filters' : 'No expenses yet'}
+          {isNeedsActionFilter
+            ? 'No expenses need your action'
+            : hasFilters
+              ? 'No expenses match your filters'
+              : 'No expenses yet'}
         </h3>
         <p className="text-sm text-muted-foreground mb-4">
-          {hasFilters
-            ? 'Try adjusting your criteria'
-            : 'Start tracking by adding your first expense'}
+          {isNeedsActionFilter
+            ? 'All caught up!'
+            : hasFilters
+              ? 'Try adjusting your criteria'
+              : 'Start tracking by adding your first expense'}
         </p>
       </div>
     )
@@ -150,6 +158,7 @@ export function ExpenseListPaginated({
             expense={expense}
             showUser
             onClick={onExpenseClick ? () => onExpenseClick(expense) : undefined}
+            needsAction={expense.canCurrentUserApprove || expense.canCurrentUserApproveWithdrawal}
           />
         ))}
       </div>

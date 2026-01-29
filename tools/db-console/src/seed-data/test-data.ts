@@ -1,5 +1,20 @@
-import { Role, Category, ExpenseStatus } from '@prisma/client'
+import { Role, ExpenseStatus } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
+
+// Category enum for backwards compatibility (categories are now dynamic per company)
+export const Category = {
+  FOOD: 'FOOD',
+  TRANSPORT: 'TRANSPORT',
+  SOFTWARE: 'SOFTWARE',
+  HARDWARE: 'HARDWARE',
+  OFFICE: 'OFFICE',
+  TRAVEL: 'TRAVEL',
+  MARKETING: 'MARKETING',
+  SERVICES: 'SERVICES',
+  OTHER: 'OTHER',
+} as const
+
+export type CategoryType = (typeof Category)[keyof typeof Category]
 
 export interface SeedUser {
   email: string
@@ -13,7 +28,7 @@ export interface ExpenseTemplate {
   daysAgo: number
   amount: string
   description: string
-  category: Category
+  category: CategoryType
   status: ExpenseStatus
   receiptUrl: string | null
   notes: string | null
@@ -21,7 +36,7 @@ export interface ExpenseTemplate {
 
 export interface ExpensePool {
   description: string
-  category: Category
+  category: CategoryType
   minAmount: number
   maxAmount: number
   receiptUrl: string | null

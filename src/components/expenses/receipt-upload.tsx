@@ -108,7 +108,6 @@ export function ReceiptUpload({ value, onChange, className }: ReceiptUploadProps
             <X className="h-4 w-4" />
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground mt-1 truncate">{value}</p>
       </div>
     )
   }

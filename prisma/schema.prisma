@@ -113,18 +113,6 @@ model PasswordReset {
 // Expense Models
 // ===========================================
 
-enum Category {
-  FOOD
-  TRANSPORT
-  SOFTWARE
-  HARDWARE
-  OFFICE
-  TRAVEL
-  MARKETING
-  SERVICES
-  OTHER
-}
-
 enum ExpenseStatus {
   PENDING_APPROVAL
   APPROVED
@@ -141,7 +129,7 @@ model Expense {
   date        DateTime
   amount      Decimal       @db.Decimal(10, 2)
   description String
-  category    Category
+  category    String        // Dynamic category value from CompanyCategory
   status      ExpenseStatus @default(PENDING_APPROVAL)
   receiptUrl  String?
   notes       String?
@@ -195,6 +183,25 @@ model Company {
 
   users       User[]
   invitations Invitation[]
+  categories  CompanyCategory[]
+}
+
+model CompanyCategory {
+  id        String   @id @default(cuid())
+  companyId String
+  value     String   // Uppercase key (e.g., "FOOD", "LEGAL_FEES")
+  label     String   // Display name (e.g., "Food & Dining")
+  icon      String   @default("Tag") // Lucide icon name
+  isDefault Boolean  @default(false) // Seeded default (cannot delete)
+  isActive  Boolean  @default(true)  // Soft disable
+  sortOrder Int      @default(0)     // Custom ordering
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, value])
+  @@index([companyId, isActive])
 }
 
 // CompanySettings - DEPRECATED, to be removed after migration

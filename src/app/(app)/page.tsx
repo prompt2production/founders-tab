@@ -1,204 +1,109 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import Link from 'next/link'
+import { useState, useCallback } from 'react'
 import { useAuth } from '@/hooks/useAuth'
-import { useExpenses } from '@/hooks/useExpenses'
-import { useCompanySettings } from '@/hooks/useCompanySettings'
-import { formatCurrency } from '@/lib/format-currency'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { UserAvatar } from '@/components/auth/user-avatar'
-import { Badge } from '@/components/ui/badge'
-import { Skeleton } from '@/components/ui/skeleton'
-import { ExpenseListItem } from '@/components/expenses/expense-list-item'
+import { useDashboard, type PendingApproval, type UserPendingExpense, type RecentActivity as RecentActivityType } from '@/hooks/useDashboard'
 import { AddExpenseSheet } from '@/components/expenses/add-expense-sheet'
 import { EditExpenseSheet } from '@/components/expenses/edit-expense-sheet'
-import { DollarSign, TrendingUp, Receipt, Plus } from 'lucide-react'
+import {
+  QuickStats,
+  ActionItems,
+  PendingExpenses,
+  SpendingTrendChart,
+  CategoryBreakdownChart,
+  RecentActivity,
+} from '@/components/dashboard'
+import { getTimeBasedGreeting, getContextMessage } from '@/lib/greetings'
 
-interface ExpenseSummary {
-  userTotal: number
-  teamTotal: number
-}
-
-interface Expense {
-  id: string
-  date: string
-  amount: string
-  description: string
-  category: string
-  receiptUrl: string | null
-  notes: string | null
-}
+type EditableExpense = PendingApproval | UserPendingExpense | RecentActivityType
 
 export default function HomePage() {
   const { user } = useAuth()
-  const { currencySymbol, currency } = useCompanySettings()
-  const [summary, setSummary] = useState<ExpenseSummary | null>(null)
-  const [isSummaryLoading, setIsSummaryLoading] = useState(true)
+  const { data, isLoading, refetch } = useDashboard()
   const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false)
-  const [editingExpense, setEditingExpense] = useState<Expense | null>(null)
-  const { expenses, isLoading: isExpensesLoading, refetch: refetchExpenses } = useExpenses({ limit: 5 })
-
-  const fetchSummary = useCallback(async () => {
-    try {
-      const response = await fetch('/api/expenses/summary')
-      if (response.ok) {
-        const data = await response.json()
-        setSummary(data)
-      }
-    } catch (error) {
-      console.error('Error fetching expense summary:', error)
-    } finally {
-      setIsSummaryLoading(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (user) {
-      fetchSummary()
-    }
-  }, [user, fetchSummary])
+  const [editingExpense, setEditingExpense] = useState<EditableExpense | null>(null)
 
   const handleExpenseSuccess = useCallback(() => {
-    refetchExpenses()
-    fetchSummary()
-  }, [refetchExpenses, fetchSummary])
+    refetch()
+  }, [refetch])
+
+  const handleExpenseClick = useCallback((expense: EditableExpense) => {
+    setEditingExpense(expense)
+  }, [])
 
   if (!user) return null
 
+  const userRole = data?.userRole || 'MEMBER'
+
   return (
     <div className="px-4 lg:px-6 py-6 space-y-6">
-      {/* Welcome Card */}
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-orange-950 to-red-950 border border-orange-700/30 p-5">
-        <div className="flex justify-between items-start">
-          <div>
-            <p className="text-sm text-white/80">Welcome back,</p>
-            <p className="text-2xl font-bold text-white mt-1">{user.name}</p>
-            <Badge className="bg-white/20 text-white border-0 mt-2">
-              {user.role}
-            </Badge>
-          </div>
-          <UserAvatar
-            name={user.name}
-            initials={user.avatarInitials || undefined}
-            size="lg"
-          />
-        </div>
-        <Button
-          className="mt-4 bg-white text-primary hover:bg-white/90"
-          onClick={() => setIsAddExpenseOpen(true)}
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Add Expense
-        </Button>
-      </div>
-
-      {/* Quick Stats */}
-      <div className="grid grid-cols-2 gap-4">
-        <Card className="bg-card border-border rounded-xl">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <DollarSign className="h-4 w-4" />
-              Your Expenses
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {isSummaryLoading ? (
-              <>
-                <Skeleton className="h-8 w-24" />
-                <Skeleton className="h-3 w-16 mt-2" />
-              </>
-            ) : (
-              <>
-                <p className="text-2xl font-bold tabular-nums">
-                  {formatCurrency(summary?.userTotal || 0, currencySymbol, currency)}
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">This month</p>
-              </>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="bg-card border-border rounded-xl">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <TrendingUp className="h-4 w-4" />
-              Team Total
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {isSummaryLoading ? (
-              <>
-                <Skeleton className="h-8 w-24" />
-                <Skeleton className="h-3 w-16 mt-2" />
-              </>
-            ) : (
-              <>
-                <p className="text-2xl font-bold tabular-nums">
-                  {formatCurrency(summary?.teamTotal || 0, currencySymbol, currency)}
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">This month</p>
-              </>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Recent Expenses */}
-      <Card className="bg-card border-border rounded-xl">
-        <CardHeader className="pb-2">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-base font-medium flex items-center gap-2">
-              <Receipt className="h-5 w-5 text-primary" />
-              Recent Expenses
-            </CardTitle>
-            <Button variant="ghost" size="sm" className="text-muted-foreground" asChild>
-              <Link href="/expenses">View All</Link>
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {isExpensesLoading ? (
-            <div className="space-y-3">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="flex items-center gap-3 py-3">
-                  <Skeleton className="h-10 w-10 rounded-full" />
-                  <div className="flex-1">
-                    <Skeleton className="h-4 w-32" />
-                    <Skeleton className="h-3 w-20 mt-1" />
-                  </div>
-                  <div className="text-right">
-                    <Skeleton className="h-4 w-16" />
-                    <Skeleton className="h-3 w-12 mt-1" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : expenses.length === 0 ? (
-            <div className="text-center py-8">
-              <Receipt className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-              <p className="text-muted-foreground mb-4">
-                No expenses yet. Start tracking by adding your first expense.
-              </p>
-              <Button onClick={() => setIsAddExpenseOpen(true)}>
-                <Plus className="mr-2 h-4 w-4" />
-                Add Expense
-              </Button>
-            </div>
-          ) : (
-            <div className="divide-y divide-border">
-              {expenses.map((expense) => (
-                <ExpenseListItem
-                  key={expense.id}
-                  expense={expense}
-                  onClick={() => setEditingExpense(expense as Expense)}
-                />
-              ))}
-            </div>
+      {/* Welcome Header */}
+      <div className="flex items-start justify-between">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-semibold">
+            {getTimeBasedGreeting(user.name)}
+          </h1>
+          {!isLoading && (
+            <p className="text-muted-foreground">
+              {getContextMessage(
+                data?.stats.pendingApprovalCount || 0,
+                data?.stats.userPendingCount || 0,
+                userRole
+              )}
+            </p>
           )}
-        </CardContent>
-      </Card>
+        </div>
+        <p className="text-sm text-muted-foreground hidden lg:block">
+          {new Date().toLocaleDateString('en-GB', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          })}
+        </p>
+      </div>
+
+      {/* Quick Stats Grid */}
+      <QuickStats
+        stats={data?.stats || null}
+        isLoading={isLoading}
+        userRole={userRole}
+      />
+
+      {/* Action Items (FOUNDER only) */}
+      {userRole === 'FOUNDER' && (
+        <ActionItems
+          expenses={data?.pendingApprovals || []}
+          isLoading={isLoading}
+          onExpenseClick={handleExpenseClick}
+        />
+      )}
+
+      {/* Your Pending Expenses */}
+      <PendingExpenses
+        expenses={data?.userPendingExpenses || []}
+        isLoading={isLoading}
+        onExpenseClick={handleExpenseClick}
+      />
+
+      {/* Charts Row */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <SpendingTrendChart
+          data={data?.monthlyTrend || []}
+          isLoading={isLoading}
+        />
+        <CategoryBreakdownChart
+          data={data?.categoryBreakdown || []}
+          isLoading={isLoading}
+        />
+      </div>
+
+      {/* Recent Activity */}
+      <RecentActivity
+        expenses={data?.recentActivity || []}
+        isLoading={isLoading}
+        onExpenseClick={handleExpenseClick}
+      />
 
       {/* Add Expense Sheet */}
       <AddExpenseSheet
@@ -210,7 +115,15 @@ export default function HomePage() {
       {/* Edit Expense Sheet */}
       {editingExpense && (
         <EditExpenseSheet
-          expense={editingExpense}
+          expense={{
+            id: editingExpense.id,
+            date: editingExpense.date,
+            amount: editingExpense.amount,
+            description: editingExpense.description,
+            category: editingExpense.category,
+            receiptUrl: null,
+            notes: null,
+          }}
           open={!!editingExpense}
           onOpenChange={(open) => {
             if (!open) setEditingExpense(null)

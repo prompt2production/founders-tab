@@ -78,6 +78,67 @@ export function useExpenses(params: UseExpensesParams = {}): UseExpensesResult {
     setError(null)
 
     try {
+      // Special handling for NEEDS_ACTION filter
+      if (params.status === 'NEEDS_ACTION') {
+        // Build common params for both requests
+        const commonParams = new URLSearchParams()
+        commonParams.set('limit', '100') // Fetch larger batch for client-side filtering
+        if (params.category) {
+          commonParams.set('category', params.category)
+        }
+        if (params.userId) {
+          commonParams.set('userId', params.userId)
+        }
+        if (params.startDate) {
+          commonParams.set('startDate', params.startDate.toISOString())
+        }
+        if (params.endDate) {
+          commonParams.set('endDate', params.endDate.toISOString())
+        }
+
+        // Fetch both PENDING_APPROVAL and WITHDRAWAL_REQUESTED expenses
+        const pendingParams = new URLSearchParams(commonParams)
+        pendingParams.set('status', 'PENDING_APPROVAL')
+        const withdrawalParams = new URLSearchParams(commonParams)
+        withdrawalParams.set('status', 'WITHDRAWAL_REQUESTED')
+
+        const [pendingResponse, withdrawalResponse] = await Promise.all([
+          fetch(`/api/expenses?${pendingParams.toString()}`),
+          fetch(`/api/expenses?${withdrawalParams.toString()}`),
+        ])
+
+        if (!pendingResponse.ok || !withdrawalResponse.ok) {
+          throw new Error('Failed to fetch expenses')
+        }
+
+        const [pendingData, withdrawalData] = await Promise.all([
+          pendingResponse.json(),
+          withdrawalResponse.json(),
+        ])
+
+        // Filter to only items where user can take action
+        const actionableExpenses = [
+          ...pendingData.expenses.filter((e: Expense) => e.canCurrentUserApprove),
+          ...withdrawalData.expenses.filter((e: Expense) => e.canCurrentUserApproveWithdrawal),
+        ]
+
+        // Sort by date descending
+        actionableExpenses.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+
+        // Handle pagination client-side
+        const limit = params.limit || 20
+        const currentPage = params.page || 1
+        const startIndex = (currentPage - 1) * limit
+        const paginatedExpenses = actionableExpenses.slice(startIndex, startIndex + limit)
+
+        setExpenses(paginatedExpenses)
+        setTotal(actionableExpenses.length)
+        setTotalPages(Math.ceil(actionableExpenses.length / limit))
+        setPage(currentPage)
+        return
+      }
+
+      // Standard fetch for other status filters
       const searchParams = new URLSearchParams()
 
       if (params.page !== undefined) {

@@ -13,7 +13,6 @@
 # 1. Create directories
 ssh your-server
 mkdir -p /opt/docker/founders-tab/uploads/receipts
-chmod 644 /opt/docker/founders-tab/uploads/receipts/*
 cd /opt/docker/founders-tab
 
 # 2. Clone repository
@@ -108,7 +107,7 @@ docker compose -p founderstab -f docker-compose.app.yml up -d --build
 
 **Build fails:** Retry `docker compose -p founderstab -f docker-compose.app.yml up -d --build`
 
-**Volume mount error:** Ensure `/opt/docker/founders-tab/uploads/receipts` exists
+**Volume mount error:** See [File Uploads](#file-uploads-receipts) section for setup instructions
 
 **Container unhealthy:** Check logs `docker compose -p founderstab -f docker-compose.app.yml logs app`
 
@@ -132,3 +131,76 @@ docker compose -p founderstab -f docker-compose.app.yml up -d --build
 | DB port (host) | `5467` |
 | Network | `founderstab-network` |
 | Domain | `founderstab.com` |
+
+## File Uploads (Receipts)
+
+Receipt uploads are persisted using a Docker bind mount that maps a host directory into the container. This ensures uploaded files survive container rebuilds and restarts.
+
+### How It Works
+
+The `docker-compose.app.yml` contains:
+
+```yaml
+volumes:
+  - uploads-receipts:/app/public/uploads/receipts
+
+volumes:
+  uploads-receipts:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/docker/founders-tab/uploads/receipts
+```
+
+This maps:
+- **Host:** `/opt/docker/founders-tab/uploads/receipts`
+- **Container:** `/app/public/uploads/receipts`
+
+### Setup
+
+```bash
+# Create the directory on the host
+mkdir -p /opt/docker/founders-tab/uploads/receipts
+
+# Set ownership to match the container user (node runs as uid 1000)
+chown -R 1000:1000 /opt/docker/founders-tab/uploads/receipts
+
+# Set directory permissions (rwxr-xr-x)
+chmod 755 /opt/docker/founders-tab/uploads/receipts
+```
+
+### Troubleshooting Upload Issues
+
+**"Permission denied" errors:**
+```bash
+# Check current ownership
+ls -la /opt/docker/founders-tab/uploads/
+
+# Fix ownership (container runs as uid 1000)
+chown -R 1000:1000 /opt/docker/founders-tab/uploads/receipts
+```
+
+**Directory doesn't exist error on container start:**
+```bash
+# Ensure directory exists before starting container
+mkdir -p /opt/docker/founders-tab/uploads/receipts
+```
+
+**Files not persisting after rebuild:**
+```bash
+# Verify the volume is mounted correctly
+docker inspect founderstab-app | grep -A 10 Mounts
+```
+
+### Backup
+
+Include the uploads directory in your backup strategy:
+
+```bash
+# Backup receipts
+tar -czf receipts-backup-$(date +%Y%m%d).tar.gz /opt/docker/founders-tab/uploads/receipts
+
+# Restore receipts
+tar -xzf receipts-backup-YYYYMMDD.tar.gz -C /
+```

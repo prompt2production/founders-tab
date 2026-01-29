@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { createExpenseSchema, listExpensesQuerySchema } from '@/lib/validations/expense'
 import { z } from 'zod'
-import { Prisma, Category, ExpenseStatus, Role } from '@prisma/client'
+import { Prisma, ExpenseStatus, Role } from '@prisma/client'
 import { sendExpenseAwaitingApprovalEmail } from '@/lib/email'
 import { getCompanyUserIds, getFoundersCount } from '@/lib/company'
 
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (query.category) {
-      where.category = query.category as Category
+      where.category = query.category
     }
 
     if (query.status) {
@@ -178,6 +178,22 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const validated = createExpenseSchema.parse(body)
 
+    // Validate that the category exists for this company
+    const categoryExists = await prisma.companyCategory.findFirst({
+      where: {
+        companyId: user.companyId,
+        value: validated.category,
+        isActive: true,
+      },
+    })
+
+    if (!categoryExists) {
+      return NextResponse.json(
+        { error: 'Invalid category for this company' },
+        { status: 400 }
+      )
+    }
+
     // Check if there are other founders in the same company who need to approve
     const otherFoundersCount = await prisma.user.count({
       where: {
@@ -199,7 +215,7 @@ export async function POST(request: NextRequest) {
         date: validated.date,
         amount: validated.amount,
         description: validated.description,
-        category: validated.category as Category,
+        category: validated.category,
         status: initialStatus,
         receiptUrl: validated.receiptUrl || null,
         notes: validated.notes || null,

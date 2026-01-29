@@ -16,11 +16,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Home, Receipt, Users, User, LogOut, Settings, Wallet } from 'lucide-react'
+import { Home, Receipt, Users, User, LogOut, Settings, Wallet, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import { usePendingApprovalCount } from '@/hooks/usePendingApprovalCount'
 import { Badge } from '@/components/ui/badge'
+import { AddExpenseSheet } from '@/components/expenses/add-expense-sheet'
+import { useState } from 'react'
 
 const navItems = [
   { href: '/', icon: Home, label: 'Home' },
@@ -31,7 +33,11 @@ const navItems = [
   { href: '/profile', icon: User, label: 'Profile' },
 ]
 
-function AppHeader() {
+interface AppHeaderProps {
+  onAddExpense: () => void
+}
+
+function AppHeader({ onAddExpense }: AppHeaderProps) {
   const pathname = usePathname()
   const router = useRouter()
   const { user, logout } = useAuth()
@@ -86,8 +92,19 @@ function AppHeader() {
             })}
           </nav>
 
-          {/* User Menu */}
-          <DropdownMenu>
+          {/* Quick Add Expense Button (Desktop) + User Menu */}
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={onAddExpense}
+              size="sm"
+              className="hidden lg:flex items-center gap-1.5"
+            >
+              <Plus className="h-4 w-4" />
+              Add Expense
+            </Button>
+
+            {/* User Menu */}
+            <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0">
                 <UserAvatar
@@ -121,58 +138,81 @@ function AppHeader() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          </div>
         </div>
       </div>
     </header>
   )
 }
 
-function BottomNav() {
+interface BottomNavProps {
+  onAddExpense: () => void
+}
+
+function BottomNav({ onAddExpense }: BottomNavProps) {
   const pathname = usePathname()
   const { count: pendingCount } = usePendingApprovalCount()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border px-4 py-2 lg:hidden z-50">
-      <div className="flex items-center justify-around">
-        {navItems.map(({ href, icon: Icon, label }) => {
-          const isActive = pathname === href
-          const showBadge = href === '/expenses' && pendingCount > 0
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                'flex flex-col items-center gap-1 p-2 rounded-lg transition-colors min-w-[64px] relative',
-                isActive
-                  ? 'text-primary'
-                  : 'text-muted-foreground hover:text-foreground'
-              )}
-            >
-              <div className="relative">
-                <Icon className="h-5 w-5" />
-                {showBadge && (
-                  <Badge className="absolute -top-2 -right-3 h-4 min-w-4 flex items-center justify-center p-0 text-[10px]">
-                    {pendingCount}
-                  </Badge>
+    <>
+      {/* Floating Action Button for Add Expense */}
+      <Button
+        onClick={onAddExpense}
+        size="icon"
+        className="fixed bottom-20 right-4 h-14 w-14 rounded-full shadow-lg lg:hidden z-50"
+      >
+        <Plus className="h-6 w-6" />
+        <span className="sr-only">Add Expense</span>
+      </Button>
+
+      <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border px-4 py-2 lg:hidden z-50">
+        <div className="flex items-center justify-around">
+          {navItems.map(({ href, icon: Icon, label }) => {
+            const isActive = pathname === href
+            const showBadge = href === '/expenses' && pendingCount > 0
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={cn(
+                  'flex flex-col items-center gap-1 p-2 rounded-lg transition-colors min-w-[64px] relative',
+                  isActive
+                    ? 'text-primary'
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
-              </div>
-              <span className="text-xs">{label}</span>
-            </Link>
-          )
-        })}
-      </div>
-    </nav>
+              >
+                <div className="relative">
+                  <Icon className="h-5 w-5" />
+                  {showBadge && (
+                    <Badge className="absolute -top-2 -right-3 h-4 min-w-4 flex items-center justify-center p-0 text-[10px]">
+                      {pendingCount}
+                    </Badge>
+                  )}
+                </div>
+                <span className="text-xs">{label}</span>
+              </Link>
+            )
+          })}
+        </div>
+      </nav>
+    </>
   )
 }
 
 function AppContent({ children }: { children: React.ReactNode }) {
+  const [addExpenseOpen, setAddExpenseOpen] = useState(false)
+
   return (
     <>
-      <AppHeader />
+      <AppHeader onAddExpense={() => setAddExpenseOpen(true)} />
       <div className="max-w-6xl mx-auto">
         {children}
       </div>
-      <BottomNav />
+      <BottomNav onAddExpense={() => setAddExpenseOpen(true)} />
+      <AddExpenseSheet
+        open={addExpenseOpen}
+        onOpenChange={setAddExpenseOpen}
+      />
     </>
   )
 }

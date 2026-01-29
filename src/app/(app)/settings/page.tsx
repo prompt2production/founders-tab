@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { CompanySettingsForm } from '@/components/settings/company-settings-form'
-import { Card, CardContent } from '@/components/ui/card'
+import { CategoryList } from '@/components/settings/category-list'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { UpdateCompanySettingsInput } from '@/lib/validations/company-settings'
 import { toast } from 'sonner'
 
@@ -68,7 +69,13 @@ export default function SettingsPage() {
       <h1 className="text-2xl font-semibold">Company Settings</h1>
 
       <Card className="bg-card border-border rounded-xl">
-        <CardContent className="pt-6">
+        <CardHeader>
+          <CardTitle>General</CardTitle>
+          <CardDescription>
+            Basic company information and preferences.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
           {isLoading ? (
             <div className="space-y-4">
               <div className="space-y-2">
@@ -91,6 +98,19 @@ export default function SettingsPage() {
               isReadOnly={isReadOnly}
             />
           ) : null}
+        </CardContent>
+      </Card>
+
+      <Card className="bg-card border-border rounded-xl">
+        <CardHeader>
+          <CardTitle>Expense Categories</CardTitle>
+          <CardDescription>
+            Manage the categories available for expense tracking.
+            {isReadOnly && ' Only founders can modify categories.'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <CategoryList isReadOnly={isReadOnly} />
         </CardContent>
       </Card>
     </div>

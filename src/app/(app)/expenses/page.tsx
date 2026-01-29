@@ -2,11 +2,8 @@
 
 import { useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Plus } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { ExpenseFilters, ExpenseFiltersState } from '@/components/expenses/expense-filters'
 import { ExpenseListPaginated } from '@/components/expenses/expense-list-paginated'
-import { AddExpenseSheet } from '@/components/expenses/add-expense-sheet'
 import { EditExpenseSheet } from '@/components/expenses/edit-expense-sheet'
 import { Expense } from '@/hooks/useExpenses'
 import { useExpenseFilters } from '@/hooks/useExpenseFilters'
@@ -19,7 +16,6 @@ function ExpensesContent() {
     return pageParam ? parseInt(pageParam, 10) : 1
   })
 
-  const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false)
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null)
   const [refreshKey, setRefreshKey] = useState(0)
 
@@ -44,14 +40,8 @@ function ExpensesContent() {
     <div className="min-h-screen bg-background">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border px-4 lg:px-6 py-3">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-semibold">Expenses</h1>
-            <Button onClick={() => setIsAddExpenseOpen(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Add Expense
-            </Button>
-          </div>
+        <header className="px-4 lg:px-6 py-4">
+          <h1 className="text-2xl font-semibold">Expenses</h1>
         </header>
 
         {/* Content */}
@@ -72,13 +62,6 @@ function ExpensesContent() {
           />
         </div>
       </div>
-
-      {/* Add Expense Sheet */}
-      <AddExpenseSheet
-        open={isAddExpenseOpen}
-        onOpenChange={setIsAddExpenseOpen}
-        onSuccess={handleSuccess}
-      />
 
       {/* Edit Expense Sheet */}
       {editingExpense && (

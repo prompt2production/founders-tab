@@ -3,7 +3,6 @@ import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { updateExpenseSchema } from '@/lib/validations/expense'
 import { z } from 'zod'
-import { Category } from '@prisma/client'
 
 export async function GET(
   request: NextRequest,
@@ -78,12 +77,30 @@ export async function PATCH(
     const body = await request.json()
     const validated = updateExpenseSchema.parse(body)
 
+    // If category is being updated, validate it exists for this company
+    if (validated.category !== undefined) {
+      const categoryExists = await prisma.companyCategory.findFirst({
+        where: {
+          companyId: user.companyId,
+          value: validated.category,
+          isActive: true,
+        },
+      })
+
+      if (!categoryExists) {
+        return NextResponse.json(
+          { error: 'Invalid category for this company' },
+          { status: 400 }
+        )
+      }
+    }
+
     // Build update data with proper types
     const updateData: {
       description?: string
       date?: Date
       amount?: number
-      category?: Category
+      category?: string
       receiptUrl?: string | null
       notes?: string | null
     } = {}
@@ -91,7 +108,7 @@ export async function PATCH(
     if (validated.description !== undefined) updateData.description = validated.description
     if (validated.date !== undefined) updateData.date = validated.date
     if (validated.amount !== undefined) updateData.amount = validated.amount
-    if (validated.category !== undefined) updateData.category = validated.category as Category
+    if (validated.category !== undefined) updateData.category = validated.category
     if (validated.receiptUrl !== undefined) updateData.receiptUrl = validated.receiptUrl
     if (validated.notes !== undefined) updateData.notes = validated.notes
 

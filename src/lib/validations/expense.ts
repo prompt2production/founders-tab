@@ -15,7 +15,8 @@ export type ExpenseStatusType = (typeof ExpenseStatus)[keyof typeof ExpenseStatu
 
 const expenseStatusValues = Object.values(ExpenseStatus) as [string, ...string[]]
 
-// Category enum matching Prisma schema
+// Legacy Category enum for backwards compatibility with existing code
+// Categories are now dynamic per company, stored in CompanyCategory table
 export const Category = {
   FOOD: 'FOOD',
   TRANSPORT: 'TRANSPORT',
@@ -29,8 +30,6 @@ export const Category = {
 } as const
 
 export type CategoryType = (typeof Category)[keyof typeof Category]
-
-const categoryValues = Object.values(Category) as [string, ...string[]]
 
 // Helper to check if date is not in the future
 const notFutureDate = (date: Date) => {
@@ -56,6 +55,7 @@ const hasMaxTwoDecimalPlaces = (value: number) => {
 }
 
 // Create expense schema
+// Note: category is now a string that will be validated against company categories at the API level
 export const createExpenseSchema = z.object({
   date: z
     .string()
@@ -82,10 +82,18 @@ export const createExpenseSchema = z.object({
     .min(1, { message: 'Description is required' })
     .max(200, { message: 'Description cannot exceed 200 characters' })
     .transform((val) => val.trim()),
-  category: z.enum(categoryValues, {
-    errorMap: () => ({ message: 'Invalid category' }),
-  }),
-  receiptUrl: z.string().url({ message: 'Invalid URL' }).optional().or(z.literal('')),
+  category: z
+    .string()
+    .min(1, { message: 'Category is required' })
+    .max(50, { message: 'Category cannot exceed 50 characters' }),
+  receiptUrl: z
+    .string()
+    .refine(
+      (val) => val === '' || val.startsWith('/uploads/') || val.startsWith('http://') || val.startsWith('https://'),
+      { message: 'Invalid receipt URL' }
+    )
+    .optional()
+    .or(z.literal('')),
   notes: z
     .string()
     .max(500, { message: 'Notes cannot exceed 500 characters' })
@@ -96,6 +104,7 @@ export const createExpenseSchema = z.object({
 export type CreateExpenseInput = z.infer<typeof createExpenseSchema>
 
 // Update expense schema - all fields optional for partial updates
+// Note: category is now a string that will be validated against company categories at the API level
 export const updateExpenseSchema = z.object({
   date: z
     .string()
@@ -126,11 +135,18 @@ export const updateExpenseSchema = z.object({
     .transform((val) => val.trim())
     .optional(),
   category: z
-    .enum(categoryValues, {
-      errorMap: () => ({ message: 'Invalid category' }),
-    })
+    .string()
+    .min(1, { message: 'Category is required' })
+    .max(50, { message: 'Category cannot exceed 50 characters' })
     .optional(),
-  receiptUrl: z.string().url({ message: 'Invalid URL' }).optional().nullable(),
+  receiptUrl: z
+    .string()
+    .refine(
+      (val) => val === '' || val.startsWith('/uploads/') || val.startsWith('http://') || val.startsWith('https://'),
+      { message: 'Invalid receipt URL' }
+    )
+    .optional()
+    .nullable(),
   notes: z
     .string()
     .max(500, { message: 'Notes cannot exceed 500 characters' })
@@ -142,10 +158,11 @@ export const updateExpenseSchema = z.object({
 export type UpdateExpenseInput = z.infer<typeof updateExpenseSchema>
 
 // List expenses query schema
+// Note: category is now a string that will be validated against company categories at the API level
 export const listExpensesQuerySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(100).default(20),
-  category: z.enum(categoryValues).optional(),
+  category: z.string().optional(),
   userId: z.string().optional(),
   status: z.enum(expenseStatusValues).optional(),
   startDate: z

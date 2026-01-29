@@ -30,7 +30,7 @@ import { RejectExpenseButton } from './reject-expense-button'
 import { RejectWithdrawalButton } from './reject-withdrawal-button'
 import { ConfirmReceiptButton } from './confirm-receipt-button'
 import { CreateExpenseInput } from '@/lib/validations/expense'
-import { Trash2, Loader2, User, XCircle } from 'lucide-react'
+import { Trash2, Loader2, User, XCircle, FileText, ExternalLink } from 'lucide-react'
 
 function formatRelativeDate(dateString: string): string {
   const date = new Date(dateString)
@@ -319,6 +319,41 @@ export function EditExpenseSheet({ expense, currentUserId, open, onOpenChange, o
                 onSuccess={onSuccess}
                 className="w-full"
               />
+            </div>
+          )}
+
+          {/* Receipt Preview */}
+          {expense.receiptUrl && (
+            <div className="rounded-lg bg-card-elevated p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Receipt</span>
+                <a
+                  href={expense.receiptUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-primary hover:underline flex items-center gap-1"
+                >
+                  Open <ExternalLink className="h-3 w-3" />
+                </a>
+              </div>
+              <a
+                href={expense.receiptUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                {expense.receiptUrl.endsWith('.pdf') ? (
+                  <div className="flex items-center justify-center h-32 bg-secondary rounded-lg hover:bg-secondary/80 transition-colors">
+                    <FileText className="h-12 w-12 text-muted-foreground" />
+                  </div>
+                ) : (
+                  <img
+                    src={expense.receiptUrl}
+                    alt="Receipt"
+                    className="w-full h-32 object-cover rounded-lg hover:opacity-90 transition-opacity"
+                  />
+                )}
+              </a>
             </div>
           )}
 

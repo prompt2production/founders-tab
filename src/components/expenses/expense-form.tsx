@@ -26,6 +26,7 @@ import { AmountInput } from './amount-input'
 import { CategoryPicker } from './category-picker'
 import { ReceiptUpload } from './receipt-upload'
 import { createExpenseSchema, CreateExpenseInput } from '@/lib/validations/expense'
+import { useCompanyCategories } from '@/hooks/useCompanyCategories'
 import { cn } from '@/lib/utils'
 
 interface ExpenseFormProps {
@@ -37,6 +38,9 @@ interface ExpenseFormProps {
 export function ExpenseForm({ onSubmit, defaultValues, submitLabel = 'Add Expense' }: ExpenseFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showNotes, setShowNotes] = useState(!!defaultValues?.notes)
+  const [calendarOpen, setCalendarOpen] = useState(false)
+  const [customCategoryName, setCustomCategoryName] = useState('')
+  const { createCategory } = useCompanyCategories()
 
   const form = useForm<CreateExpenseInput>({
     resolver: zodResolver(createExpenseSchema),
@@ -53,7 +57,26 @@ export function ExpenseForm({ onSubmit, defaultValues, submitLabel = 'Add Expens
   async function handleSubmit(data: CreateExpenseInput) {
     setIsSubmitting(true)
     try {
-      await onSubmit(data)
+      let categoryValue = data.category
+
+      // If "Other" is selected and a custom name is provided, create the new category
+      if (data.category === 'OTHER' && customCategoryName.trim()) {
+        try {
+          const newCategory = await createCategory(customCategoryName.trim())
+          categoryValue = newCategory.value
+        } catch (error) {
+          // If category creation fails (e.g., already exists), try to use the generated value
+          const generatedValue = customCategoryName
+            .trim()
+            .toUpperCase()
+            .replace(/[^A-Z0-9]+/g, '_')
+            .replace(/^_+|_+$/g, '')
+          categoryValue = generatedValue || 'OTHER'
+        }
+      }
+
+      await onSubmit({ ...data, category: categoryValue })
+      setCustomCategoryName('')
     } finally {
       setIsSubmitting(false)
     }
@@ -108,7 +131,12 @@ export function ExpenseForm({ onSubmit, defaultValues, submitLabel = 'Add Expens
             <FormItem>
               <FormLabel className="text-muted-foreground">Category</FormLabel>
               <FormControl>
-                <CategoryPicker value={field.value} onChange={field.onChange} />
+                <CategoryPicker
+                  value={field.value}
+                  onChange={field.onChange}
+                  onCustomCategoryName={setCustomCategoryName}
+                  customCategoryName={customCategoryName}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -122,7 +150,7 @@ export function ExpenseForm({ onSubmit, defaultValues, submitLabel = 'Add Expens
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-muted-foreground">Date</FormLabel>
-              <Popover>
+              <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
@@ -141,7 +169,12 @@ export function ExpenseForm({ onSubmit, defaultValues, submitLabel = 'Add Expens
                   <Calendar
                     mode="single"
                     selected={field.value instanceof Date ? field.value : new Date(field.value)}
-                    onSelect={(date) => date && field.onChange(date)}
+                    onSelect={(date) => {
+                      if (date) {
+                        field.onChange(date)
+                        setCalendarOpen(false)
+                      }
+                    }}
                     disabled={(date) => date > new Date() || date < new Date(new Date().setFullYear(new Date().getFullYear() - 1))}
                     initialFocus
                   />

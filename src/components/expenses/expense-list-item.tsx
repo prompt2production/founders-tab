@@ -29,7 +29,7 @@ interface Expense {
   amount: number | string
   description: string
   category: string
-  status?: 'PENDING_APPROVAL' | 'APPROVED' | 'WITHDRAWAL_REQUESTED' | 'WITHDRAWAL_APPROVED' | 'RECEIVED'
+  status?: 'PENDING_APPROVAL' | 'APPROVED' | 'REJECTED' | 'WITHDRAWAL_REQUESTED' | 'WITHDRAWAL_APPROVED' | 'WITHDRAWAL_REJECTED' | 'RECEIVED'
   receiptUrl?: string | null
   notes?: string | null
   user?: ExpenseUser
@@ -37,15 +37,47 @@ interface Expense {
   approvalsNeeded?: number
   withdrawalApprovals?: WithdrawalApproval[]
   withdrawalApprovalsNeeded?: number
+  canCurrentUserApprove?: boolean
+  canCurrentUserApproveWithdrawal?: boolean
 }
 
 interface ExpenseListItemProps {
   expense: Expense
   onClick?: () => void
   showUser?: boolean
+  needsAction?: boolean
 }
 
-export function ExpenseListItem({ expense, onClick, showUser = false }: ExpenseListItemProps) {
+function getStatusDescription(
+  status: Expense['status'],
+  canApprove?: boolean,
+  canApproveWithdrawal?: boolean
+): string | null {
+  if (status === 'PENDING_APPROVAL') {
+    return canApprove ? 'Needs your approval' : 'Awaiting approval'
+  }
+  if (status === 'APPROVED') {
+    return 'Approved, awaiting withdrawal request'
+  }
+  if (status === 'REJECTED') {
+    return 'Expense was rejected'
+  }
+  if (status === 'WITHDRAWAL_REQUESTED') {
+    return canApproveWithdrawal ? 'Approve withdrawal' : 'Awaiting withdrawal approval'
+  }
+  if (status === 'WITHDRAWAL_APPROVED') {
+    return 'Ready to mark as received'
+  }
+  if (status === 'WITHDRAWAL_REJECTED') {
+    return 'Withdrawal was rejected'
+  }
+  if (status === 'RECEIVED') {
+    return 'Complete'
+  }
+  return null
+}
+
+export function ExpenseListItem({ expense, onClick, showUser = false, needsAction = false }: ExpenseListItemProps) {
   const { currencySymbol, currency } = useCompanySettings()
   const date = expense.date instanceof Date ? expense.date : new Date(expense.date)
   const amount = typeof expense.amount === 'string' ? parseFloat(expense.amount) : expense.amount
@@ -57,11 +89,17 @@ export function ExpenseListItem({ expense, onClick, showUser = false }: ExpenseL
   const isReceived = expense.status === 'RECEIVED'
   const approvalsReceived = expense.approvals?.length || 0
   const withdrawalApprovalsReceived = expense.withdrawalApprovals?.length || 0
+  const statusDescription = getStatusDescription(
+    expense.status,
+    expense.canCurrentUserApprove,
+    expense.canCurrentUserApproveWithdrawal
+  )
 
   return (
     <div
       className={cn(
         'flex items-center gap-3 py-3',
+        needsAction && 'border-l-3 border-l-primary pl-3',
         onClick && 'cursor-pointer hover:bg-muted/50 -mx-2 px-2 rounded-lg transition-colors'
       )}
       onClick={onClick}
@@ -103,6 +141,14 @@ export function ExpenseListItem({ expense, onClick, showUser = false }: ExpenseL
             withdrawalApprovalsReceived={withdrawalApprovalsReceived}
             withdrawalApprovalsNeeded={expense.withdrawalApprovalsNeeded}
           />
+        )}
+        {statusDescription && (
+          <p className={cn(
+            'text-xs',
+            needsAction ? 'text-primary font-medium' : 'text-muted-foreground'
+          )}>
+            {statusDescription}
+          </p>
         )}
         {!expense.status && <p className="text-xs text-muted-foreground">{categoryLabel}</p>}
       </div>

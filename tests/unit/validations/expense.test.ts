@@ -152,19 +152,40 @@ describe('createExpenseSchema', () => {
   })
 
   // Category validation tests
+  // Note: Category is now a string - company-specific validation happens at API level
   describe('category validation', () => {
-    it('should reject invalid category', () => {
+    it('should reject empty category', () => {
       const result = createExpenseSchema.safeParse({
         ...validExpense,
-        category: 'INVALID_CATEGORY',
+        category: '',
       })
       expect(result.success).toBe(false)
       if (!result.success) {
-        expect(result.error.issues[0].message).toContain('Invalid category')
+        expect(result.error.issues[0].message).toContain('required')
       }
     })
 
-    it('should accept all valid categories', () => {
+    it('should reject category exceeding max length', () => {
+      const result = createExpenseSchema.safeParse({
+        ...validExpense,
+        category: 'A'.repeat(51),
+      })
+      expect(result.success).toBe(false)
+      if (!result.success) {
+        expect(result.error.issues[0].message).toContain('50')
+      }
+    })
+
+    it('should accept any valid string category', () => {
+      // Categories are now dynamic per company, schema just validates it's a non-empty string
+      const result = createExpenseSchema.safeParse({
+        ...validExpense,
+        category: 'CUSTOM_CATEGORY',
+      })
+      expect(result.success).toBe(true)
+    })
+
+    it('should accept all default categories', () => {
       const categories = Object.values(Category)
       categories.forEach((category) => {
         const result = createExpenseSchema.safeParse({
@@ -227,10 +248,26 @@ describe('createExpenseSchema', () => {
       expect(result.success).toBe(false)
     })
 
-    it('should accept valid receiptUrl', () => {
+    it('should accept valid https receiptUrl', () => {
       const result = createExpenseSchema.safeParse({
         ...validExpense,
         receiptUrl: 'https://example.com/receipt.pdf',
+      })
+      expect(result.success).toBe(true)
+    })
+
+    it('should accept valid http receiptUrl', () => {
+      const result = createExpenseSchema.safeParse({
+        ...validExpense,
+        receiptUrl: 'http://example.com/receipt.pdf',
+      })
+      expect(result.success).toBe(true)
+    })
+
+    it('should accept relative /uploads/ path for receiptUrl', () => {
+      const result = createExpenseSchema.safeParse({
+        ...validExpense,
+        receiptUrl: '/uploads/receipts/user-123-456789.pdf',
       })
       expect(result.success).toBe(true)
     })
