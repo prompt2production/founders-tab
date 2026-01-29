@@ -10,8 +10,11 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Get all users, ordered alphabetically by name
+    // Get all users in the same company, ordered alphabetically by name
     const users = await prisma.user.findMany({
+      where: {
+        companyId: user.companyId,
+      },
       select: {
         id: true,
         name: true,

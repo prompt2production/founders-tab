@@ -13,12 +13,14 @@ export interface BalanceUser {
 export interface Balance {
   user: BalanceUser
   total: number
+  pendingTotal: number
   expenseCount: number
   percentage: number
 }
 
 interface UseBalancesResult {
   teamTotal: number
+  pendingTotal: number
   balances: Balance[]
   isLoading: boolean
   error: string | null
@@ -27,6 +29,7 @@ interface UseBalancesResult {
 
 export function useBalances(filter: BalanceFilter = 'owed'): UseBalancesResult {
   const [teamTotal, setTeamTotal] = useState(0)
+  const [pendingTotal, setPendingTotal] = useState(0)
   const [balances, setBalances] = useState<Balance[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -45,6 +48,7 @@ export function useBalances(filter: BalanceFilter = 'owed'): UseBalancesResult {
 
       const data = await response.json()
       setTeamTotal(data.teamTotal)
+      setPendingTotal(data.pendingTotal)
       setBalances(data.balances)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
@@ -59,6 +63,7 @@ export function useBalances(filter: BalanceFilter = 'owed'): UseBalancesResult {
 
   return {
     teamTotal,
+    pendingTotal,
     balances,
     isLoading,
     error,

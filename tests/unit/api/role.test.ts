@@ -28,6 +28,7 @@ const createMockCurrentUser = (overrides = {}) => ({
   email: 'founder@example.com',
   avatarInitials: 'TF',
   role: 'FOUNDER' as const,
+  companyId: 'company-1',
   createdAt: new Date(),
   updatedAt: new Date(),
   ...overrides,
@@ -39,6 +40,7 @@ const createMockTargetUser = (overrides = {}) => ({
   name: 'Test Member',
   email: 'member@example.com',
   role: 'MEMBER' as const,
+  companyId: 'company-1',
   ...overrides,
 })
 

@@ -13,6 +13,7 @@ interface BalanceUser {
 interface BalanceCardProps {
   user: BalanceUser
   total: number
+  pendingTotal: number
   expenseCount: number
   percentage: number
   highlight?: boolean
@@ -31,6 +32,7 @@ function getInitials(name: string): string {
 export function BalanceCard({
   user,
   total,
+  pendingTotal,
   expenseCount,
   percentage,
   highlight = false,
@@ -46,7 +48,7 @@ export function BalanceCard({
       className={cn(
         'relative overflow-hidden rounded-xl p-5 transition-all',
         highlight
-          ? 'bg-gradient-to-br from-primary to-red-600 text-white'
+          ? 'bg-gradient-to-br from-slate-800 to-slate-900 border border-orange-500/20 text-white'
           : 'bg-card border border-border',
         onClick && 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
       )}
@@ -84,6 +86,16 @@ export function BalanceCard({
           >
             {formattedTotal}
           </p>
+          {pendingTotal > 0 && (
+            <p
+              className={cn(
+                'text-sm tabular-nums mt-0.5',
+                highlight ? 'text-white/50' : 'text-muted-foreground/70'
+              )}
+            >
+              +{formatCurrency(pendingTotal, currencySymbol, currency)} pending
+            </p>
+          )}
         </div>
       </div>
 

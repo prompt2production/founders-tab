@@ -5,6 +5,7 @@ import { Role, ExpenseStatus } from '@prisma/client'
 import { rejectExpenseSchema } from '@/lib/validations/expense'
 import { z } from 'zod'
 import { sendWithdrawalRejectedEmail } from '@/lib/email'
+import { isExpenseInCompany } from '@/lib/company'
 
 export async function POST(
   request: NextRequest,
@@ -33,6 +34,12 @@ export async function POST(
     })
 
     if (!expense) {
+      return NextResponse.json({ error: 'Expense not found' }, { status: 404 })
+    }
+
+    // Verify expense belongs to same company
+    const inCompany = await isExpenseInCompany(user.companyId, id)
+    if (!inCompany) {
       return NextResponse.json({ error: 'Expense not found' }, { status: 404 })
     }
 

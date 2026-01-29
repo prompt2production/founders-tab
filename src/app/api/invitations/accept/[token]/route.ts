@@ -126,7 +126,7 @@ export async function POST(
         ? `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`.toUpperCase()
         : validated.name.slice(0, 2).toUpperCase()
 
-    // Create user with MEMBER role
+    // Create user with MEMBER role, joining the inviter's company
     const user = await prisma.user.create({
       data: {
         email: invitation.email,
@@ -134,6 +134,7 @@ export async function POST(
         passwordHash,
         avatarInitials,
         role: 'MEMBER',
+        companyId: invitation.companyId,
       },
       select: {
         id: true,
@@ -141,6 +142,7 @@ export async function POST(
         name: true,
         avatarInitials: true,
         role: true,
+        companyId: true,
         createdAt: true,
         updatedAt: true,
       },

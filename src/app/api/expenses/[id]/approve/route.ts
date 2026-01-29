@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { Role, ExpenseStatus } from '@prisma/client'
 import { sendExpenseApprovedEmail } from '@/lib/email'
+import { isExpenseInCompany } from '@/lib/company'
 
 export async function POST(
   request: NextRequest,
@@ -46,6 +47,12 @@ export async function POST(
       return NextResponse.json({ error: 'Expense not found' }, { status: 404 })
     }
 
+    // Verify expense belongs to same company
+    const inCompany = await isExpenseInCompany(user.companyId, id)
+    if (!inCompany) {
+      return NextResponse.json({ error: 'Expense not found' }, { status: 404 })
+    }
+
     // Check if user is the expense creator
     if (expense.userId === user.id) {
       return NextResponse.json(
@@ -71,9 +78,10 @@ export async function POST(
       },
     })
 
-    // Get all founders except the expense creator
+    // Get all founders in the same company except the expense creator
     const foundersExceptCreator = await prisma.user.findMany({
       where: {
+        companyId: user.companyId,
         role: Role.FOUNDER,
         id: { not: expense.userId },
       },

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
+import { getCompanyUserIds } from '@/lib/company'
 
 export async function GET() {
   try {
@@ -29,9 +30,11 @@ export async function GET() {
       },
     })
 
-    // Get all team expenses this month
+    // Get all team expenses this month (only users in the same company)
+    const companyUserIds = await getCompanyUserIds(user.companyId)
     const teamExpenses = await prisma.expense.aggregate({
       where: {
+        userId: { in: companyUserIds },
         date: {
           gte: startOfMonth,
           lte: endOfMonth,

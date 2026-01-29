@@ -80,10 +80,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check if there's already a pending invitation for this email
+    // Check if there's already a pending invitation for this email in this company
     const existingInvitation = await prisma.invitation.findFirst({
       where: {
         email: validated.email,
+        companyId: user.companyId,
         status: 'PENDING',
         expiresAt: { gt: new Date() },
       },
@@ -103,7 +104,7 @@ export async function POST(request: NextRequest) {
     const expiresAt = new Date()
     expiresAt.setDate(expiresAt.getDate() + INVITATION_EXPIRY_DAYS)
 
-    // Create invitation
+    // Create invitation with the inviter's companyId
     const invitation = await prisma.invitation.create({
       data: {
         email: validated.email,
@@ -111,6 +112,7 @@ export async function POST(request: NextRequest) {
         message: validated.message,
         expiresAt,
         invitedById: user.id,
+        companyId: user.companyId,
       },
       select: {
         id: true,

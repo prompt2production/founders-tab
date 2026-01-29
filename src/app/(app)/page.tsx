@@ -70,7 +70,7 @@ export default function HomePage() {
   return (
     <div className="px-4 lg:px-6 py-6 space-y-6">
       {/* Welcome Card */}
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary to-red-600 p-5">
+      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-orange-950 to-red-950 border border-orange-700/30 p-5">
         <div className="flex justify-between items-start">
           <div>
             <p className="text-sm text-white/80">Welcome back,</p>

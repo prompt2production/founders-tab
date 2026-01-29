@@ -22,6 +22,11 @@ vi.mock('@/lib/auth', () => ({
   getCurrentUser: vi.fn(),
 }))
 
+// Mock company utilities
+vi.mock('@/lib/company', () => ({
+  isExpenseInCompany: vi.fn().mockResolvedValue(true),
+}))
+
 import { POST } from '@/app/api/expenses/[id]/approve/route'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
@@ -33,6 +38,7 @@ const createMockCurrentUser = (overrides = {}) => ({
   email: 'test@example.com',
   avatarInitials: 'TU',
   role: 'FOUNDER' as const,
+  companyId: 'company-1',
   createdAt: new Date(),
   updatedAt: new Date(),
   ...overrides,

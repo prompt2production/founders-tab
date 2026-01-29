@@ -9,6 +9,10 @@ import { clearData } from './commands/clear-data.js'
 import { deleteUserCommand } from './commands/delete-user.js'
 import { seedUsersCommand } from './commands/seed-users.js'
 import { seedExpensesCommand } from './commands/seed-expenses.js'
+import { seedDemoCommand } from './commands/seed-demo.js'
+import { resetExpensesCommand } from './commands/reset-expenses.js'
+import { listPrimaryUsersCommand } from './commands/list-primary-users.js'
+import { migrateMultiTenantCommand } from './commands/migrate-multi-tenant.js'
 
 async function main(): Promise<void> {
   let prisma: PrismaClient | null = null
@@ -36,6 +40,22 @@ async function main(): Promise<void> {
 
         case 'delete-user':
           await deleteUserCommand(prisma, environment)
+          break
+
+        case 'reset-expenses':
+          await resetExpensesCommand(prisma, environment)
+          break
+
+        case 'list-primary-users':
+          await listPrimaryUsersCommand(prisma, environment)
+          break
+
+        case 'migrate-multi-tenant':
+          await migrateMultiTenantCommand(prisma, environment)
+          break
+
+        case 'seed-demo':
+          await seedDemoCommand(prisma, environment)
           break
 
         case 'seed-users':

@@ -13,8 +13,11 @@ export async function GET() {
       )
     }
 
-    // Get all team members (excluding passwordHash)
+    // Get all team members in the same company (excluding passwordHash)
     const members = await prisma.user.findMany({
+      where: {
+        companyId: user.companyId,
+      },
       select: {
         id: true,
         name: true,

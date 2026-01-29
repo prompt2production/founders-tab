@@ -5,23 +5,29 @@ import { formatCurrency } from '@/lib/format-currency'
 
 interface BalanceSummaryProps {
   teamTotal: number
+  pendingTotal: number
   memberCount: number
 }
 
-export function BalanceSummary({ teamTotal, memberCount }: BalanceSummaryProps) {
+export function BalanceSummary({ teamTotal, pendingTotal, memberCount }: BalanceSummaryProps) {
   const { currencySymbol, currency } = useCompanySettings()
   const formattedTotal = formatCurrency(teamTotal, currencySymbol, currency)
   const average = memberCount > 0 ? teamTotal / memberCount : 0
   const formattedAverage = formatCurrency(average, currencySymbol, currency)
 
   return (
-    <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary to-red-600 p-5">
+    <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-orange-500/20 p-5">
       <div className="flex justify-between items-start">
         <div>
           <p className="text-sm text-white/80">Total Team Expenses</p>
           <p className="text-3xl font-bold text-white tabular-nums mt-1">
             {formattedTotal}
           </p>
+          {pendingTotal > 0 && (
+            <p className="text-sm text-white/50 tabular-nums mt-0.5">
+              +{formatCurrency(pendingTotal, currencySymbol, currency)} pending approval
+            </p>
+          )}
         </div>
         <div className="h-8 w-12 bg-white/20 rounded-md" />
       </div>

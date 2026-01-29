@@ -43,6 +43,7 @@ export async function validateSession(token: string) {
           name: true,
           avatarInitials: true,
           role: true,
+          companyId: true,
           createdAt: true,
           updatedAt: true,
         },

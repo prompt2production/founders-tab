@@ -5,6 +5,7 @@ import { createExpenseSchema, listExpensesQuerySchema } from '@/lib/validations/
 import { z } from 'zod'
 import { Prisma, Category, ExpenseStatus, Role } from '@prisma/client'
 import { sendExpenseAwaitingApprovalEmail } from '@/lib/email'
+import { getCompanyUserIds, getFoundersCount } from '@/lib/company'
 
 export async function GET(request: NextRequest) {
   try {
@@ -26,12 +27,30 @@ export async function GET(request: NextRequest) {
       endDate: searchParams.get('endDate') || undefined,
     })
 
+    // Get all user IDs in the same company for filtering
+    const companyUserIds = await getCompanyUserIds(user.companyId)
+
     // Build where clause
-    // If userId is provided, filter by that user; otherwise show all users (team view)
-    const where: Prisma.ExpenseWhereInput = {}
+    // Always filter to users in the same company
+    // If userId is provided, filter by that user (if in company); otherwise show all company users
+    const where: Prisma.ExpenseWhereInput = {
+      userId: { in: companyUserIds },
+    }
 
     if (query.userId) {
-      where.userId = query.userId
+      // Only allow filtering by users in the same company
+      if (companyUserIds.includes(query.userId)) {
+        where.userId = query.userId
+      } else {
+        // User not in company, return empty result
+        return NextResponse.json({
+          expenses: [],
+          total: 0,
+          page: query.page,
+          limit: query.limit,
+          totalPages: 0,
+        })
+      }
     }
 
     if (query.category) {
@@ -52,7 +71,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Get total count, expenses with user and approval info, and founders count
+    // Get total count, expenses with user and approval info, and founders count in same company
     const [total, expenses, foundersCount] = await Promise.all([
       prisma.expense.count({ where }),
       prisma.expense.findMany({
@@ -95,7 +114,7 @@ export async function GET(request: NextRequest) {
           },
         },
       }),
-      prisma.user.count({ where: { role: Role.FOUNDER } }),
+      getFoundersCount(user.companyId),
     ])
 
     // Enrich expenses with approval info
@@ -159,9 +178,10 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const validated = createExpenseSchema.parse(body)
 
-    // Check if there are other founders who need to approve
+    // Check if there are other founders in the same company who need to approve
     const otherFoundersCount = await prisma.user.count({
       where: {
+        companyId: user.companyId,
         role: Role.FOUNDER,
         id: { not: user.id },
       },
@@ -186,11 +206,12 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    // Fire-and-forget: send email notifications to other founders
+    // Fire-and-forget: send email notifications to other founders in the same company
     if (initialStatus === ExpenseStatus.PENDING_APPROVAL) {
       prisma.user
         .findMany({
           where: {
+            companyId: user.companyId,
             role: Role.FOUNDER,
             id: { not: user.id },
           },

@@ -5,15 +5,6 @@ import { updateCompanySettingsSchema } from '@/lib/validations/company-settings'
 import { Role } from '@prisma/client'
 import { z } from 'zod'
 
-async function getOrCreateSettings() {
-  const existing = await prisma.companySettings.findFirst()
-  if (existing) return existing
-
-  return prisma.companySettings.create({
-    data: { name: '', currency: 'USD' },
-  })
-}
-
 export async function GET() {
   try {
     const user = await getCurrentUser()
@@ -21,8 +12,23 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const settings = await getOrCreateSettings()
-    return NextResponse.json(settings)
+    // Get the user's company settings
+    const company = await prisma.company.findUnique({
+      where: { id: user.companyId },
+      select: {
+        id: true,
+        name: true,
+        currency: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    })
+
+    if (!company) {
+      return NextResponse.json({ error: 'Company not found' }, { status: 404 })
+    }
+
+    return NextResponse.json(company)
   } catch (error) {
     console.error('Error fetching company settings:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -46,11 +52,17 @@ export async function PATCH(request: NextRequest) {
     const body = await request.json()
     const validated = updateCompanySettingsSchema.parse(body)
 
-    const existing = await getOrCreateSettings()
-
-    const updated = await prisma.companySettings.update({
-      where: { id: existing.id },
+    // Update the user's company directly
+    const updated = await prisma.company.update({
+      where: { id: user.companyId },
       data: validated,
+      select: {
+        id: true,
+        name: true,
+        currency: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     })
 
     return NextResponse.json(updated)

@@ -7,6 +7,7 @@ export type CurrentUser = {
   name: string
   avatarInitials: string | null
   role: 'FOUNDER' | 'MEMBER'
+  companyId: string
   createdAt: Date
   updatedAt: Date
 }

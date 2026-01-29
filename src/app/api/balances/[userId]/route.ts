@@ -12,6 +12,9 @@ const STATUS_PRESETS: Record<string, ExpenseStatus[]> = {
   all: [ExpenseStatus.PENDING_APPROVAL, ExpenseStatus.APPROVED, ExpenseStatus.WITHDRAWAL_REQUESTED, ExpenseStatus.WITHDRAWAL_APPROVED, ExpenseStatus.RECEIVED],
 }
 
+// Filters that already include PENDING_APPROVAL — no need to show pending subtext
+const FILTERS_INCLUDING_PENDING = new Set(['pending', 'active', 'all'])
+
 interface RouteParams {
   params: Promise<{ userId: string }>
 }
@@ -31,19 +34,28 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const filter = searchParams.get('filter') || 'owed'
     const statuses = STATUS_PRESETS[filter] || STATUS_PRESETS.owed
 
+    // Determine whether we need to separately fetch pending expenses
+    const filterIncludesPending = FILTERS_INCLUDING_PENDING.has(filter)
+    const queryStatuses = filterIncludesPending
+      ? statuses
+      : [...new Set([...statuses, ExpenseStatus.PENDING_APPROVAL])]
+
     // Get user with expenses for selected statuses
+    // Only allow viewing users in the same company
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
         id: true,
         name: true,
         email: true,
+        companyId: true,
         expenses: {
           where: {
-            status: { in: statuses },
+            status: { in: queryStatuses },
           },
           select: {
             amount: true,
+            status: true,
             category: true,
             date: true,
           },
@@ -55,15 +67,33 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    // Calculate total and expense count
-    const total = user.expenses.reduce((sum, expense) => {
+    // Verify user is in the same company
+    if (user.companyId !== currentUser.companyId) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+
+    // Split expenses into main (matching filter) and pending
+    const mainExpenses = filterIncludesPending
+      ? user.expenses
+      : user.expenses.filter((e) => e.status !== ExpenseStatus.PENDING_APPROVAL)
+    const pendingExpenses = filterIncludesPending
+      ? []
+      : user.expenses.filter((e) => e.status === ExpenseStatus.PENDING_APPROVAL)
+
+    // Calculate total and expense count (main filter only)
+    const total = mainExpenses.reduce((sum, expense) => {
       return sum + (expense.amount?.toNumber() || 0)
     }, 0)
-    const expenseCount = user.expenses.length
+    const expenseCount = mainExpenses.length
 
-    // Calculate breakdown by category
+    // Calculate pending total
+    const pendingTotal = pendingExpenses.reduce((sum, expense) => {
+      return sum + (expense.amount?.toNumber() || 0)
+    }, 0)
+
+    // Calculate breakdown by category (main filter only)
     const categoryMap = new Map<string, { total: number; count: number }>()
-    user.expenses.forEach((expense) => {
+    mainExpenses.forEach((expense) => {
       const category = expense.category
       const amount = expense.amount?.toNumber() || 0
       const existing = categoryMap.get(category) || { total: 0, count: 0 }
@@ -81,7 +111,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       }))
       .sort((a, b) => b.total - a.total)
 
-    // Calculate breakdown by month (last 12 months)
+    // Calculate breakdown by month (last 12 months, main filter only)
     const monthMap = new Map<string, number>()
 
     // Initialize last 12 months with 0
@@ -93,7 +123,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     // Populate with actual expense data
-    user.expenses.forEach((expense) => {
+    mainExpenses.forEach((expense) => {
       const date = new Date(expense.date)
       const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
       if (monthMap.has(monthKey)) {
@@ -116,6 +146,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         email: user.email,
       },
       total,
+      pendingTotal,
       expenseCount,
       byCategory,
       byMonth,

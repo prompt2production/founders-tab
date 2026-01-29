@@ -4,9 +4,8 @@ import { NextRequest } from 'next/server'
 // Mock prisma
 vi.mock('@/lib/prisma', () => ({
   prisma: {
-    companySettings: {
-      findFirst: vi.fn(),
-      create: vi.fn(),
+    company: {
+      findUnique: vi.fn(),
       update: vi.fn(),
     },
   },
@@ -27,13 +26,14 @@ const createMockUser = (overrides = {}) => ({
   email: 'founder@example.com',
   avatarInitials: 'TF',
   role: 'FOUNDER' as const,
+  companyId: 'company-1',
   createdAt: new Date(),
   updatedAt: new Date(),
   ...overrides,
 })
 
-const createMockSettings = (overrides = {}) => ({
-  id: 'settings-1',
+const createMockCompany = (overrides = {}) => ({
+  id: 'company-1',
   name: 'Acme Corp',
   currency: 'USD',
   createdAt: new Date('2025-01-01'),
@@ -56,12 +56,12 @@ describe('GET /api/company-settings', () => {
     expect(data.error).toBe('Unauthorized')
   })
 
-  it('returns existing settings for authenticated user', async () => {
+  it('returns company settings for authenticated user', async () => {
     const mockUser = createMockUser()
     vi.mocked(getCurrentUser).mockResolvedValue(mockUser)
 
-    const mockSettings = createMockSettings()
-    vi.mocked(prisma.companySettings.findFirst).mockResolvedValue(mockSettings as never)
+    const mockCompany = createMockCompany()
+    vi.mocked(prisma.company.findUnique).mockResolvedValue(mockCompany as never)
 
     const response = await GET()
     const data = await response.json()
@@ -69,33 +69,36 @@ describe('GET /api/company-settings', () => {
     expect(response.status).toBe(200)
     expect(data.name).toBe('Acme Corp')
     expect(data.currency).toBe('USD')
+    expect(prisma.company.findUnique).toHaveBeenCalledWith({
+      where: { id: 'company-1' },
+      select: {
+        id: true,
+        name: true,
+        currency: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    })
   })
 
-  it('creates default settings if none exist', async () => {
+  it('returns 404 when company not found', async () => {
     const mockUser = createMockUser()
     vi.mocked(getCurrentUser).mockResolvedValue(mockUser)
-
-    vi.mocked(prisma.companySettings.findFirst).mockResolvedValue(null)
-
-    const defaultSettings = createMockSettings({ name: '', currency: 'USD' })
-    vi.mocked(prisma.companySettings.create).mockResolvedValue(defaultSettings as never)
+    vi.mocked(prisma.company.findUnique).mockResolvedValue(null)
 
     const response = await GET()
     const data = await response.json()
 
-    expect(response.status).toBe(200)
-    expect(prisma.companySettings.create).toHaveBeenCalledWith({
-      data: { name: '', currency: 'USD' },
-    })
-    expect(data.currency).toBe('USD')
+    expect(response.status).toBe(404)
+    expect(data.error).toBe('Company not found')
   })
 
   it('allows MEMBER role to access settings', async () => {
     const mockUser = createMockUser({ role: 'MEMBER' as const })
     vi.mocked(getCurrentUser).mockResolvedValue(mockUser)
 
-    const mockSettings = createMockSettings()
-    vi.mocked(prisma.companySettings.findFirst).mockResolvedValue(mockSettings as never)
+    const mockCompany = createMockCompany()
+    vi.mocked(prisma.company.findUnique).mockResolvedValue(mockCompany as never)
 
     const response = await GET()
 
@@ -163,15 +166,12 @@ describe('PATCH /api/company-settings', () => {
     expect(response.status).toBe(400)
   })
 
-  it('updates settings when called by FOUNDER with valid data', async () => {
+  it('updates company settings when called by FOUNDER with valid data', async () => {
     const mockUser = createMockUser()
     vi.mocked(getCurrentUser).mockResolvedValue(mockUser)
 
-    const existingSettings = createMockSettings()
-    vi.mocked(prisma.companySettings.findFirst).mockResolvedValue(existingSettings as never)
-
-    const updatedSettings = createMockSettings({ name: 'New Corp', currency: 'GBP' })
-    vi.mocked(prisma.companySettings.update).mockResolvedValue(updatedSettings as never)
+    const updatedCompany = createMockCompany({ name: 'New Corp', currency: 'GBP' })
+    vi.mocked(prisma.company.update).mockResolvedValue(updatedCompany as never)
 
     const request = new NextRequest('http://localhost/api/company-settings', {
       method: 'PATCH',
@@ -183,9 +183,16 @@ describe('PATCH /api/company-settings', () => {
     expect(response.status).toBe(200)
     expect(data.name).toBe('New Corp')
     expect(data.currency).toBe('GBP')
-    expect(prisma.companySettings.update).toHaveBeenCalledWith({
-      where: { id: 'settings-1' },
+    expect(prisma.company.update).toHaveBeenCalledWith({
+      where: { id: 'company-1' },
       data: { name: 'New Corp', currency: 'GBP' },
+      select: {
+        id: true,
+        name: true,
+        currency: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     })
   })
 
@@ -193,11 +200,8 @@ describe('PATCH /api/company-settings', () => {
     const mockUser = createMockUser()
     vi.mocked(getCurrentUser).mockResolvedValue(mockUser)
 
-    const existingSettings = createMockSettings()
-    vi.mocked(prisma.companySettings.findFirst).mockResolvedValue(existingSettings as never)
-
-    const updatedSettings = createMockSettings({ name: 'Updated Name' })
-    vi.mocked(prisma.companySettings.update).mockResolvedValue(updatedSettings as never)
+    const updatedCompany = createMockCompany({ name: 'Updated Name' })
+    vi.mocked(prisma.company.update).mockResolvedValue(updatedCompany as never)
 
     const request = new NextRequest('http://localhost/api/company-settings', {
       method: 'PATCH',
@@ -206,9 +210,16 @@ describe('PATCH /api/company-settings', () => {
     const response = await PATCH(request)
 
     expect(response.status).toBe(200)
-    expect(prisma.companySettings.update).toHaveBeenCalledWith({
-      where: { id: 'settings-1' },
+    expect(prisma.company.update).toHaveBeenCalledWith({
+      where: { id: 'company-1' },
       data: { name: 'Updated Name' },
+      select: {
+        id: true,
+        name: true,
+        currency: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     })
   })
 
@@ -216,11 +227,8 @@ describe('PATCH /api/company-settings', () => {
     const mockUser = createMockUser()
     vi.mocked(getCurrentUser).mockResolvedValue(mockUser)
 
-    const existingSettings = createMockSettings()
-    vi.mocked(prisma.companySettings.findFirst).mockResolvedValue(existingSettings as never)
-
-    const updatedSettings = createMockSettings({ currency: 'EUR' })
-    vi.mocked(prisma.companySettings.update).mockResolvedValue(updatedSettings as never)
+    const updatedCompany = createMockCompany({ currency: 'EUR' })
+    vi.mocked(prisma.company.update).mockResolvedValue(updatedCompany as never)
 
     const request = new NextRequest('http://localhost/api/company-settings', {
       method: 'PATCH',
@@ -229,9 +237,16 @@ describe('PATCH /api/company-settings', () => {
     const response = await PATCH(request)
 
     expect(response.status).toBe(200)
-    expect(prisma.companySettings.update).toHaveBeenCalledWith({
-      where: { id: 'settings-1' },
+    expect(prisma.company.update).toHaveBeenCalledWith({
+      where: { id: 'company-1' },
       data: { currency: 'EUR' },
+      select: {
+        id: true,
+        name: true,
+        currency: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     })
   })
 })

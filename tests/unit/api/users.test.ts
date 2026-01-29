@@ -26,6 +26,7 @@ const createMockCurrentUser = (overrides = {}) => ({
   email: 'test@example.com',
   avatarInitials: 'TU',
   role: 'FOUNDER' as const,
+  companyId: 'company-1',
   createdAt: new Date(),
   updatedAt: new Date(),
   ...overrides,
@@ -75,7 +76,7 @@ describe('GET /api/users', () => {
     })
   })
 
-  it('calls prisma with correct select and orderBy', async () => {
+  it('calls prisma with correct select, where and orderBy', async () => {
     const mockUser = createMockCurrentUser()
     vi.mocked(getCurrentUser).mockResolvedValue(mockUser)
     vi.mocked(prisma.user.findMany).mockResolvedValue([] as never)
@@ -83,6 +84,9 @@ describe('GET /api/users', () => {
     await GET()
 
     expect(prisma.user.findMany).toHaveBeenCalledWith({
+      where: {
+        companyId: 'company-1',
+      },
       select: {
         id: true,
         name: true,

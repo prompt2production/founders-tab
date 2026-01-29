@@ -56,7 +56,7 @@ function BalanceCardSkeleton() {
 
 function BalanceSummarySkeleton() {
   return (
-    <div className="rounded-xl bg-gradient-to-br from-primary to-red-600 p-5 space-y-4">
+    <div className="rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-orange-500/20 p-5 space-y-4">
       <div className="flex justify-between items-start">
         <div className="space-y-2">
           <div className="h-4 w-32 bg-white/20 rounded animate-pulse" />
@@ -138,7 +138,7 @@ export default function BalancePage() {
   const { user: currentUser } = useAuthContext()
   const { currencySymbol: pageSymbol } = useCompanySettings()
   const [filter, setFilter] = useState<BalanceFilter>('owed')
-  const { teamTotal, balances, isLoading, error } = useBalances(filter)
+  const { teamTotal, pendingTotal, balances, isLoading, error } = useBalances(filter)
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
 
   return (
@@ -169,7 +169,7 @@ export default function BalancePage() {
           {isLoading ? (
             <BalanceSummarySkeleton />
           ) : (
-            <BalanceSummary teamTotal={teamTotal} memberCount={balances.length} />
+            <BalanceSummary teamTotal={teamTotal} pendingTotal={pendingTotal} memberCount={balances.length} />
           )}
 
           {/* Error state */}
@@ -193,6 +193,7 @@ export default function BalancePage() {
                   key={balance.user.id}
                   user={balance.user}
                   total={balance.total}
+                  pendingTotal={balance.pendingTotal}
                   expenseCount={balance.expenseCount}
                   percentage={balance.percentage}
                   highlight={balance.user.id === currentUser?.id}

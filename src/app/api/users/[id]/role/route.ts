@@ -39,6 +39,7 @@ export async function PATCH(
         name: true,
         email: true,
         role: true,
+        companyId: true,
       },
     })
 
@@ -46,10 +47,15 @@ export async function PATCH(
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    // If demoting to MEMBER, check if this is the last founder
+    // Verify target user is in the same company
+    if (targetUser.companyId !== currentUser.companyId) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+
+    // If demoting to MEMBER, check if this is the last founder in the company
     if (targetUser.role === Role.FOUNDER && validated.role === 'MEMBER') {
       const founderCount = await prisma.user.count({
-        where: { role: Role.FOUNDER },
+        where: { companyId: currentUser.companyId, role: Role.FOUNDER },
       })
 
       if (founderCount <= 1) {

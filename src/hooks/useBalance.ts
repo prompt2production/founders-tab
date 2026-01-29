@@ -23,6 +23,7 @@ export interface MonthlyBreakdown {
 interface UseBalanceResult {
   user: BalanceUser | null
   total: number
+  pendingTotal: number
   expenseCount: number
   byCategory: CategoryBreakdown[]
   byMonth: MonthlyBreakdown[]
@@ -34,6 +35,7 @@ interface UseBalanceResult {
 export function useBalance(userId: string | null, filter: BalanceFilter = 'owed'): UseBalanceResult {
   const [user, setUser] = useState<BalanceUser | null>(null)
   const [total, setTotal] = useState(0)
+  const [pendingTotal, setPendingTotal] = useState(0)
   const [expenseCount, setExpenseCount] = useState(0)
   const [byCategory, setByCategory] = useState<CategoryBreakdown[]>([])
   const [byMonth, setByMonth] = useState<MonthlyBreakdown[]>([])
@@ -44,6 +46,7 @@ export function useBalance(userId: string | null, filter: BalanceFilter = 'owed'
     if (!userId) {
       setUser(null)
       setTotal(0)
+      setPendingTotal(0)
       setExpenseCount(0)
       setByCategory([])
       setByMonth([])
@@ -64,6 +67,7 @@ export function useBalance(userId: string | null, filter: BalanceFilter = 'owed'
       const data = await response.json()
       setUser(data.user)
       setTotal(data.total)
+      setPendingTotal(data.pendingTotal)
       setExpenseCount(data.expenseCount)
       setByCategory(data.byCategory)
       setByMonth(data.byMonth)
@@ -81,6 +85,7 @@ export function useBalance(userId: string | null, filter: BalanceFilter = 'owed'
   return {
     user,
     total,
+    pendingTotal,
     expenseCount,
     byCategory,
     byMonth,

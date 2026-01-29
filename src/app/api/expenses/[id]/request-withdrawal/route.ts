@@ -49,9 +49,10 @@ export async function POST(
       )
     }
 
-    // Get all founders except the expense owner
+    // Get all founders in the same company except the expense owner
     const foundersExceptOwner = await prisma.user.findMany({
       where: {
+        companyId: user.companyId,
         role: Role.FOUNDER,
         id: { not: expense.userId },
       },

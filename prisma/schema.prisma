@@ -42,10 +42,12 @@ model User {
   passwordHash   String
   avatarInitials String?
   role           Role      @default(MEMBER)
+  companyId      String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
   // Relations
+  company             Company?             @relation(fields: [companyId], references: [id])
   sessions            Session[]
   invitationsSent     Invitation[]         @relation("InvitedBy")
   invitation          Invitation?          @relation("InvitedUser")
@@ -77,12 +79,14 @@ model Invitation {
   token      String           @unique
   message    String?
   status     InvitationStatus @default(PENDING)
+  companyId  String?
   expiresAt  DateTime
   createdAt  DateTime         @default(now())
   acceptedAt DateTime?
 
+  company      Company? @relation(fields: [companyId], references: [id])
   invitedById  String
-  invitedBy    User    @relation("InvitedBy", fields: [invitedById], references: [id])
+  invitedBy    User     @relation("InvitedBy", fields: [invitedById], references: [id])
 
   acceptedById String? @unique
   acceptedBy   User?   @relation("InvitedUser", fields: [acceptedById], references: [id])
@@ -179,9 +183,21 @@ model WithdrawalApproval {
 }
 
 // ===========================================
-// Company Settings
+// Company (Multi-tenancy)
 // ===========================================
 
+model Company {
+  id        String   @id @default(cuid())
+  name      String   @default("")
+  currency  String   @default("USD")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users       User[]
+  invitations Invitation[]
+}
+
+// CompanySettings - DEPRECATED, to be removed after migration
 model CompanySettings {
   id        String   @id @default(cuid())
   name      String   @default("")

@@ -16,6 +16,11 @@ vi.mock('@/lib/auth', () => ({
   getCurrentUser: vi.fn(),
 }))
 
+// Mock company utilities
+vi.mock('@/lib/company', () => ({
+  getCompanyUserIds: vi.fn().mockResolvedValue(['user-1', 'user-2']),
+}))
+
 import { GET as getBalances } from '@/app/api/balances/route'
 import { GET as getUserBalance } from '@/app/api/balances/[userId]/route'
 import { prisma } from '@/lib/prisma'
@@ -33,6 +38,7 @@ const createMockCurrentUser = (overrides = {}) => ({
   email: 'test@example.com',
   avatarInitials: 'TU',
   role: 'FOUNDER' as const,
+  companyId: 'company-1',
   createdAt: new Date(),
   updatedAt: new Date(),
   ...overrides,
@@ -206,6 +212,7 @@ describe('GET /api/balances/[userId]', () => {
       id: 'user-1',
       name: 'Alice',
       email: 'alice@example.com',
+      companyId: 'company-1',
       expenses: [
         { amount: createDecimal(100), category: 'TRAVEL', date: new Date('2026-01-10') },
         { amount: createDecimal(50), category: 'TRAVEL', date: new Date('2026-01-05') },
@@ -259,6 +266,7 @@ describe('GET /api/balances/[userId]', () => {
       id: 'user-1',
       name: 'Alice',
       email: 'alice@example.com',
+      companyId: 'company-1',
       expenses: [
         { amount: createDecimal(100), category: 'TRAVEL', date: new Date() },
         { amount: createDecimal(50), category: 'TRAVEL', date: new Date() },

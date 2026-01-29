@@ -48,9 +48,29 @@ export async function clearData(prisma: PrismaClient, environment: Environment):
     const expenses = await prisma.expense.deleteMany()
     console.log(`    ✓ Deleted ${expenses.count} expenses`)
 
+    console.log('  Deleting sessions...')
+    const sessions = await prisma.session.deleteMany()
+    console.log(`    ✓ Deleted ${sessions.count} sessions`)
+
+    console.log('  Deleting password resets...')
+    const passwordResets = await prisma.passwordReset.deleteMany()
+    console.log(`    ✓ Deleted ${passwordResets.count} password resets`)
+
+    console.log('  Deleting invitations...')
+    const invitations = await prisma.invitation.deleteMany()
+    console.log(`    ✓ Deleted ${invitations.count} invitations`)
+
     console.log('  Deleting users...')
     const users = await prisma.user.deleteMany()
     console.log(`    ✓ Deleted ${users.count} users`)
+
+    console.log('  Deleting company settings...')
+    const companySettings = await prisma.companySettings.deleteMany()
+    console.log(`    ✓ Deleted ${companySettings.count} company settings`)
+
+    console.log('  Deleting items...')
+    const items = await prisma.item.deleteMany()
+    console.log(`    ✓ Deleted ${items.count} items`)
 
     console.log()
     console.log('✓ All data has been cleared successfully!')
