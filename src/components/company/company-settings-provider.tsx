@@ -14,6 +14,7 @@ interface CompanySettingsContextType {
   companyName: string
   currency: SupportedCurrency
   currencySymbol: string
+  nudgeCooldownHours: number
   isLoading: boolean
   refetch: () => Promise<void>
 }
@@ -27,6 +28,7 @@ function getSymbol(currency: SupportedCurrency): string {
 export function CompanySettingsProvider({ children }: { children: ReactNode }) {
   const [companyName, setCompanyName] = useState('')
   const [currency, setCurrency] = useState<SupportedCurrency>('USD')
+  const [nudgeCooldownHours, setNudgeCooldownHours] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
 
   const refetch = useCallback(async () => {
@@ -36,6 +38,7 @@ export function CompanySettingsProvider({ children }: { children: ReactNode }) {
         const data = await response.json()
         setCompanyName(data.name ?? '')
         setCurrency(data.currency ?? 'USD')
+        setNudgeCooldownHours(data.nudgeCooldownHours ?? 0)
       }
     } catch {
       // keep defaults
@@ -52,6 +55,7 @@ export function CompanySettingsProvider({ children }: { children: ReactNode }) {
     companyName,
     currency,
     currencySymbol: getSymbol(currency),
+    nudgeCooldownHours,
     isLoading,
     refetch,
   }

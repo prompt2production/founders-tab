@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Activity, ChevronRight, Receipt } from 'lucide-react'
 import { ExpenseListItem } from '@/components/expenses/expense-list-item'
+import { useAuth } from '@/hooks/useAuth'
 import type { RecentActivity as RecentActivityType } from '@/hooks/useDashboard'
 
 interface RecentActivityProps {
@@ -15,6 +16,8 @@ interface RecentActivityProps {
 }
 
 export function RecentActivity({ expenses, isLoading, onExpenseClick }: RecentActivityProps) {
+  const { user } = useAuth()
+
   if (isLoading) {
     return (
       <Card className="bg-card border-border rounded-xl">
@@ -75,6 +78,7 @@ export function RecentActivity({ expenses, isLoading, onExpenseClick }: RecentAc
               <ExpenseListItem
                 key={expense.id}
                 expense={expense}
+                currentUserId={user?.id}
                 onClick={() => onExpenseClick(expense)}
                 showUser
               />

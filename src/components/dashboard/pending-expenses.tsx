@@ -1,11 +1,14 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Clock, ChevronRight, CheckCircle } from 'lucide-react'
 import { ExpenseListItem } from '@/components/expenses/expense-list-item'
+import { NudgeConfirmationDialog } from '@/components/expenses/nudge-confirmation-dialog'
+import { useAuth } from '@/hooks/useAuth'
 import type { UserPendingExpense } from '@/hooks/useDashboard'
 
 interface PendingExpensesProps {
@@ -14,7 +17,59 @@ interface PendingExpensesProps {
   onExpenseClick: (expense: UserPendingExpense) => void
 }
 
+interface PendingApprover {
+  id: string
+  name: string
+}
+
+interface NudgeableExpense {
+  id: string
+  description: string
+  amount: number | string
+  date: Date | string
+  category: string
+  status: 'PENDING_APPROVAL' | 'WITHDRAWAL_REQUESTED'
+  lastNudgeAt?: string | null
+  pendingApprovers?: PendingApprover[]
+}
+
 export function PendingExpenses({ expenses, isLoading, onExpenseClick }: PendingExpensesProps) {
+  const { user } = useAuth()
+  const [nudgeDialogOpen, setNudgeDialogOpen] = useState(false)
+  const [nudgeExpense, setNudgeExpense] = useState<NudgeableExpense | null>(null)
+
+  // Get all nudgeable expenses (pending approval or withdrawal requested)
+  const nudgeableExpenses: NudgeableExpense[] = expenses
+    .filter((e) => e.status === 'PENDING_APPROVAL' || e.status === 'WITHDRAWAL_REQUESTED')
+    .map((e) => ({
+      id: e.id,
+      description: e.description,
+      amount: e.amount,
+      date: e.date,
+      category: e.category,
+      status: e.status as 'PENDING_APPROVAL' | 'WITHDRAWAL_REQUESTED',
+      lastNudgeAt: e.lastNudgeAt,
+      pendingApprovers: e.pendingApprovers,
+    }))
+
+  function handleNudgeClick(expense: { id: string; description: string; amount: number | string; date: Date | string; category: string; status?: string; lastNudgeAt?: string | null }) {
+    if (expense.status === 'PENDING_APPROVAL' || expense.status === 'WITHDRAWAL_REQUESTED') {
+      // Find the full expense data to get pendingApprovers
+      const fullExpense = expenses.find((e) => e.id === expense.id)
+      setNudgeExpense({
+        id: expense.id,
+        description: expense.description,
+        amount: expense.amount,
+        date: expense.date,
+        category: expense.category,
+        status: expense.status,
+        lastNudgeAt: expense.lastNudgeAt,
+        pendingApprovers: fullExpense?.pendingApprovers,
+      })
+      setNudgeDialogOpen(true)
+    }
+  }
+
   if (isLoading) {
     return (
       <Card className="bg-card border-border rounded-xl">
@@ -77,12 +132,24 @@ export function PendingExpenses({ expenses, isLoading, onExpenseClick }: Pending
               <ExpenseListItem
                 key={expense.id}
                 expense={expense}
+                currentUserId={user?.id}
                 onClick={() => onExpenseClick(expense)}
+                onNudgeClick={handleNudgeClick}
               />
             ))}
           </div>
         )}
       </CardContent>
+
+      {/* Nudge Confirmation Dialog */}
+      {nudgeExpense && (
+        <NudgeConfirmationDialog
+          open={nudgeDialogOpen}
+          onOpenChange={setNudgeDialogOpen}
+          triggerExpense={nudgeExpense}
+          allNudgeableExpenses={nudgeableExpenses}
+        />
+      )}
     </Card>
   )
 }

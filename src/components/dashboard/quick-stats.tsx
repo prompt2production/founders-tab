@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { DollarSign, TrendingUp, Clock, AlertCircle } from 'lucide-react'
@@ -11,9 +12,11 @@ interface QuickStatsProps {
   stats: DashboardStats | null
   isLoading: boolean
   userRole: 'FOUNDER' | 'MEMBER'
+  currentUserId?: string
 }
 
-export function QuickStats({ stats, isLoading, userRole }: QuickStatsProps) {
+export function QuickStats({ stats, isLoading, userRole, currentUserId }: QuickStatsProps) {
+  const router = useRouter()
   const { currencySymbol, currency } = useCompanySettings()
 
   const cards = [
@@ -23,6 +26,7 @@ export function QuickStats({ stats, isLoading, userRole }: QuickStatsProps) {
       value: stats?.userTotal || 0,
       isCurrency: true,
       subtitle: 'This month',
+      href: currentUserId ? `/expenses?userId=${currentUserId}` : '/expenses',
     },
     {
       title: 'Team Total',
@@ -30,6 +34,7 @@ export function QuickStats({ stats, isLoading, userRole }: QuickStatsProps) {
       value: stats?.teamTotal || 0,
       isCurrency: true,
       subtitle: 'This month',
+      href: '/expenses',
     },
     ...(userRole === 'FOUNDER'
       ? [
@@ -40,6 +45,7 @@ export function QuickStats({ stats, isLoading, userRole }: QuickStatsProps) {
             isCurrency: false,
             subtitle: 'Awaiting your approval',
             highlight: (stats?.pendingApprovalCount || 0) > 0,
+            href: '/expenses?status=NEEDS_ACTION',
           },
         ]
       : []),
@@ -49,15 +55,20 @@ export function QuickStats({ stats, isLoading, userRole }: QuickStatsProps) {
       value: stats?.userPendingCount || 0,
       isCurrency: false,
       subtitle: 'Awaiting approval',
+      href: currentUserId ? `/expenses?status=PENDING_APPROVAL&userId=${currentUserId}` : '/expenses?status=PENDING_APPROVAL',
     },
   ]
 
   return (
     <div className={`grid gap-4 ${userRole === 'FOUNDER' ? 'grid-cols-2 lg:grid-cols-4' : 'grid-cols-2 lg:grid-cols-3'}`}>
-      {cards.map(({ title, icon: Icon, value, isCurrency, subtitle, highlight }) => (
+      {cards.map(({ title, icon: Icon, value, isCurrency, subtitle, highlight, href }) => (
         <Card
           key={title}
-          className={`bg-card border-border rounded-xl ${highlight ? 'border-primary/50 bg-primary/5' : ''}`}
+          className={`bg-card border-border rounded-xl cursor-pointer transition-colors hover:bg-muted/50 ${highlight ? 'border-primary/50 bg-primary/5 hover:bg-primary/10' : ''}`}
+          onClick={() => router.push(href)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === 'Enter' && router.push(href)}
         >
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">

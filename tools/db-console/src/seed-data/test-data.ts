@@ -49,21 +49,21 @@ const PASSWORD_HASH = '$2b$12$SH5/jM0kXLAAz6tpHxn3g.PnIm0YCCXyQO.Zz09LwL2.QvEZsP
 // The three seed users for development
 export const seedUsers: SeedUser[] = [
   {
-    email: 'chris@founderstab.com',
+    email: 'chrisroweonline+ftchris@gmail.com',
     name: 'Chris',
     passwordHash: PASSWORD_HASH,
     avatarInitials: 'C',
     role: Role.FOUNDER,
   },
   {
-    email: 'candice@founderstab.com',
+    email: 'chrisroweonline+ftcandice@gmail.com',
     name: 'Candice',
     passwordHash: PASSWORD_HASH,
     avatarInitials: 'C',
     role: Role.FOUNDER,
   },
   {
-    email: 'adrian@founderstab.com',
+    email: 'chrisroweonline+ftadrian@gmail.com',
     name: 'Adrian',
     passwordHash: PASSWORD_HASH,
     avatarInitials: 'A',
@@ -74,35 +74,35 @@ export const seedUsers: SeedUser[] = [
 // Extended demo user pool (for when more founders are requested)
 export const demoUserPool: SeedUser[] = [
   {
-    email: 'chris@founderstab.com',
+    email: 'chrisroweonline+ftchris@gmail.com',
     name: 'Chris',
     passwordHash: PASSWORD_HASH,
     avatarInitials: 'CH',
     role: Role.FOUNDER,
   },
   {
-    email: 'candice@founderstab.com',
+    email: 'chrisroweonline+ftcandice@gmail.com',
     name: 'Candice',
     passwordHash: PASSWORD_HASH,
     avatarInitials: 'CA',
     role: Role.FOUNDER,
   },
   {
-    email: 'adrian@founderstab.com',
+    email: 'chrisroweonline+ftadrian@gmail.com',
     name: 'Adrian',
     passwordHash: PASSWORD_HASH,
     avatarInitials: 'AD',
     role: Role.FOUNDER,
   },
   {
-    email: 'sarah@founderstab.com',
+    email: 'chrisroweonline+ftsarah@gmail.com',
     name: 'Sarah',
     passwordHash: PASSWORD_HASH,
     avatarInitials: 'SA',
     role: Role.FOUNDER,
   },
   {
-    email: 'marcus@founderstab.com',
+    email: 'chrisroweonline+ftmarcus@gmail.com',
     name: 'Marcus',
     passwordHash: PASSWORD_HASH,
     avatarInitials: 'MA',

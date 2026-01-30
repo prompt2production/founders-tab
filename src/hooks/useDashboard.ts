@@ -27,6 +27,11 @@ interface PendingApproval {
   approvalsNeeded: number
 }
 
+interface PendingApprover {
+  id: string
+  name: string
+}
+
 interface UserPendingExpense {
   id: string
   date: string
@@ -34,8 +39,12 @@ interface UserPendingExpense {
   description: string
   category: string
   status: ExpenseStatus
+  userId: string
   approvals: Approval[]
   approvalsNeeded: number
+  lastNudgeAt: string | null
+  pendingApproversCount: number
+  pendingApprovers: PendingApprover[]
 }
 
 interface RecentActivity {
@@ -44,7 +53,9 @@ interface RecentActivity {
   amount: string
   description: string
   category: string
+  userId: string
   user: ExpenseUser
+  status?: ExpenseStatus
 }
 
 interface MonthlyTrend {

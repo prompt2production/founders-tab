@@ -25,12 +25,13 @@ import {
   updateCompanySettingsSchema,
   UpdateCompanySettingsInput,
   CURRENCY_OPTIONS,
+  NUDGE_COOLDOWN_OPTIONS,
   SupportedCurrency,
 } from '@/lib/validations/company-settings'
 
 interface CompanySettingsFormProps {
   onSubmit: (data: UpdateCompanySettingsInput) => Promise<void>
-  defaultValues?: { name?: string; currency?: string }
+  defaultValues?: { name?: string; currency?: string; nudgeCooldownHours?: number }
   isReadOnly?: boolean
 }
 
@@ -46,6 +47,7 @@ export function CompanySettingsForm({
     defaultValues: {
       name: defaultValues?.name ?? '',
       currency: (defaultValues?.currency as SupportedCurrency) ?? 'USD',
+      nudgeCooldownHours: defaultValues?.nudgeCooldownHours ?? 0,
     },
   })
 
@@ -115,6 +117,39 @@ export function CompanySettingsForm({
                   ))}
                 </SelectContent>
               </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Nudge Cooldown */}
+        <FormField
+          control={form.control}
+          name="nudgeCooldownHours"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-muted-foreground">Reminder Cooldown</FormLabel>
+              <Select
+                onValueChange={(value) => field.onChange(parseInt(value, 10))}
+                defaultValue={String(field.value ?? 0)}
+                disabled={isReadOnly}
+              >
+                <FormControl>
+                  <SelectTrigger className="w-full bg-card-elevated border-border h-12">
+                    <SelectValue placeholder="Select cooldown period" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {NUDGE_COOLDOWN_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={String(option.value)}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground mt-1">
+                How long users must wait between sending reminders for pending approvals
+              </p>
               <FormMessage />
             </FormItem>
           )}

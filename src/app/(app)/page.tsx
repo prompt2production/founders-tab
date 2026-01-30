@@ -68,6 +68,7 @@ export default function HomePage() {
         stats={data?.stats || null}
         isLoading={isLoading}
         userRole={userRole}
+        currentUserId={user.id}
       />
 
       {/* Action Items (FOUNDER only) */}

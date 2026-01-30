@@ -56,6 +56,7 @@ model User {
   approvals           Approval[]
   withdrawalApprovals WithdrawalApproval[]
   rejectedExpenses    Expense[]            @relation("RejectedExpenses")
+  nudges              Nudge[]
 }
 
 enum Role {
@@ -144,6 +145,7 @@ model Expense {
   rejectedBy          User?                @relation("RejectedExpenses", fields: [rejectedById], references: [id])
   approvals           Approval[]
   withdrawalApprovals WithdrawalApproval[]
+  nudges              Nudge[]
 }
 
 model Approval {
@@ -175,11 +177,12 @@ model WithdrawalApproval {
 // ===========================================
 
 model Company {
-  id        String   @id @default(cuid())
-  name      String   @default("")
-  currency  String   @default("USD")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                 String   @id @default(cuid())
+  name               String   @default("")
+  currency           String   @default("USD")
+  nudgeCooldownHours Int      @default(0) // 0 = no cooldown, can nudge anytime
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
   users       User[]
   invitations Invitation[]
@@ -211,4 +214,26 @@ model CompanySettings {
   currency  String   @default("USD")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// ===========================================
+// Nudge Model (for approval reminders)
+// ===========================================
+
+enum NudgeType {
+  EXPENSE_APPROVAL
+  WITHDRAWAL_APPROVAL
+}
+
+model Nudge {
+  id        String    @id @default(cuid())
+  expenseId String
+  userId    String    // Who sent the nudge
+  type      NudgeType
+  createdAt DateTime  @default(now())
+
+  expense Expense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([expenseId, type])
 }

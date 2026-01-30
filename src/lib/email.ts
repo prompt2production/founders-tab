@@ -375,3 +375,121 @@ export async function sendPromotedToFounderEmail({
 
   return sendEmail({ to, subject, text, html })
 }
+
+// ============================================
+// Approval Nudge Emails
+// ============================================
+
+interface NudgeEmailParams extends ExpenseNotificationParams {
+  nudgeType: 'expense' | 'withdrawal'
+}
+
+export async function sendApprovalNudgeEmail({
+  to,
+  expense,
+  nudgeType,
+}: NudgeEmailParams): Promise<boolean> {
+  const isWithdrawal = nudgeType === 'withdrawal'
+  const subject = isWithdrawal
+    ? `Reminder: ${expense.submitterName}'s withdrawal needs your approval`
+    : `Reminder: ${expense.submitterName}'s expense needs your approval`
+
+  const expenseCard = formatExpenseDetailsHtml(expense)
+  const bodyHtml = `<p>This is a friendly reminder that <strong>${expense.submitterName}</strong>'s ${isWithdrawal ? 'withdrawal request' : 'expense'} is waiting for your approval.</p>${expenseCard}`
+
+  const { html, text } = buildNotificationEmail({
+    title: isWithdrawal ? 'Withdrawal Reminder' : 'Expense Reminder',
+    bodyHtml,
+    ctaText: 'Review Now',
+    ctaUrl: `${appUrl}/expenses`,
+  })
+
+  return sendEmail({ to, subject, text, html })
+}
+
+// ============================================
+// Bulk Approval Nudge Emails (Consolidated)
+// ============================================
+
+interface BulkExpenseItem {
+  description: string
+  amount: string
+  category: string
+  date: string
+}
+
+interface BulkNudgeEmailParams {
+  to: string
+  expenses: BulkExpenseItem[]
+  submitterName: string
+  nudgeType: 'expense' | 'withdrawal'
+}
+
+function formatBulkExpenseListHtml(expenses: BulkExpenseItem[]): string {
+  const rows = expenses.map((e) => `
+    <tr>
+      <td style="padding: 8px; color: #e5e5e5; font-size: 13px; border-bottom: 1px solid #333;">${e.description}</td>
+      <td style="padding: 8px; color: #e5e5e5; font-size: 13px; border-bottom: 1px solid #333; text-align: right; font-weight: 600;">${e.amount}</td>
+      <td style="padding: 8px; color: #a1a1aa; font-size: 13px; border-bottom: 1px solid #333;">${e.category}</td>
+      <td style="padding: 8px; color: #a1a1aa; font-size: 13px; border-bottom: 1px solid #333;">${e.date}</td>
+    </tr>
+  `).join('')
+
+  // Calculate total
+  const total = expenses.reduce((sum, e) => {
+    const numericAmount = parseFloat(e.amount.replace(/[^0-9.-]/g, ''))
+    return sum + (isNaN(numericAmount) ? 0 : numericAmount)
+  }, 0)
+
+  // Extract currency symbol from first expense
+  const currencyMatch = expenses[0]?.amount.match(/^[^0-9]+/)
+  const currencySymbol = currencyMatch ? currencyMatch[0] : '$'
+
+  return `<div style="background: #262626; padding: 16px; border-radius: 8px; margin: 20px 0; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; min-width: 400px;">
+      <thead>
+        <tr>
+          <th style="padding: 8px; color: #a1a1aa; font-size: 12px; text-align: left; border-bottom: 1px solid #444;">Description</th>
+          <th style="padding: 8px; color: #a1a1aa; font-size: 12px; text-align: right; border-bottom: 1px solid #444;">Amount</th>
+          <th style="padding: 8px; color: #a1a1aa; font-size: 12px; text-align: left; border-bottom: 1px solid #444;">Category</th>
+          <th style="padding: 8px; color: #a1a1aa; font-size: 12px; text-align: left; border-bottom: 1px solid #444;">Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td style="padding: 12px 8px; color: #e5e5e5; font-size: 14px; font-weight: 600;">Total (${expenses.length} expenses)</td>
+          <td style="padding: 12px 8px; color: #f97316; font-size: 14px; font-weight: 600; text-align: right;">${currencySymbol}${total.toFixed(2)}</td>
+          <td colspan="2"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>`
+}
+
+export async function sendBulkApprovalNudgeEmail({
+  to,
+  expenses,
+  submitterName,
+  nudgeType,
+}: BulkNudgeEmailParams): Promise<boolean> {
+  const isWithdrawal = nudgeType === 'withdrawal'
+  const count = expenses.length
+  const subject = isWithdrawal
+    ? `Reminder: ${count} withdrawal${count > 1 ? 's' : ''} from ${submitterName} need${count === 1 ? 's' : ''} your approval`
+    : `Reminder: ${count} expense${count > 1 ? 's' : ''} from ${submitterName} need${count === 1 ? 's' : ''} your approval`
+
+  const expenseList = formatBulkExpenseListHtml(expenses)
+  const bodyHtml = `<p>This is a friendly reminder that <strong>${submitterName}</strong> has <strong>${count}</strong> ${isWithdrawal ? 'withdrawal request' : 'expense'}${count > 1 ? 's' : ''} waiting for your approval.</p>${expenseList}`
+
+  const { html, text } = buildNotificationEmail({
+    title: isWithdrawal ? 'Withdrawal Reminders' : 'Expense Reminders',
+    bodyHtml,
+    ctaText: 'Review Now',
+    ctaUrl: `${appUrl}/expenses`,
+  })
+
+  return sendEmail({ to, subject, text, html })
+}

@@ -7,8 +7,10 @@ import { ExpenseListPaginated } from '@/components/expenses/expense-list-paginat
 import { EditExpenseSheet } from '@/components/expenses/edit-expense-sheet'
 import { Expense } from '@/hooks/useExpenses'
 import { useExpenseFilters } from '@/hooks/useExpenseFilters'
+import { useAuth } from '@/hooks/useAuth'
 
 function ExpensesContent() {
+  const { user } = useAuth()
   const { filters, setFilters } = useExpenseFilters()
   const searchParams = useSearchParams()
   const [page, setPage] = useState(() => {
@@ -67,6 +69,7 @@ function ExpensesContent() {
       {editingExpense && (
         <EditExpenseSheet
           expense={editingExpense}
+          currentUserId={user?.id}
           open={!!editingExpense}
           onOpenChange={(open) => !open && setEditingExpense(null)}
           onSuccess={handleSuccess}

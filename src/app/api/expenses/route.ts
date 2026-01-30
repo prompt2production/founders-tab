@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { createExpenseSchema, listExpensesQuerySchema } from '@/lib/validations/expense'
 import { z } from 'zod'
-import { Prisma, ExpenseStatus, Role } from '@prisma/client'
+import { Prisma, ExpenseStatus, Role, NudgeType } from '@prisma/client'
 import { sendExpenseAwaitingApprovalEmail } from '@/lib/email'
 import { getCompanyUserIds, getFoundersCount } from '@/lib/company'
 
@@ -71,8 +71,8 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Get total count, expenses with user and approval info, and founders count in same company
-    const [total, expenses, foundersCount] = await Promise.all([
+    // Get total count, expenses with user and approval info, founders count and all founders in same company
+    const [total, expenses, foundersCount, allFounders] = await Promise.all([
       prisma.expense.count({ where }),
       prisma.expense.findMany({
         where,
@@ -112,9 +112,24 @@ export async function GET(request: NextRequest) {
               name: true,
             },
           },
+          nudges: {
+            orderBy: { createdAt: 'desc' },
+            take: 2, // Get latest nudge for each type
+            select: {
+              type: true,
+              createdAt: true,
+            },
+          },
         },
       }),
       getFoundersCount(user.companyId),
+      prisma.user.findMany({
+        where: {
+          companyId: user.companyId,
+          role: Role.FOUNDER,
+        },
+        select: { id: true, name: true },
+      }),
     ])
 
     // Enrich expenses with approval info
@@ -140,6 +155,32 @@ export async function GET(request: NextRequest) {
         user.role === Role.FOUNDER &&
         expense.status === ExpenseStatus.WITHDRAWAL_REQUESTED
 
+      // Nudge info
+      const relevantNudgeType =
+        expense.status === ExpenseStatus.PENDING_APPROVAL
+          ? NudgeType.EXPENSE_APPROVAL
+          : expense.status === ExpenseStatus.WITHDRAWAL_REQUESTED
+            ? NudgeType.WITHDRAWAL_APPROVAL
+            : null
+      const lastNudge = relevantNudgeType
+        ? expense.nudges.find((n) => n.type === relevantNudgeType)
+        : null
+      const lastNudgeAt = lastNudge?.createdAt || null
+
+      // Calculate pending approvers (founders who haven't approved and aren't the expense creator)
+      const approvedUserIds =
+        expense.status === ExpenseStatus.PENDING_APPROVAL
+          ? expense.approvals.map((a) => a.user.id)
+          : expense.withdrawalApprovals.map((a) => a.user.id)
+
+      const pendingApprovers =
+        expense.status === ExpenseStatus.PENDING_APPROVAL ||
+        expense.status === ExpenseStatus.WITHDRAWAL_REQUESTED
+          ? allFounders
+              .filter((f) => f.id !== expense.userId && !approvedUserIds.includes(f.id))
+              .map((f) => ({ id: f.id, name: f.name }))
+          : []
+
       return {
         ...expense,
         approvalsNeeded: Math.max(0, approvalsNeeded),
@@ -147,6 +188,9 @@ export async function GET(request: NextRequest) {
         canCurrentUserApprove,
         withdrawalApprovalsNeeded: Math.max(0, withdrawalApprovalsNeeded),
         canCurrentUserApproveWithdrawal,
+        lastNudgeAt,
+        pendingApproversCount: pendingApprovers.length,
+        pendingApprovers,
       }
     })
 

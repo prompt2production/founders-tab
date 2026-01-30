@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { AlertCircle, ChevronRight } from 'lucide-react'
 import { ExpenseListItem } from '@/components/expenses/expense-list-item'
+import { useAuth } from '@/hooks/useAuth'
 import type { PendingApproval } from '@/hooks/useDashboard'
 
 interface ActionItemsProps {
@@ -15,6 +16,8 @@ interface ActionItemsProps {
 }
 
 export function ActionItems({ expenses, isLoading, onExpenseClick }: ActionItemsProps) {
+  const { user } = useAuth()
+
   if (isLoading) {
     return (
       <Card className="bg-card border-border rounded-xl border-primary/30">
@@ -74,6 +77,7 @@ export function ActionItems({ expenses, isLoading, onExpenseClick }: ActionItems
                 ...expense,
                 canCurrentUserApprove: true,
               }}
+              currentUserId={user?.id}
               onClick={() => onExpenseClick(expense)}
               showUser
               needsAction

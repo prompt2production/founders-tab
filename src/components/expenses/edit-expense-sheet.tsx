@@ -30,6 +30,7 @@ import { ApproveWithdrawalButton } from './approve-withdrawal-button'
 import { RejectExpenseButton } from './reject-expense-button'
 import { RejectWithdrawalButton } from './reject-withdrawal-button'
 import { ConfirmReceiptButton } from './confirm-receipt-button'
+import { NudgeButton } from './nudge-button'
 import { CreateExpenseInput } from '@/lib/validations/expense'
 import { Trash2, Loader2, User, XCircle, FileText, ExternalLink } from 'lucide-react'
 
@@ -63,6 +64,11 @@ interface WithdrawalApproval {
   user: ApprovalUser
 }
 
+interface PendingApprover {
+  id: string
+  name: string
+}
+
 interface Expense {
   id: string
   date: string
@@ -82,6 +88,9 @@ interface Expense {
   rejectedBy?: ApprovalUser | null
   rejectedAt?: string | null
   rejectionReason?: string | null
+  lastNudgeAt?: string | null
+  pendingApproversCount?: number
+  pendingApprovers?: PendingApprover[]
 }
 
 interface EditExpenseSheetProps {
@@ -322,42 +331,51 @@ export function EditExpenseSheet({ expense, currentUserId, open, onOpenChange, o
                 onSuccess={onSuccess}
                 className="w-full"
               />
+
+              {/* Nudge button for creators */}
+              <NudgeButton
+                expenseId={expense.id}
+                expense={expense}
+                isCreator={isCreator}
+                status={expense.status}
+                lastNudgeAt={expense.lastNudgeAt}
+                pendingApproversCount={expense.pendingApproversCount || 0}
+                pendingApprovers={expense.pendingApprovers}
+                onSuccess={onSuccess}
+                className="w-full"
+              />
             </div>
           )}
 
           {/* Receipt Preview */}
           {expense.receiptUrl && (
-            <div className="rounded-lg bg-card-elevated p-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Receipt</span>
-                <a
-                  href={expense.receiptUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-primary hover:underline flex items-center gap-1"
-                >
-                  Open <ExternalLink className="h-3 w-3" />
-                </a>
+            <a
+              href={expense.receiptUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 rounded-lg bg-card-elevated p-4 hover:bg-card-elevated/80 transition-colors group"
+            >
+              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-secondary flex items-center justify-center">
+                <FileText className="h-5 w-5 text-muted-foreground" />
               </div>
-              <a
-                href={expense.receiptUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block"
-              >
-                {expense.receiptUrl.endsWith('.pdf') ? (
-                  <div className="flex items-center justify-center h-32 bg-secondary rounded-lg hover:bg-secondary/80 transition-colors">
-                    <FileText className="h-12 w-12 text-muted-foreground" />
-                  </div>
-                ) : (
-                  <img
-                    src={expense.receiptUrl}
-                    alt="Receipt"
-                    className="w-full h-32 object-cover rounded-lg hover:opacity-90 transition-opacity"
-                  />
-                )}
-              </a>
-            </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">
+                  {expense.receiptUrl.endsWith('.pdf') ? 'PDF Document' : 'Receipt Image'}
+                </p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {(() => {
+                    try {
+                      const url = new URL(expense.receiptUrl)
+                      const filename = url.pathname.split('/').pop()
+                      return filename || 'View attachment'
+                    } catch {
+                      return 'View attachment'
+                    }
+                  })()}
+                </p>
+              </div>
+              <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" />
+            </a>
           )}
 
           {/* Disable editing during withdrawal flow */}

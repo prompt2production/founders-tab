@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth'
 import { getCompanyUserIds, getFoundersCount } from '@/lib/company'
+import { NudgeType } from '@prisma/client'
 
 export async function GET() {
   try {
@@ -18,6 +19,15 @@ export async function GET() {
     const companyUserIds = await getCompanyUserIds(user.companyId)
     const foundersCount = await getFoundersCount(user.companyId)
     const approvalsNeeded = Math.max(1, foundersCount - 1)
+
+    // Get all founders in the company (for calculating pending approvers)
+    const allFounders = await prisma.user.findMany({
+      where: {
+        companyId: user.companyId,
+        role: 'FOUNDER',
+      },
+      select: { id: true, name: true },
+    })
 
     // Run all queries in parallel for performance
     const [
@@ -83,6 +93,12 @@ export async function GET() {
         },
         include: {
           approvals: { include: { user: { select: { id: true, name: true } } } },
+          nudges: {
+            where: { type: NudgeType.EXPENSE_APPROVAL },
+            orderBy: { createdAt: 'desc' },
+            take: 1,
+            select: { createdAt: true },
+          },
         },
         orderBy: { createdAt: 'desc' },
         take: 5,
@@ -128,16 +144,28 @@ export async function GET() {
         approvals: e.approvals,
         approvalsNeeded,
       })),
-      userPendingExpenses: userPendingExpenses.map((e) => ({
-        id: e.id,
-        date: e.date.toISOString(),
-        amount: e.amount.toString(),
-        description: e.description,
-        category: e.category,
-        status: e.status,
-        approvals: e.approvals,
-        approvalsNeeded,
-      })),
+      userPendingExpenses: userPendingExpenses.map((e) => {
+        const approvedUserIds = e.approvals.map((a) => a.user.id)
+        // Pending approvers are founders who haven't approved and aren't the expense creator
+        const pendingApprovers = allFounders
+          .filter((f) => f.id !== e.userId && !approvedUserIds.includes(f.id))
+          .map((f) => ({ id: f.id, name: f.name }))
+
+        return {
+          id: e.id,
+          date: e.date.toISOString(),
+          amount: e.amount.toString(),
+          description: e.description,
+          category: e.category,
+          status: e.status,
+          userId: e.userId,
+          approvals: e.approvals,
+          approvalsNeeded,
+          lastNudgeAt: e.nudges[0]?.createdAt?.toISOString() || null,
+          pendingApproversCount: pendingApprovers.length,
+          pendingApprovers,
+        }
+      }),
       monthlyTrend,
       categoryBreakdown,
       recentActivity: recentActivity.map((e) => ({
@@ -146,7 +174,9 @@ export async function GET() {
         amount: e.amount.toString(),
         description: e.description,
         category: e.category,
+        userId: e.userId,
         user: e.user,
+        status: e.status,
       })),
       userRole: user.role,
     })

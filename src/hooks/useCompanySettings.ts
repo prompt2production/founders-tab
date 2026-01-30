@@ -7,6 +7,7 @@ export function useCompanySettings() {
     companyName: context.companyName,
     currency: context.currency,
     currencySymbol: context.currencySymbol,
+    nudgeCooldownHours: context.nudgeCooldownHours,
     isLoading: context.isLoading,
     refetch: context.refetch,
   }

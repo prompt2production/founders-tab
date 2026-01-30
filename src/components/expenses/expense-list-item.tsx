@@ -1,6 +1,7 @@
 'use client'
 
 import { format } from 'date-fns'
+import { Bell } from 'lucide-react'
 import { CategoryIcon } from './category-icon'
 import { ApprovalStatusBadge } from './approval-status-badge'
 import { getCategoryLabel } from '@/lib/constants/categories'
@@ -32,6 +33,7 @@ interface Expense {
   status?: 'PENDING_APPROVAL' | 'APPROVED' | 'REJECTED' | 'WITHDRAWAL_REQUESTED' | 'WITHDRAWAL_APPROVED' | 'WITHDRAWAL_REJECTED' | 'RECEIVED'
   receiptUrl?: string | null
   notes?: string | null
+  userId?: string
   user?: ExpenseUser
   approvals?: Approval[]
   approvalsNeeded?: number
@@ -39,13 +41,17 @@ interface Expense {
   withdrawalApprovalsNeeded?: number
   canCurrentUserApprove?: boolean
   canCurrentUserApproveWithdrawal?: boolean
+  lastNudgeAt?: string | null
+  pendingApproversCount?: number
 }
 
 interface ExpenseListItemProps {
   expense: Expense
+  currentUserId?: string
   onClick?: () => void
   showUser?: boolean
   needsAction?: boolean
+  onNudgeClick?: (expense: Expense) => void
 }
 
 function getStatusDescription(
@@ -77,8 +83,9 @@ function getStatusDescription(
   return null
 }
 
-export function ExpenseListItem({ expense, onClick, showUser = false, needsAction = false }: ExpenseListItemProps) {
-  const { currencySymbol, currency } = useCompanySettings()
+export function ExpenseListItem({ expense, currentUserId, onClick, showUser = false, needsAction = false, onNudgeClick }: ExpenseListItemProps) {
+  const { currencySymbol, currency, nudgeCooldownHours } = useCompanySettings()
+
   const date = expense.date instanceof Date ? expense.date : new Date(expense.date)
   const amount = typeof expense.amount === 'string' ? parseFloat(expense.amount) : expense.amount
   const formattedAmount = formatCurrency(amount, currencySymbol, currency)
@@ -94,6 +101,24 @@ export function ExpenseListItem({ expense, onClick, showUser = false, needsActio
     expense.canCurrentUserApprove,
     expense.canCurrentUserApproveWithdrawal
   )
+
+  // Check if nudge is available for this expense
+  const isCreator = currentUserId && expense.userId === currentUserId
+  const canNudge = isCreator &&
+    (expense.status === 'PENDING_APPROVAL' || expense.status === 'WITHDRAWAL_REQUESTED') &&
+    (expense.pendingApproversCount ?? 0) > 0
+
+  // Check if rate limited based on company settings
+  const cooldownMs = nudgeCooldownHours * 60 * 60 * 1000
+  const isRateLimited = nudgeCooldownHours > 0 && expense.lastNudgeAt &&
+    (new Date(expense.lastNudgeAt).getTime() + cooldownMs) > Date.now()
+
+  function handleNudgeClick(e: React.MouseEvent) {
+    e.stopPropagation() // Prevent opening edit sheet
+    if (onNudgeClick) {
+      onNudgeClick(expense)
+    }
+  }
 
   return (
     <div
@@ -143,12 +168,23 @@ export function ExpenseListItem({ expense, onClick, showUser = false, needsActio
           />
         )}
         {statusDescription && (
-          <p className={cn(
-            'text-xs',
-            needsAction ? 'text-primary font-medium' : 'text-muted-foreground'
-          )}>
-            {statusDescription}
-          </p>
+          <div className="flex items-center gap-2">
+            <p className={cn(
+              'text-xs',
+              needsAction ? 'text-primary font-medium' : 'text-muted-foreground'
+            )}>
+              {statusDescription}
+            </p>
+            {canNudge && !isRateLimited && onNudgeClick && (
+              <button
+                onClick={handleNudgeClick}
+                className="text-xs text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors border border-border rounded px-1.5 py-0.5"
+              >
+                <Bell className="h-3 w-3" />
+                Nudge
+              </button>
+            )}
+          </div>
         )}
         {!expense.status && <p className="text-xs text-muted-foreground">{categoryLabel}</p>}
       </div>

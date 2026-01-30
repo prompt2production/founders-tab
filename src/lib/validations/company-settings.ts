@@ -22,6 +22,16 @@ export const CURRENCY_OPTIONS: { value: SupportedCurrency; label: string; symbol
   { value: 'ZAR', label: 'South African Rand', symbol: 'R' },
 ]
 
+export const NUDGE_COOLDOWN_OPTIONS = [
+  { value: 0, label: 'Off (can nudge anytime)' },
+  { value: 1, label: '1 hour' },
+  { value: 6, label: '6 hours' },
+  { value: 12, label: '12 hours' },
+  { value: 24, label: '24 hours' },
+  { value: 48, label: '48 hours' },
+  { value: 168, label: '1 week' },
+] as const
+
 export const updateCompanySettingsSchema = z.object({
   name: z
     .string()
@@ -31,6 +41,12 @@ export const updateCompanySettingsSchema = z.object({
   currency: z.enum(SUPPORTED_CURRENCIES, {
     errorMap: () => ({ message: 'Currency must be a supported currency code' }),
   }).optional(),
+  nudgeCooldownHours: z
+    .number()
+    .int()
+    .min(0, 'Cooldown must be at least 0')
+    .max(168, 'Cooldown must be at most 168 hours (1 week)')
+    .optional(),
 })
 
 export type UpdateCompanySettingsInput = z.infer<typeof updateCompanySettingsSchema>

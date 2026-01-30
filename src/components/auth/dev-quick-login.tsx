@@ -24,9 +24,9 @@ interface DevUser {
 }
 
 const DEV_USERS: DevUser[] = [
-  { name: 'Chris', email: 'chris@founderstab.com', password: 'Password123!' },
-  { name: 'Candice', email: 'candice@founderstab.com', password: 'Password123!' },
-  { name: 'Adrian', email: 'adrian@founderstab.com', password: 'Password123!' },
+  { name: 'Chris', email: 'chrisroweonline+ftchris@gmail.com', password: 'Password123!' },
+  { name: 'Candice', email: 'chrisroweonline+ftcandice@gmail.com', password: 'Password123!' },
+  { name: 'Adrian', email: 'chrisroweonline+ftadrian@gmail.com', password: 'Password123!' },
 ]
 
 export function DevQuickLogin({ onSuccess }: DevQuickLoginProps) {

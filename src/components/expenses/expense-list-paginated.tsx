@@ -1,16 +1,34 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { format } from 'date-fns'
 import { Receipt, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ExpenseListItem } from './expense-list-item'
+import { NudgeConfirmationDialog } from './nudge-confirmation-dialog'
 import { useExpenses, Expense } from '@/hooks/useExpenses'
+import { useAuth } from '@/hooks/useAuth'
 import { getCategoryLabel } from '@/lib/constants/categories'
 import { useCompanySettings } from '@/hooks/useCompanySettings'
 import { formatCurrency } from '@/lib/format-currency'
+
+interface PendingApprover {
+  id: string
+  name: string
+}
+
+interface NudgeableExpense {
+  id: string
+  description: string
+  amount: number | string
+  date: Date | string
+  category: string
+  status: 'PENDING_APPROVAL' | 'WITHDRAWAL_REQUESTED'
+  lastNudgeAt?: string | null
+  pendingApprovers?: PendingApprover[]
+}
 
 interface ExpenseFilters {
   userId?: string
@@ -33,12 +51,53 @@ export function ExpenseListPaginated({
   onPageChange,
   onExpenseClick,
 }: ExpenseListPaginatedProps) {
+  const { user } = useAuth()
   const { currencySymbol, currency } = useCompanySettings()
   const { expenses, total, totalPages, isLoading, error } = useExpenses({
     page,
     limit: 20,
     ...filters,
   })
+
+  const [nudgeDialogOpen, setNudgeDialogOpen] = useState(false)
+  const [nudgeExpense, setNudgeExpense] = useState<NudgeableExpense | null>(null)
+
+  // Get user's nudgeable expenses from the current list
+  const nudgeableExpenses: NudgeableExpense[] = useMemo(() => {
+    return expenses
+      .filter((e) =>
+        e.userId === user?.id &&
+        (e.status === 'PENDING_APPROVAL' || e.status === 'WITHDRAWAL_REQUESTED')
+      )
+      .map((e) => ({
+        id: e.id,
+        description: e.description,
+        amount: e.amount,
+        date: e.date,
+        category: e.category,
+        status: e.status as 'PENDING_APPROVAL' | 'WITHDRAWAL_REQUESTED',
+        lastNudgeAt: e.lastNudgeAt,
+        pendingApprovers: e.pendingApprovers,
+      }))
+  }, [expenses, user?.id])
+
+  function handleNudgeClick(expense: { id: string; description: string; amount: number | string; date: Date | string; category: string; status?: string; lastNudgeAt?: string | null }) {
+    if (expense.status === 'PENDING_APPROVAL' || expense.status === 'WITHDRAWAL_REQUESTED') {
+      // Find the full expense data to get pendingApprovers
+      const fullExpense = expenses.find((e) => e.id === expense.id)
+      setNudgeExpense({
+        id: expense.id,
+        description: expense.description,
+        amount: expense.amount,
+        date: expense.date,
+        category: expense.category,
+        status: expense.status,
+        lastNudgeAt: expense.lastNudgeAt,
+        pendingApprovers: fullExpense?.pendingApprovers,
+      })
+      setNudgeDialogOpen(true)
+    }
+  }
 
   // Calculate total amount for filtered expenses
   const totalAmount = useMemo(() => {
@@ -156,12 +215,24 @@ export function ExpenseListPaginated({
           <ExpenseListItem
             key={expense.id}
             expense={expense}
+            currentUserId={user?.id}
             showUser
             onClick={onExpenseClick ? () => onExpenseClick(expense) : undefined}
             needsAction={expense.canCurrentUserApprove || expense.canCurrentUserApproveWithdrawal}
+            onNudgeClick={handleNudgeClick}
           />
         ))}
       </div>
+
+      {/* Nudge Confirmation Dialog */}
+      {nudgeExpense && (
+        <NudgeConfirmationDialog
+          open={nudgeDialogOpen}
+          onOpenChange={setNudgeDialogOpen}
+          triggerExpense={nudgeExpense}
+          allNudgeableExpenses={nudgeableExpenses}
+        />
+      )}
 
       {/* Pagination */}
       {totalPages > 1 && (
