@@ -3,10 +3,30 @@ import { prisma } from '@/lib/prisma'
 import { signupSchema } from '@/lib/validations/auth'
 import { hashPassword, createSession, setSessionCookie } from '@/lib/auth'
 import { DEFAULT_CATEGORIES } from '@/lib/constants/default-categories'
+import { checkRateLimit, getClientIp, RATE_LIMITS } from '@/lib/rate-limit'
 import { z } from 'zod'
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting - prevent abuse
+    const clientIp = getClientIp(request)
+    const rateLimitResult = checkRateLimit(`signup:${clientIp}`, RATE_LIMITS.auth)
+
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many signup attempts. Please try again later.' },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000)),
+            'X-RateLimit-Limit': String(RATE_LIMITS.auth.limit),
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': String(rateLimitResult.resetTime),
+          },
+        }
+      )
+    }
+
     const body = await request.json()
 
     // Validate input

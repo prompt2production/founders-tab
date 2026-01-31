@@ -4,16 +4,23 @@ import sgMail from '@sendgrid/mail'
 const apiKey = process.env.SENDGRID_API_KEY
 if (apiKey) {
   sgMail.setApiKey(apiKey)
-  console.log('[Email] SendGrid initialized with API key:', apiKey.substring(0, 10) + '...')
-} else {
-  console.warn('[Email] SendGrid API key not found in environment')
 }
 
 const fromEmail = process.env.SENDGRID_FROM_EMAIL || 'hello@founderstab.com'
 const fromName = process.env.SENDGRID_FROM_NAME || 'Founders Tab'
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || 'http://localhost:3000'
 
-console.log('[Email] Configuration:', { fromEmail, fromName, appUrl })
+// HTML escape function to prevent XSS in email templates
+export function escapeHtml(text: string): string {
+  const htmlEscapes: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  }
+  return text.replace(/[&<>"']/g, (char) => htmlEscapes[char])
+}
 
 interface SendEmailOptions {
   to: string
@@ -75,23 +82,23 @@ export function formatExpenseDetailsHtml(expense: ExpenseDetails): string {
       <table style="width: 100%; border-collapse: collapse;">
         <tr>
           <td style="padding: 4px 8px 4px 0; color: #a1a1aa; font-size: 13px;">Description</td>
-          <td style="padding: 4px 0; color: #e5e5e5; font-size: 13px;">${expense.description}</td>
+          <td style="padding: 4px 0; color: #e5e5e5; font-size: 13px;">${escapeHtml(expense.description)}</td>
         </tr>
         <tr>
           <td style="padding: 4px 8px 4px 0; color: #a1a1aa; font-size: 13px;">Amount</td>
-          <td style="padding: 4px 0; color: #e5e5e5; font-size: 13px; font-weight: 600;">${expense.amount}</td>
+          <td style="padding: 4px 0; color: #e5e5e5; font-size: 13px; font-weight: 600;">${escapeHtml(expense.amount)}</td>
         </tr>
         <tr>
           <td style="padding: 4px 8px 4px 0; color: #a1a1aa; font-size: 13px;">Category</td>
-          <td style="padding: 4px 0; color: #e5e5e5; font-size: 13px;">${expense.category}</td>
+          <td style="padding: 4px 0; color: #e5e5e5; font-size: 13px;">${escapeHtml(expense.category)}</td>
         </tr>
         <tr>
           <td style="padding: 4px 8px 4px 0; color: #a1a1aa; font-size: 13px;">Date</td>
-          <td style="padding: 4px 0; color: #e5e5e5; font-size: 13px;">${expense.date}</td>
+          <td style="padding: 4px 0; color: #e5e5e5; font-size: 13px;">${escapeHtml(expense.date)}</td>
         </tr>
         <tr>
           <td style="padding: 4px 8px 4px 0; color: #a1a1aa; font-size: 13px;">Submitted by</td>
-          <td style="padding: 4px 0; color: #e5e5e5; font-size: 13px;">${expense.submitterName}</td>
+          <td style="padding: 4px 0; color: #e5e5e5; font-size: 13px;">${escapeHtml(expense.submitterName)}</td>
         </tr>
       </table>
     </div>`
@@ -216,9 +223,9 @@ If you didn't expect this invitation, you can safely ignore this email.
   <div style="background: #1a1a1a; padding: 30px; border-radius: 0 0 12px 12px; color: #e5e5e5;">
     <h2 style="color: #f97316; margin-top: 0;">You're Invited!</h2>
 
-    <p><strong>${inviterName}</strong> has invited you to join their team on Founders Tab.</p>
+    <p><strong>${escapeHtml(inviterName)}</strong> has invited you to join their team on Founders Tab.</p>
 
-    ${message ? `<div style="background: #262626; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f97316;"><em>"${message}"</em></div>` : ''}
+    ${message ? `<div style="background: #262626; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f97316;"><em>"${escapeHtml(message)}"</em></div>` : ''}
 
     <p>Founders Tab helps co-founders track business expenses before company incorporation, making it easy to maintain clear records for future reimbursement.</p>
 
@@ -259,7 +266,7 @@ export async function sendExpenseAwaitingApprovalEmail({
 }: ExpenseNotificationParams): Promise<boolean> {
   const subject = `New expense from ${expense.submitterName} needs your approval`
   const expenseCard = formatExpenseDetailsHtml(expense)
-  const bodyHtml = `<p><strong>${expense.submitterName}</strong> submitted a new expense that needs your approval.</p>${expenseCard}`
+  const bodyHtml = `<p><strong>${escapeHtml(expense.submitterName)}</strong> submitted a new expense that needs your approval.</p>${expenseCard}`
   const { html, text } = buildNotificationEmail({
     title: 'New Expense Awaiting Approval',
     bodyHtml,
@@ -300,7 +307,7 @@ export async function sendExpenseRejectedEmail({
 }: RejectionNotificationParams): Promise<boolean> {
   const subject = 'Your expense has been rejected'
   const expenseCard = formatExpenseDetailsHtml(expense)
-  const reasonBlock = `<div style="background: #450a0a; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f87171;"><p style="margin: 0 0 8px 0; color: #f87171; font-weight: 600;">Rejected by ${rejectorName}</p><p style="margin: 0; color: #e5e5e5;">${rejectionReason}</p></div>`
+  const reasonBlock = `<div style="background: #450a0a; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f87171;"><p style="margin: 0 0 8px 0; color: #f87171; font-weight: 600;">Rejected by ${escapeHtml(rejectorName)}</p><p style="margin: 0; color: #e5e5e5;">${escapeHtml(rejectionReason)}</p></div>`
   const bodyHtml = `<p>Your expense has been rejected.</p>${expenseCard}${reasonBlock}`
   const { html, text } = buildNotificationEmail({
     title: 'Expense Rejected',
@@ -337,7 +344,7 @@ export async function sendWithdrawalRejectedEmail({
 }: RejectionNotificationParams): Promise<boolean> {
   const subject = 'Your withdrawal request has been rejected'
   const expenseCard = formatExpenseDetailsHtml(expense)
-  const reasonBlock = `<div style="background: #450a0a; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f87171;"><p style="margin: 0 0 8px 0; color: #f87171; font-weight: 600;">Rejected by ${rejectorName}</p><p style="margin: 0; color: #e5e5e5;">${rejectionReason}</p></div>`
+  const reasonBlock = `<div style="background: #450a0a; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f87171;"><p style="margin: 0 0 8px 0; color: #f87171; font-weight: 600;">Rejected by ${escapeHtml(rejectorName)}</p><p style="margin: 0; color: #e5e5e5;">${escapeHtml(rejectionReason)}</p></div>`
   const bodyHtml = `<p>Your withdrawal request has been rejected.</p>${expenseCard}${reasonBlock}`
   const { html, text } = buildNotificationEmail({
     title: 'Withdrawal Rejected',
@@ -363,7 +370,7 @@ export async function sendPromotedToFounderEmail({
   userName,
 }: PromotedToFounderParams): Promise<boolean> {
   const subject = "You've been made a founder"
-  const bodyHtml = `<p>Hi <strong>${userName}</strong>,</p>
+  const bodyHtml = `<p>Hi <strong>${escapeHtml(userName)}</strong>,</p>
     <p>You have been promoted to a <strong>Founder</strong> on Founders Tab.</p>
     <p>As a founder, you will now need to approve any expenses logged by other members before they can be processed. You can review pending expenses from the Expenses page.</p>`
   const { html, text } = buildNotificationEmail({
@@ -395,7 +402,7 @@ export async function sendApprovalNudgeEmail({
     : `Reminder: ${expense.submitterName}'s expense needs your approval`
 
   const expenseCard = formatExpenseDetailsHtml(expense)
-  const bodyHtml = `<p>This is a friendly reminder that <strong>${expense.submitterName}</strong>'s ${isWithdrawal ? 'withdrawal request' : 'expense'} is waiting for your approval.</p>${expenseCard}`
+  const bodyHtml = `<p>This is a friendly reminder that <strong>${escapeHtml(expense.submitterName)}</strong>'s ${isWithdrawal ? 'withdrawal request' : 'expense'} is waiting for your approval.</p>${expenseCard}`
 
   const { html, text } = buildNotificationEmail({
     title: isWithdrawal ? 'Withdrawal Reminder' : 'Expense Reminder',
@@ -428,10 +435,10 @@ interface BulkNudgeEmailParams {
 function formatBulkExpenseListHtml(expenses: BulkExpenseItem[]): string {
   const rows = expenses.map((e) => `
     <tr>
-      <td style="padding: 8px; color: #e5e5e5; font-size: 13px; border-bottom: 1px solid #333;">${e.description}</td>
-      <td style="padding: 8px; color: #e5e5e5; font-size: 13px; border-bottom: 1px solid #333; text-align: right; font-weight: 600;">${e.amount}</td>
-      <td style="padding: 8px; color: #a1a1aa; font-size: 13px; border-bottom: 1px solid #333;">${e.category}</td>
-      <td style="padding: 8px; color: #a1a1aa; font-size: 13px; border-bottom: 1px solid #333;">${e.date}</td>
+      <td style="padding: 8px; color: #e5e5e5; font-size: 13px; border-bottom: 1px solid #333;">${escapeHtml(e.description)}</td>
+      <td style="padding: 8px; color: #e5e5e5; font-size: 13px; border-bottom: 1px solid #333; text-align: right; font-weight: 600;">${escapeHtml(e.amount)}</td>
+      <td style="padding: 8px; color: #a1a1aa; font-size: 13px; border-bottom: 1px solid #333;">${escapeHtml(e.category)}</td>
+      <td style="padding: 8px; color: #a1a1aa; font-size: 13px; border-bottom: 1px solid #333;">${escapeHtml(e.date)}</td>
     </tr>
   `).join('')
 
@@ -482,7 +489,7 @@ export async function sendBulkApprovalNudgeEmail({
     : `Reminder: ${count} expense${count > 1 ? 's' : ''} from ${submitterName} need${count === 1 ? 's' : ''} your approval`
 
   const expenseList = formatBulkExpenseListHtml(expenses)
-  const bodyHtml = `<p>This is a friendly reminder that <strong>${submitterName}</strong> has <strong>${count}</strong> ${isWithdrawal ? 'withdrawal request' : 'expense'}${count > 1 ? 's' : ''} waiting for your approval.</p>${expenseList}`
+  const bodyHtml = `<p>This is a friendly reminder that <strong>${escapeHtml(submitterName)}</strong> has <strong>${count}</strong> ${isWithdrawal ? 'withdrawal request' : 'expense'}${count > 1 ? 's' : ''} waiting for your approval.</p>${expenseList}`
 
   const { html, text } = buildNotificationEmail({
     title: isWithdrawal ? 'Withdrawal Reminders' : 'Expense Reminders',
