@@ -55,7 +55,7 @@ function AppHeader({ onAddExpense }: AppHeaderProps) {
   if (!user) return null
 
   return (
-    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
+    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border pt-6">
       <div className="max-w-6xl mx-auto px-4 lg:px-6 py-3">
         <div className="flex items-center justify-between">
           {/* Logo/Brand */}
@@ -205,7 +205,7 @@ function AppContent({ children }: { children: React.ReactNode }) {
   return (
     <>
       <AppHeader onAddExpense={() => setAddExpenseOpen(true)} />
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto pt-6">
         {children}
       </div>
       <BottomNav onAddExpense={() => setAddExpenseOpen(true)} />

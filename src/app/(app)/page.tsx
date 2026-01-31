@@ -36,7 +36,7 @@ export default function HomePage() {
   const userRole = data?.userRole || 'MEMBER'
 
   return (
-    <div className="px-4 lg:px-6 py-6 space-y-6">
+    <div className="px-4 lg:px-6 pt-8 pb-6 space-y-6">
       {/* Welcome Header */}
       <div className="flex items-start justify-between">
         <div className="space-y-1">

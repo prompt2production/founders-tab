@@ -470,7 +470,6 @@ A feature is complete when:
 - `features/transaction-approval` - Transaction Approval (21 stories) ✓
 - `features/expense-withdrawal` - Expense Withdrawal (24 stories) ✓
 - `features/db-console` - Database Console Application (11 stories) ✓
-- `features/dev-quick-login` - Dev Quick Login (2 stories) ✓
 - `features/role-management` - Role Management (9 stories) ✓
 - `features/home-page` - Marketing Home Page (5 stories) ✓
 - `features/company-settings` - Company Settings (8 stories) ✓
